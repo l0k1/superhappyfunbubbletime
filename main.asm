@@ -4,7 +4,10 @@
    INCLUDE  "gbhw.inc"
 
 ;* user data (constants)
-JOYPAD   EQU   $C000
+   JOYPAD   EQU   $C000
+   TIMER1   EQU   $C001
+   TIMER2   EQU   $C002
+   
 ;* equates
 
 ;* cartridge header
@@ -59,6 +62,7 @@ SERIAL_VECT:
 
    SECTION  "Joypad IRQ Vector",HOME[$60]
 JOYPAD_VECT:
+   call Controller
    reti
    
    SECTION  "Start",HOME[$100]
