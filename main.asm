@@ -124,7 +124,13 @@ Main::
 
    ld SP, $FFFF      ;init the stack pointer
    ld A,%11100100    ;set the pallete color to standard.
-   ld [$FF47],A
+   ld [rBGP],A
+   ld [rOBP0],A
+   ld [rOBP1],A
+                     ;not initializing ram.
+                     ;need to start with a splash screen
+                     ;then do a title screen
+                     ;then do an opening menu screen.
 
    ei
 
@@ -163,27 +169,27 @@ Controller:
    push AF     ;Push AF onto the stack to restore later.
    push BC     ;Push B onto the stack to restore later.
    ld A,%00100000 ;Load 0010 0000 into A.
-   ld [$FF00],A   ;We are checking P14 first.
-   ld A,[$FF00]
-   ld A,[$FF00]   ;Wait a few cycles, compensate for bounce.
+   ld [rP1],A   ;We are checking P14 first.
+   ld A,[rP1]
+   ld A,[rP1]   ;Wait a few cycles, compensate for bounce.
    cpl      ;Complement A.
    and $0F     ;Only keep the LSB.
    swap A      ;Move those 4 bits up front.
    ld B,A      ;Store it in B
    ld A,%00010000 ;Load 0001 0000 into A.
-   ld [$FF00],A   ;Now check P15.
-   ld A,[$FF00]
-   ld A,[$FF00]
-   ld A,[$FF00]
-   ld A,[$FF00]
-   ld A,[$FF00]
-   ld A,[$FF00]   ;Wait a few cycles to compensate for bounce.
+   ld [rP1],A   ;Now check P15.
+   ld A,[rP1]
+   ld A,[rP1]
+   ld A,[rP1]
+   ld A,[rP1]
+   ld A,[rP1]
+   ld A,[rP1]   ;Wait a few cycles to compensate for bounce.
    cpl      ;Complement A.
    and $0F     ;Keep only the LSB.
    or B     ;Combine registers A and B into A.
-   ld [JOYPAD],A  ;JOYPAD is a constant set to $FF80 at the top of this file.
+   ld [JOYPAD],A  ;JOYPAD is a constant set in globals.asm
    ld A,%00110000 ;Deselect both P14 and P15.
-   ld [$FF00],A   ;Reset joypad.
+   ld [rP1],A   ;Reset joypad.
    pop BC      ;Restore B.
    pop AF      ;Restore AF.
    ret      ;Exit
