@@ -1,14 +1,7 @@
-;* Blank Simple Source File
+;* SUPER HAPPY FUN BUBBLE TIME
 ;*
 ;* Includes
-   INCLUDE  "gbhw.inc"
-
-;* user data (constants)
-   JOYPAD   EQU   $C000
-   TIMER1   EQU   $C001
-   TIMER2   EQU   $C002
-   
-;* equates
+INCLUDE  "globals.asm"
 
 ;* cartridge header
 
