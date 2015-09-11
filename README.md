@@ -7,7 +7,12 @@ Check out the Wiki hosted here on Github for more info.
 ###Building
 I use RGBDS. I don't plan on porting it to WLA.
 Clone the directory, and then do a normal RGBDS build including all the files.
-I may make a makefile... eventually...
+
+Dependencies are RGBDS and make.
+
+To make:
+cd ./superhappyfunbubbletime/
+make
 
 ###License
 I'm using GPL V2.
