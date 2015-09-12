@@ -4,6 +4,8 @@
 A homebrew adventure game aimed at the old grey Gameboy.
 Check out the Wiki hosted here on Github for more info.
 
+*SHFBT is currently not in a workable/playable condition. It is still pre-alpha.*
+
 ###Building
 I use RGBDS. I don't plan on porting it to WLA.
 Clone the directory, and then do a normal RGBDS build including all the files.
