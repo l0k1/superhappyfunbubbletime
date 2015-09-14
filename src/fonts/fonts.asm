@@ -1,8 +1,6 @@
 ;* This file will contain all the tile data for fonts that will be used.
 ;* Font data will go in ROM bank 1 (for now).
 
-PRINTT "Entering fonts.asm"
-
 IF !DEF(FONTS_ASM)
 FONTS_ASM SET 1
 
