@@ -1,7 +1,6 @@
 ;Controller routines
 
-IF !DEF(CONTROLLER_ASM)
-CONTROLLER_ASM SET 1
+INCLUDE "globals.asm"
 
    SECTION "Controller Status",HOME
 Controller::
@@ -33,5 +32,3 @@ Controller::
    pop AF            ;Restore AF.
    ret               ;Exit
 End_Controller::
-
-ENDC

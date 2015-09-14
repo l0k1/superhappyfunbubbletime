@@ -2,11 +2,11 @@
 ;*
 ;* Includes
 INCLUDE  "globals.asm"
-INCLUDE  "opening_screens.asm"
-INCLUDE  "fonts.asm"
+;INCLUDE  "opening_screens.asm"
+;INCLUDE  "fonts.asm"
 INCLUDE  "opening_maps.asm"
-INCLUDE  "controller.asm"
-INCLUDE  "lcd_interface.asm"
+;INCLUDE  "controller.asm"
+;INCLUDE  "lcd_interface.asm"
 
 ;* cartridge header
 

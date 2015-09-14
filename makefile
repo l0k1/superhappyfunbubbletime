@@ -20,11 +20,11 @@ lcd_interface.o:
 	@echo "Making lcd_interface..."
 
 controller.o:
-	@rgbasm -o ./src/controller.o ./src/controller.asm
+	@rgbasm -i ./src/ -o ./src/controller.o ./src/controller.asm
 	@echo "Making contoller..."
 
 fonts.o:
-	@rgbasm -o ./src/fonts/fonts.o ./src/fonts/fonts.asm
+	@rgbasm -i ./src/ -o ./src/fonts/fonts.o ./src/fonts/fonts.asm
 	@echo "Making fonts..."
 
 opening_screens.o:
@@ -32,7 +32,7 @@ opening_screens.o:
 	@echo "Making opening screens..."
 
 opening_maps.o:
-	@rgbasm -o ./src/maps/opening_maps.o ./src/maps/opening_maps.asm
+	@rgbasm -i ./src/ -o ./src/maps/opening_maps.o ./src/maps/opening_maps.asm
 	@echo "Making opening_maps..."
 
 clean:
