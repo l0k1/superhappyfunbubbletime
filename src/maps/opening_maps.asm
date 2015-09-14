@@ -1,5 +1,8 @@
 ; Maps for the opening screens
 
+IF !DEF(OPENING_MAPS_ASM)
+OPENING_MAPS_ASM SET 1
+
    SECTION "Title_Screen_Map",ROMX,BANK[1]
 Title_Screen_Map::
 ;the first 5 lines $5F
@@ -16,3 +19,5 @@ DB $30,$52,$45,$53,$45,$4E,$54,$53
 ;line 13 is blank
 ;lines 14-18 are $5F
 End_Title_Screen_Map::
+
+ENDC

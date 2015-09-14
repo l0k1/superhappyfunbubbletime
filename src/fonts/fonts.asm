@@ -1,7 +1,9 @@
 ;* This file will contain all the tile data for fonts that will be used.
 ;* Font data will go in ROM bank 1 (for now).
+IF !DEF(FONTS_ASM)
+FONTS_ASM SET 1
 
-   SECTION "Font_Main",ROMX,BANK[1]
+   SECTION "Fonts",ROMX,BANK[1]
    ;Font_Main is a full ASCII character set.
    ;If a character doesn't get used, it'll be cut from the game.
 
@@ -344,7 +346,7 @@ DB $82,$82,$82,$82,$82,$82,$00,$00
 DB $00,$00,$00,$00,$FC,$FC,$82,$82
 DB $82,$82,$82,$82,$FE,$FE,$00,$00
 
-50
+;50
 DB $00,$00,$00,$00,$FC,$FC,$82,$82
 DB $82,$82,$82,$82,$FE,$FE,$80,$80
 
@@ -408,4 +410,4 @@ DB $0C,$0C,$00,$00,$00,$00,$00,$00
 DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 
-End_Font_Main::
+ENDC

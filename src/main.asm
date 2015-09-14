@@ -2,6 +2,11 @@
 ;*
 ;* Includes
 INCLUDE  "globals.asm"
+INCLUDE  "opening_screens.asm"
+INCLUDE  "fonts.asm"
+INCLUDE  "opening_maps.asm"
+INCLUDE  "controller.asm"
+INCLUDE  "lcd_interface.asm"
 
 ;* cartridge header
 
@@ -128,68 +133,12 @@ Main::
    ld [rOBP0],A
    ld [rOBP1],A
                      ;not initializing ram.
-                     ;need to start with a splash screen
+   call Splash_Screen
                      ;then do a title screen
                      ;then do an opening menu screen.
 
    ei
-
-   jr Main
-
-   SECTION "Wait VBlank",HOME
-Wait_VBlank:
-   ld HL,$FF41       ;load the address into HL
 .loop
-   bit 0,[HL]        ;check bit 0 in the stat register
-   jr z,.loop        ;we want it to be 1. jump if 0.
-   bit 1,[HL]        ;check bit 1 in the stat register.
-   jr nz,.loop       ;we want it to be 0. jump if 1.
-   ld A,[HL]
-   cp $99            ;if LY is on it's last legs, we'll want to wait
-                     ;until the next pass through, to prevent turning
-                     ;off the LCD during vblank.
-   jr z,.loop
-   ret               ;otherwise, we's good.
-
-   SECTION "LCD Off",HOME  
-LCD_Off:
-   ld A,[$FF40]
-   rlca
-   ret nc            ;Screen already off, return.
-
-   call Wait_VBlank  ;need to wait for vblank to turn off screen.
-
-   ld A,[$FF40]      ;load LCD controller data into A
-   res 7,A           ;set bit 7 of A to 0 to stop LCD.
-   ld [$FF40],A      ;reload A back into LCD controller
-   ret
-
-   SECTION "Controller Status",HOME
-Controller:
-   push AF           ;Push AF onto the stack to restore later.
-   push BC           ;Push B onto the stack to restore later.
-   ld A,%00100000    ;Load 0010 0000 into A.
-   ld [rP1],A        ;We are checking P14 first.
-   ld A,[rP1]
-   ld A,[rP1]        ;Wait a few cycles, compensate for bounce.
-   cpl               ;Complement A.
-   and $0F           ;Only keep the LSB.
-   swap A            ;Move those 4 bits up front.
-   ld B,A            ;Store it in B
-   ld A,%00010000    ;Load 0001 0000 into A.
-   ld [rP1],A        ;Now check P15.
-   ld A,[rP1]
-   ld A,[rP1]
-   ld A,[rP1]
-   ld A,[rP1]
-   ld A,[rP1]
-   ld A,[rP1]        ;Wait a few cycles to compensate for bounce.
-   cpl               ;Complement A.
-   and $0F           ;Keep only the LSB.
-   or B              ;Combine registers A and B into A.
-   ld [JOYPAD],A     ;JOYPAD is a constant set in globals.asm
-   ld A,%00110000    ;Deselect both P14 and P15.
-   ld [rP1],A        ;Reset joypad.
-   pop BC            ;Restore B.
-   pop AF            ;Restore AF.
-   ret               ;Exit
+   halt
+   nop
+   jr .loop

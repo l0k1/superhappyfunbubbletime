@@ -1,5 +1,9 @@
 ;* This file contains global constants.
 
+; Make sure all this data is only loaded once.
+   IF !DEF(GLOBALS_ASM)
+GLOBALS_ASM SET 1
+
 ; Joypad Data, stored in format: 1 - button pressed, 0 - button not pressed.
 JOYPAD   EQU $C000
 TIMER1   EQU $C001
@@ -109,3 +113,5 @@ SCRN_VX    EQU  256 ; Virtual width of screen in pixels
 SCRN_VY    EQU  256 ; Virtual height of screen in pixels
 SCRN_VX_B  EQU  32  ; Virtual width of screen in bytes
 SCRN_VY_B  EQU  32  ; Virtual height of screen in bytes
+
+ENDC

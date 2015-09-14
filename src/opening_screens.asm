@@ -1,9 +1,12 @@
 ; Code for the opening screens.
 ; I'd eventually like to do a fade in/out with these.
-; Maybe have a "fade screen" function in main.asm I can call.
+; Maybe have a "fade screen" function in main.asm I can call
 
-   INCLUDE "main.asm"
-   INCLUDE "fonts.asm"
+IF !DEF(OPENING_SCREENS_ASM)
+OPENING_SCREENS_ASM SET 1
+
+;   INCLUDE "lcd_interface.asm"
+;   INCLUDE "fonts.asm"
 
    SECTION "Splash_Screen",ROMX,BANK[1]
 Splash_Screen::
@@ -36,13 +39,7 @@ Splash_Screen::
 ;now load in "Klexos"
    ld BC,Title_Screen_Map
    ld E,6
-.klexos_loop
-   ld A,[BC]
-   ld [HL+],A
-   dec E
-   xor A
-   cp E
-   jr nz,.klexos_loop
+   call Load_Chars
 
 ;now do 19+8 more blank spaces
    ld B,0
@@ -52,18 +49,55 @@ Splash_Screen::
 ;now do "Game"
    ld BC,Title_Screen_Map + $06
    ld E,4
-.game_loop
-   ld A,[BC]
-   ld [HL+],A
-   dec E
-   xor A
-   cp E
-   jr nz,.game_loop
+   call Load_Chars
 
 ;now do 20 + 7 more blank spaces
    ld B,0
    ld DE,20+7
    call Load_Blanks
+
+;now do "Studio"
+   ld BC,Title_Screen_Map + $0A
+   ld E,6
+   call Load_Chars
+
+;19 + 32 * 2 (the next two lines) + 6 are blank
+   ld B,0
+   ld DE,32*2+19+6
+   call Load_Blanks
+
+;"presents"
+   ld BC,Title_Screen_Map + $10
+   ld E,8
+   call Load_Chars
+
+;18 + 32 more blanks
+   ld B,0
+   ld DE,32+18
+   call Load_Blanks
+
+;now lines 14-18 (5*32) are blocked out
+   ld B,$5F
+   ld DE,32*5
+   call Load_Blanks
+
+;now exit the Splash_Screen function.
+   ret
+
+;A function for loading up the chars.
+;HL is the location in the BG map.
+;BC needs to be the start address.
+;E needs to be the number of letters.
+Load_Chars:
+.loop
+   ld A,[BC]
+   ld [HL+],A
+   inc BC
+   dec DE
+   ld A,E
+   or D
+   jr nz,.loop
+   ret
 
 ;A function for filling in with a certain tile
 ;Count needs to be in DE
@@ -79,3 +113,5 @@ Load_Blanks:
    ret
 
 End_Splash_Screen::
+
+ENDC
