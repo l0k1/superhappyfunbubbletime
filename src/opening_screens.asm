@@ -7,7 +7,7 @@ OPENING_SCREENS_ASM SET 1
 
 INCLUDE "globals.asm"
 INCLUDE "lcd_interface.asm"
-;   INCLUDE "fonts.asm"
+INCLUDE "fonts.asm"
 
    SECTION "Splash_Screen",ROMX,BANK[1]
 Splash_Screen::
