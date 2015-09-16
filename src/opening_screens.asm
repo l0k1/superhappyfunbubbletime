@@ -15,13 +15,13 @@ Splash_Screen::
    call LCD_Off      ; We are writing to VRAM
    ld HL,Font_Main   ; Loading up the main font into VRAM
    ld BC,_VRAM
-   ld E,$60          ; We want all the font, which has $5F chars.
+   ld DE,$60 * $10   ; We want all the font, which has $5F chars.
 .load_font_loop
    ld A,[HL+]
    ld [BC],A
    inc BC
-   dec E
-   or A
+   dec DE
+   ld A,D
    or E
    jr nz,.load_font_loop
 
@@ -82,6 +82,10 @@ Splash_Screen::
    ld DE,32*5
    call Load_Blanks
 
+;now we just need to turn the lcd back on again.
+   ld A,%10010001    ;LCDC settings
+   ld [rLCDC],A      ;load the settings.
+
 ;now exit the Splash_Screen function.
    ret
 
@@ -108,14 +112,11 @@ Load_Blanks:
 .loop
    ld A,B
    ld [HL+],A
+   dec DE
    ld A,E
    or D
    jr nz,.loop
    ret
-
-;now we just need to turn the lcd back on again.
-   ld A,%10010001    ;LCDC settings
-   ld [rLCDC],A      ;load the settings.
 
 End_Splash_Screen::
 
