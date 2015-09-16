@@ -113,6 +113,10 @@ Load_Blanks:
    jr nz,.loop
    ret
 
+;now we just need to turn the lcd back on again.
+   ld A,%10010001    ;LCDC settings
+   ld [rLCDC],A      ;load the settings.
+
 End_Splash_Screen::
 
 ENDC
