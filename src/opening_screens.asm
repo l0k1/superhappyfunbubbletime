@@ -6,13 +6,17 @@ IF !DEF(OPENING_SCREENS_ASM)
 OPENING_SCREENS_ASM SET 1
 
 INCLUDE "globals.asm"
-INCLUDE "lcd_interface.asm"
+;INCLUDE "lcd_interface.asm"
 INCLUDE "fonts.asm"
+
 
    SECTION "Splash_Screen",ROMX,BANK[1]
 Splash_Screen::
    ;Not using a full-screen map for this.
    call LCD_Off      ; We are writing to VRAM
+   xor A             ; Set the bg screen coords to 0,0
+   ld [rSCX],A
+   ld [rSCY],A
    ld HL,Font_Main   ; Loading up the main font into VRAM
    ld BC,_VRAM
    ld DE,$60 * $10   ; We want all the font, which has $5F chars.
@@ -25,62 +29,9 @@ Splash_Screen::
    or E
    jr nz,.load_font_loop
 
-;fill up the first 5 rows with a solid block
-   ld HL,_SCRN0      ; Loading the map into screen 0
-   ld BC,Title_Screen_Map
-   ld DE,32*5        ; 32 * 5 = first 5 rows
-   ld B,$5F
-   call Load_Blanks
-
-;line 6, and the first 7 spaces of line 7, are blank.
-   ld DE,32+7         ; One entire line + 7 on the next line
-   ld B,0
-   call Load_Blanks
-
-;now load in "Klexos"
-   ld BC,Title_Screen_Map
-   ld E,6
-   call Load_Chars
-
-;now do 19+8 more blank spaces
-   ld B,0
-   ld DE,19+8
-   call Load_Blanks
-
-;now do "Game"
-   ld BC,Title_Screen_Map + $06
-   ld E,4
-   call Load_Chars
-
-;now do 20 + 7 more blank spaces
-   ld B,0
-   ld DE,20+7
-   call Load_Blanks
-
-;now do "Studio"
-   ld BC,Title_Screen_Map + $0A
-   ld E,6
-   call Load_Chars
-
-;19 + 32 * 2 (the next two lines) + 6 are blank
-   ld B,0
-   ld DE,32*2+19+6
-   call Load_Blanks
-
-;"presents"
-   ld BC,Title_Screen_Map + $10
-   ld E,8
-   call Load_Chars
-
-;18 + 32 more blanks
-   ld B,0
-   ld DE,32+18
-   call Load_Blanks
-
-;now lines 14-18 (5*32) are blocked out
-   ld B,$5F
-   ld DE,32*5
-   call Load_Blanks
+;load in our variables, and call the load background subroutine.
+   ld HL,Splash_Screen_Map
+   call Screen_Load_0_20x18
 
 ;now we just need to turn the lcd back on again.
    ld A,%10010001    ;LCDC settings

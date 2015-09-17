@@ -3,6 +3,8 @@
 IF !DEF(LCD_INTERFACE_ASM)
 LCD_INTERFACE_ASM SET 1
 
+INCLUDE "globals.asm"
+
    SECTION "Wait VBlank",HOME
 Wait_VBlank:
    ld HL,$FF41       ;load the address into HL
@@ -30,5 +32,38 @@ LCD_Off:
    res 7,A           ;set bit 7 of A to 0 to stop LCD.
    ld [$FF40],A      ;reload A back into LCD controller
    ret
+
+   SECTION "20x18 Screen Load",HOME
+   ;Used for loading a map into the BG map area at $9800 that is 20x18 tiles.
+   ;HL must be at the start of the tile data.
+   ;Assumes rSCX & rSCY are at 0,0.
+Screen_Load_0_20x18::
+   ld DE,18                   ;this many y-lines.
+   ld BC,_SCRN0-(12*16)       ;background tile map 0. subtracting 12*16, as it'll be added in again soon.
+.y_line_loop
+   push DE           ;Storing the Y-Line coord for later.
+   ld DE,12*16       ;first, we need to increase _SCRN0 location by 12*16, and ignore all the tiles off screen
+.inc_bgmap_location
+   inc BC
+   dec DE
+   ld A,E
+   or D
+   jp nz,.inc_bgmap_location
+   
+   ld DE,20*16       ;x-length, 20 tiles at 16 bytes each
+.x_line_loop
+   ld A,[HL+]        ;where the magic happens
+   ld [BC],A
+   inc BC
+   dec DE
+   ld A,E
+   or D
+   jp nz,.x_line_loop
+
+   pop DE            ;after we've got done loading an x-line, we need to check our y-line
+   dec DE
+   ld A,E
+   or D
+   jp nz,.y_line_loop
 
 ENDC

@@ -3,6 +3,7 @@
 ;* Includes
 INCLUDE  "globals.asm"
 INCLUDE  "opening_maps.asm"
+INCLUDE  "lcd_interface.asm"
 
 ;* cartridge header
 
