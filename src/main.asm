@@ -1,9 +1,15 @@
 ;* SUPER HAPPY FUN BUBBLE TIME
 ;*
 ;* Includes
-INCLUDE  "globals.asm"
+;graphics:
+INCLUDE  "fonts.asm"
 INCLUDE  "opening_maps.asm"
+;constants:
+INCLUDE  "globals.asm"
+;everything else:
 INCLUDE  "lcd_interface.asm"
+INCLUDE  "controller.asm"
+INCLUDE  "opening_screens.asm"
 
 ;* cartridge header
 
