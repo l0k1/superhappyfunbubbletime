@@ -169,7 +169,7 @@ Timer_Update::
    ld A,[TIMER1]
    inc A
    ld [TIMER1],A
-   jp nc,.end
+   jp nz,.end
    
    ;00 - 16 seconds
    ;01 - .25 seconds
@@ -178,7 +178,7 @@ Timer_Update::
    ld A,[TIMER2]
    inc A
    ld [TIMER2],A
-   jp nc,.end
+   jp nz,.end
    
    ;00 - 4096 seconds
    ;01 - 64 seconds
@@ -187,7 +187,7 @@ Timer_Update::
    ld A,[TIMER3]
    inc A
    ld [TIMER3],A
-   jp nc,.end
+   jp nz,.end
    
    ;00 - 1048576 seconds
    ;01 - 16384 seconds
@@ -196,7 +196,7 @@ Timer_Update::
    ld A,[TIMER4]
    inc A
    ld [TIMER4],A
-   jp nc,.end
+   jp nz,.end
    
 .end
    ret
