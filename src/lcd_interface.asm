@@ -68,4 +68,23 @@ Screen_Load_0_20x18::
    ret
 
 
+   SECTION "Load Tiles Into VRAM",HOME
+   ;Loads up tiles into VRAM.
+   ;Currently overwrites all of VRAM.
+   ;HL must point to tile 0
+   ;DE is how many bytes to load into VRAM (# of tiles * $10)
+Load_Tiles_Into_VRAM::
+   ld BC,_VRAM
+.loop
+   ld A,[HL+]
+   ld [BC],A
+   inc BC
+   dec DE
+   ld A,D
+   or E
+   jr nz,.loop
+   ret
+   
+
+
 ENDC

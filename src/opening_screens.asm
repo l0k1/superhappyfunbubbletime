@@ -18,16 +18,8 @@ Splash_Screen::
    ld [rSCX],A
    ld [rSCY],A
    ld HL,Font_Main   ; Loading up the main font into VRAM
-   ld BC,_VRAM
    ld DE,$60 * $10   ; We want all the font, which has $5F chars.
-.load_font_loop
-   ld A,[HL+]
-   ld [BC],A
-   inc BC
-   dec DE
-   ld A,D
-   or E
-   jr nz,.load_font_loop
+   call Load_Tiles_Into_VRAM  ; Load tiles into VRAM
 
 ;load in our variables, and call the load background subroutine.
    ld HL,Splash_Screen_Map
