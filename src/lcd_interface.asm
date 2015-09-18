@@ -39,10 +39,10 @@ LCD_Off:
    ;Assumes rSCX & rSCY are at 0,0.
 Screen_Load_0_20x18::
    ld DE,18                   ;this many y-lines.
-   ld BC,_SCRN0-(12*16)       ;background tile map 0. subtracting 12*16, as it'll be added in again soon.
+   ld BC,_SCRN0-(12)          ;background tile map 0. subtracting 12, as it'll be added in again soon.
 .y_line_loop
    push DE           ;Storing the Y-Line coord for later.
-   ld DE,12*16       ;first, we need to increase _SCRN0 location by 12*16, and ignore all the tiles off screen
+   ld DE,12          ;first, we need to increase _SCRN0 location by 12*16, and ignore all the tiles off screen
 .inc_bgmap_location
    inc BC
    dec DE
@@ -50,7 +50,7 @@ Screen_Load_0_20x18::
    or D
    jp nz,.inc_bgmap_location
    
-   ld DE,20*16       ;x-length, 20 tiles at 16 bytes each
+   ld DE,20          ;x-length, 20 tiles at 16 bytes each
 .x_line_loop
    ld A,[HL+]        ;where the magic happens
    ld [BC],A
