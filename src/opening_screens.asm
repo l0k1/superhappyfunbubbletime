@@ -13,6 +13,7 @@ INCLUDE "fonts.asm"
    SECTION "Splash_Screen",ROMX,BANK[1]
 Splash_Screen::
    ;Not using a full-screen map for this.
+   di
    call LCD_Off      ; We are writing to VRAM
    xor A             ; Set the bg screen coords to 0,0
    ld [rSCX],A
@@ -30,6 +31,7 @@ Splash_Screen::
    ld [rLCDC],A      ;load the settings.
 
 ;now exit the Splash_Screen function.
+   ei
    ret
 
 ;A function for loading up the chars.

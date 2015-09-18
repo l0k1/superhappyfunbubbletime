@@ -55,6 +55,7 @@ LCD_VECT:
 
    SECTION  "Timer IRQ Vector",HOME[$50]
 TIMER_VECT:
+   call Timer_Update
    reti
 
    SECTION  "Serial IRQ Vector",HOME[$58]
@@ -135,13 +136,47 @@ Main::
    ld [rBGP],A
    ld [rOBP0],A
    ld [rOBP1],A
-                     ;not initializing ram.
+   
+   ;setup/start timers
+   xor A
+   ld [rIF],A        ;set all interrupt flags to 0.
+   ld [rTMA],A       ;set timer modulo to zero
+   ld A,%00000111    ;turn on timer, set it to 16.384 kHz
+   ld A,%00000100
+   ld [rIE],A        ;set the timer interrupt flag.
+   
+   ei
+                     
    call Splash_Screen
                      ;then do a title screen
                      ;then do an opening menu screen.
 
-   ei
 .loop
    halt
    nop
    jr .loop
+   
+   SECTION "Timer Update",HOME
+Timer_Update::
+   ld A,[TIMER1]
+   inc A
+   ld [TIMER1],A
+   jp nc,.end
+   
+   ld A,[TIMER2]
+   inc A
+   ld [TIMER2],A
+   jp nc,.end
+   
+   ld A,[TIMER3]
+   inc A
+   ld [TIMER3],A
+   jp nc,.end
+   
+   ld A,[TIMER4]
+   inc A
+   ld [TIMER4],A
+   jp nc,.end
+   
+.end
+   ret
