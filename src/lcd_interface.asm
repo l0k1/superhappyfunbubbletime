@@ -1,4 +1,4 @@
-;LCD Interface routines.
+;LCD Interface and Graphics routines.
 
 IF !DEF(LCD_INTERFACE_ASM)
 LCD_INTERFACE_ASM SET 1
@@ -65,5 +65,7 @@ Screen_Load_0_20x18::
    ld A,E
    or D
    jp nz,.y_line_loop
+   ret
+
 
 ENDC
