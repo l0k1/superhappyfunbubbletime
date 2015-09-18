@@ -32,6 +32,9 @@ Splash_Screen::
 
 ;now exit the Splash_Screen function.
    ei
+;and fade in.
+   call Fade_In_Black
+
    ret
 
 ;A function for loading up the chars.

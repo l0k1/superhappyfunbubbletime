@@ -142,11 +142,13 @@ Main::
    ld [rIF],A        ;set all interrupt flags to 0.
    ld [rTMA],A       ;set timer modulo to zero
    ld A,%00000100    ;turn on timer, set it to 4.096 kHz
-   ld A,%00000100
+   ld [rTAC],A
    ld [rIE],A        ;set the timer interrupt flag.
    
    ei
-                     
+
+   call Fade_Out_Black
+
    call Splash_Screen
                      ;then do a title screen
                      ;then do an opening menu screen.
