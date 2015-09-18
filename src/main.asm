@@ -141,7 +141,7 @@ Main::
    xor A
    ld [rIF],A        ;set all interrupt flags to 0.
    ld [rTMA],A       ;set timer modulo to zero
-   ld A,%00000111    ;turn on timer, set it to 16.384 kHz
+   ld A,%00000100    ;turn on timer, set it to 4.096 kHz
    ld A,%00000100
    ld [rIE],A        ;set the timer interrupt flag.
    
@@ -157,22 +157,40 @@ Main::
    jr .loop
    
    SECTION "Timer Update",HOME
+   ;keeping 4 timers running for usage.
+   ;the numbers - seconds indicates how long 1 "tick" takes.
 Timer_Update::
+   ;00 - .0625 seconds
+   ;01 - .0009765625 seconds
+   ;10 - .00390625 seconds
+   ;11 - .015625 seconds
    ld A,[TIMER1]
    inc A
    ld [TIMER1],A
    jp nc,.end
    
+   ;00 - 16 seconds
+   ;01 - .25 seconds
+   ;10 - 1 second
+   ;11 - 4 seconds
    ld A,[TIMER2]
    inc A
    ld [TIMER2],A
    jp nc,.end
    
+   ;00 - 4096 seconds
+   ;01 - 64 seconds
+   ;10 - 256 seconds
+   ;11 - 1024 seconds
    ld A,[TIMER3]
    inc A
    ld [TIMER3],A
    jp nc,.end
    
+   ;00 - 1048576 seconds
+   ;01 - 16384 seconds
+   ;10 - 65536 seconds
+   ;11 - 262144 seconds
    ld A,[TIMER4]
    inc A
    ld [TIMER4],A
