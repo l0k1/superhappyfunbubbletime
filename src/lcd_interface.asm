@@ -85,6 +85,72 @@ Load_Tiles_Into_VRAM::
    jr nz,.loop
    ret
    
+   SECTION "Screen Fades",HOME
+   ;setting the shift to happen at ~180ms intervals for now.
+   ;for all of these, the timer needs to be at 4.096kHz, and enabled.
+Fade_In_Black:
+   ld A,%11111111             ;to fade in from black, the BG needs to be black *wink*
+   ld [rBGP],A
+   ld D,3                     ;we want to loop 3 times
+   ld A,%11100100             ;need to push our updates in FILO order.
+   push AF
+   ld A,%11111001
+   push AF
+   ld A,%11111110
+   push AF
+   call Fade_Loop             ;call the fade loop.
+   ret
 
+Fade_Out_Black:
+   ld A,%11100100             ;make sure rBGP is normal.
+   ld [rBGP],A
+   ld D,3                     ;loop three times again.
+   ld A,%11111111             ;fades in FILO order.
+   push AF
+   ld A,%11111110
+   push AF
+   ld A,%11111001
+   push AF
+   call Fade_Loop
+   ret
+
+Fade_In_White:
+   ld A,%00000000             ;make sure rBGP is white.
+   ld [rBGP],A
+   ld D,3                     ;loop three times again.
+   ld A,%11100100             ;fades in FILO order.
+   push AF
+   ld A,%10010000
+   push AF
+   ld A,%01000000
+   push AF
+   call Fade_Loop
+   ret
+
+Fade_Out_White:
+   ld A,%11100100             ;make sure rBGP is normal.
+   ld [rBGP],A
+   ld D,3                     ;loop three times again.
+   ld A,%00000000             ;fades in FILO order.
+   push AF
+   ld A,%01000000
+   push AF
+   ld A,%10010000
+   push AF
+   call Fade_Loop
+   ret
+
+Fade_Loop:
+   xor A                      ;zero out timer 1
+   ld [TIMER1],A
+.loop
+   ld A,[TIMER1]
+   cp 3
+   jp nz,.loop
+   pop AF
+   ld [rBGP],A
+   dec D
+   jp nz,Fade_Loop
+   ret
 
 ENDC

@@ -6,6 +6,7 @@ GLOBALS_ASM SET 1
 
 ; Joypad Data, stored in format: 1 - button pressed, 0 - button not pressed.
 JOYPAD   EQU $C000
+; Check main.asm for timing/interval info.
 TIMER1   EQU $C001
 TIMER2   EQU $C002
 TIMER3   EQU $C003
