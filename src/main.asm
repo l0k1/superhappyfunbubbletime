@@ -144,6 +144,16 @@ Main::
    ld A,%00000100    ;turn on timer, set it to 4.096 kHz
    ld [rTAC],A
    ld [rIE],A        ;set the timer interrupt flag.
+
+   ld HL,$C000       ;init the ram from $C000 to $CFFF
+   ld DE,$1000
+.ram_init
+   xor A
+   ld [HL+],A
+   dec DE
+   ld A,E
+   or D
+   jp nz,.ram_init
    
    ei
 
