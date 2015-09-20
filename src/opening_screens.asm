@@ -37,35 +37,6 @@ Splash_Screen::
 
    ret
 
-;A function for loading up the chars.
-;HL is the location in the BG map.
-;BC needs to be the start address.
-;E needs to be the number of letters.
-Load_Chars:
-.loop
-   ld A,[BC]
-   ld [HL+],A
-   inc BC
-   dec DE
-   ld A,E
-   or D
-   jr nz,.loop
-   ret
-
-;A function for filling in with a certain tile
-;Count needs to be in DE
-;The tile needs to be in B
-;HL needs to point at the BG Map area.
-Load_Blanks:
-.loop
-   ld A,B
-   ld [HL+],A
-   dec DE
-   ld A,E
-   or D
-   jr nz,.loop
-   ret
-
 End_Splash_Screen::
 
 ENDC
