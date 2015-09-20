@@ -84,6 +84,6 @@ DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 
-End_Splash_Screen_Map::
+End_Title_Screen_Map::
 
 ENDC
