@@ -142,16 +142,17 @@ Fade_Out_White:
 
 Fade_Loop:
    pop HL                     ;our return address for later
+.out_loop
    xor A                      ;zero out timer 1
    ld [TIMER1],A
-.loop
+.in_loop
    ld A,[TIMER1]              ;wait 3 ticks, then load background data
-   cp 3
-   jp nz,.loop
+   cp $05
+   jr nz,.in_loop
    pop AF                     ;load our background data
    ld [rBGP],A
    dec D
-   jp nz,Fade_Loop            ;if our count isn't zero, return
+   jp nz,.out_loop            ;if our count isn't zero, return
    push HL                    ;put the return address back on the stack
    ret
 

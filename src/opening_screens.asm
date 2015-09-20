@@ -6,7 +6,6 @@ IF !DEF(OPENING_SCREENS_ASM)
 OPENING_SCREENS_ASM SET 1
 
 INCLUDE "globals.asm"
-;INCLUDE "lcd_interface.asm"
 INCLUDE "fonts.asm"
 
 
@@ -40,7 +39,7 @@ Splash_Screen::
    ld [TIMER1],A     ;reset timer1
 .loop
    ld A,[TIMER1]
-   cp $18            ;roughly a second and a half ($10 per second)
+   cp $A0            ;roughly a second and a half ($10 per second)
    jr nz,.loop
    call Fade_Out_Black
 
