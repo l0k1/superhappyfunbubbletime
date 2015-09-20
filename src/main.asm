@@ -147,11 +147,11 @@ Main::
    
    ei
 
-   call Fade_Out_Black
+   call Fade_Out_Black  ;fade out the nintendo logo
 
-   call Splash_Screen
-                     ;then do a title screen
-                     ;then do an opening menu screen.
+   call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
+                        ;will need to enable controller here. doing that later.
+   call Title_Screen
 
 .loop
    halt
