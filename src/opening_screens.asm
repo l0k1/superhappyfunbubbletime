@@ -75,7 +75,35 @@ Title_Screen::
    ld A,[TIMER1]
    cp $10
    jr nz,.press_start_loop
-   ;here, load in the "press start" text. wife is talking to me, can't think right now.
+
+   call LCD_Off               ;time to load the "press start" text
+   ld HL,_SCRN0+(32*11)+5    ;this is where i want the lettering to start
+   ld A,$50                   ;gonna unroll this one, $50 is "p"
+   ld [HL+],A
+   ld A,$52                   ;"r"
+   ld [HL+],A
+   ld A,$45                   ;"e"
+   ld [HL+],A
+   ld A,$53
+   ld [HL+],A
+   ld [HL+],A
+   xor A
+   ld [HL+],A
+   ld A,$53
+   ld [HL+],A
+   ld A,$54
+   ld [HL+],A
+   ld A,$41
+   ld [HL+],A
+   ld A,$52
+   ld [HL+],A
+   ld A,$54
+   ld [HL+],A
+
+   ld A,%10010001             ;time to turn the LCD back on
+   ld [rLCDC],A
+
+
 .wait
    ld A,[JOYPAD]
    and $0F
