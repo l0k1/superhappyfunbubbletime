@@ -1,4 +1,15 @@
 ;Controller routines
+;dulr - stseba
+;JOYPAD data is stored as:
+;   1 - pressed, 0 - not pressed
+;   Bit 7 - Down
+;   Bit 6 - Up
+;   Bit 5 - Left
+;   Bit 4 - Right
+;   Bit 3 - Start
+;   Bit 2 - Select
+;   Bit 1 - B-button
+;   Bit 0 - A-button
 
    IF !DEF(CONTROLLER_ASM)
 CONTROLLER_ASM SET 1
@@ -34,6 +45,7 @@ Controller::
    pop BC            ;Restore B.
    pop AF            ;Restore AF.
    ret               ;Exit
+
 End_Controller::
 
 ENDC
