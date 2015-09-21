@@ -39,7 +39,7 @@ Splash_Screen::
    ld [TIMER1],A     ;reset timer1
 .loop
    ld A,[TIMER1]
-   cp $A0            ;roughly a second and a half ($10 per second)
+   cp $18            ;roughly a second and a half ($10 per second)
    jr nz,.loop
    call Fade_Out_Black
 

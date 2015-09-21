@@ -147,7 +147,7 @@ Fade_Loop:
    ld [TIMER1],A
 .in_loop
    ld A,[TIMER1]              ;wait 3 ticks, then load background data
-   cp $05
+   cp $03
    jr nz,.in_loop
    pop AF                     ;load our background data
    ld [rBGP],A
