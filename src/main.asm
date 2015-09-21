@@ -160,8 +160,12 @@ Main::
    call Fade_Out_Black  ;fade out the nintendo logo
    
    call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
-                        ;will need to enable controller here. doing that later.
-                        ;pause here.
+
+   xor A                ;set the IF register to 0
+   ld [rIF],A
+   ld A,%00010100       ;set the timer and joypad interrupts
+   ld [rIE],A±
+
    call Title_Screen
 
 .loop
