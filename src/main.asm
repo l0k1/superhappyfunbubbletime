@@ -173,6 +173,12 @@ Main::
    ;keeping 4 timers running for usage.
    ;the numbers - seconds indicates how long 1 "tick" takes.
 Timer_Update::
+
+   push AF               ;push our registers
+   push BC
+   push DE
+   push HL
+
    ;00 - .0625 seconds
    ;01 - .0009765625 seconds
    ;10 - .00390625 seconds
@@ -210,4 +216,9 @@ Timer_Update::
    jp nz,.end
    
 .end
+   pop HL              ;restore dem registers.
+   pop DE
+   pop BC
+   pop AF
+
    ret
