@@ -1,5 +1,5 @@
 CC = rgbasm
-CFLAGS = -i ./src/ -i ./src/fonts/ -i ./src/maps/
+CFLAGS = -i ./src/ -i ./src/fonts/ -i ./src/maps/ -i ./src/tiles/
 LINK = rgblink
 FIX = rgbfix
 FFLAGS = -v -p 0

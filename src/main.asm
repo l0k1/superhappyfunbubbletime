@@ -4,6 +4,7 @@
 ;graphics:
 INCLUDE  "fonts.asm"
 INCLUDE  "opening_maps.asm"
+INCLUDE  "pointer.asm"
 ;constants:
 INCLUDE  "globals.asm"
 ;everything else:
@@ -164,7 +165,7 @@ Main::
    xor A                ;set the IF register to 0
    ld [rIF],A
    ld A,%00010100       ;set the timer and joypad interrupts
-   ld [rIE],A±
+   ld [rIE],A
 
    call Title_Screen
 
