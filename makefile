@@ -5,6 +5,8 @@ FIX = rgbfix
 FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
 
+remake: clean shfbt
+
 shfbt:
 	@echo "Assembling..."
 	@$(CC) $(CFLAGS) -o ./src/main.o ./src/main.asm
