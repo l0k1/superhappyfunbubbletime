@@ -13,7 +13,13 @@ TIMER3   EQU $C003
 TIMER4   EQU $C004
 RANDOM1  EQU $C005
 RANDOM2  EQU $C006
-
+;RAM pointers
+VRAMPL   EQU $C007
+VRAMPH   EQU $C008
+OAMRAMPL EQU $C008
+OAMRAMPH EQU $C009
+WRAMPL   EQU $C010
+WRAMPH   EQU $C011
 
 ;* Hardware definitions
 ;* Slimmed down, from Jeff Frohwein's include files.
