@@ -1,8 +1,5 @@
 ; Maps for the opening screens
 
-IF !DEF(OPENING_MAPS_ASM)
-OPENING_MAPS_ASM SET 1
-
 EXPORT  Splash_Screen_Map
 EXPORT  Title_Screen_Map
 
@@ -84,5 +81,3 @@ DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
-
-ENDC

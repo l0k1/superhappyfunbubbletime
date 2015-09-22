@@ -1,9 +1,6 @@
 ; Code for the opening screens.
 ; I'd eventually like to do a fade in/out with these.
 
-IF !DEF(OPENING_SCREENS_ASM)
-OPENING_SCREENS_ASM SET 1
-
 INCLUDE "globals.asm"
 EXPORT  Title_Screen
 EXPORT  Splash_Screen
@@ -111,4 +108,3 @@ Title_Screen:
    call Fade_Out_Black
    ret
 
-ENDC

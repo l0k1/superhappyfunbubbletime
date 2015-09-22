@@ -11,9 +11,6 @@
 ;   Bit 1 - B-button
 ;   Bit 0 - A-button
 
-   IF !DEF(CONTROLLER_ASM)
-CONTROLLER_ASM SET 1
-
 INCLUDE "globals.asm"
 EXPORT  Controller
 
@@ -46,5 +43,3 @@ Controller:
    pop BC            ;Restore B.
    pop AF            ;Restore AF.
    ret               ;Exit
-
-ENDC
