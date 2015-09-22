@@ -184,6 +184,12 @@ Timer_Update::
    push DE
    push HL
 
+   ;TIMERT is a temp timer, that can be freely reset.
+   ;Same tick rate as TIMER1.
+   ld A,[TIMERT]
+   inc A
+   ld [TIMERT],A
+
    ;00 - .0625 seconds
    ;01 - .0009765625 seconds
    ;10 - .00390625 seconds

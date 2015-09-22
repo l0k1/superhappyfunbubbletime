@@ -7,19 +7,20 @@ GLOBALS_ASM SET 1
 ; Joypad Data, stored in format: 1 - button pressed, 0 - button not pressed.
 JOYPAD   EQU $C000
 ; Check main.asm for timing/interval info.
-TIMER1   EQU $C001
-TIMER2   EQU $C002
-TIMER3   EQU $C003
-TIMER4   EQU $C004
-RANDOM1  EQU $C005
-RANDOM2  EQU $C006
+TIMERT   EQU $C001
+TIMER1   EQU $C002
+TIMER2   EQU $C003
+TIMER3   EQU $C004
+TIMER4   EQU $C005
+RANDOM1  EQU $C006
+RANDOM2  EQU $C007
 ;RAM pointers
-VRAMPL   EQU $C007
-VRAMPH   EQU $C008
-OAMRAMPL EQU $C008
-OAMRAMPH EQU $C009
-WRAMPL   EQU $C010
-WRAMPH   EQU $C011
+VRAMPL   EQU $C008
+VRAMPH   EQU $C009
+OAMRAMPL EQU $C00A
+OAMRAMPH EQU $C00B
+WRAMPL   EQU $C00C
+WRAMPH   EQU $C00D
 
 ;* Hardware definitions
 ;* Slimmed down, from Jeff Frohwein's include files.

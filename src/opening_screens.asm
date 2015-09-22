@@ -36,9 +36,9 @@ Splash_Screen::
 
 ;we want this screen to display for ~2 seconds before fading out.
    xor A
-   ld [TIMER1],A     ;reset timer1
+   ld [TIMERT],A     ;reset timer1
 .loop
-   ld A,[TIMER1]
+   ld A,[TIMERT]
    cp $18            ;roughly a second and a half ($10 per second)
    jr nz,.loop
    call Fade_Out_Black
@@ -65,13 +65,13 @@ Title_Screen::
    call Fade_In_Black         ;and now fade back in.
 
    xor A
-   ld [TIMER1],A
+   ld [TIMERT],A
 .press_start_loop
    ld A,[JOYPAD]              ;first check if a not-directional button has been pressed.
    and $0F                    ;only care about first 4 bits.
    cp 0
    jp nz,.end
-   ld A,[TIMER1]
+   ld A,[TIMERT]
    cp $10
    jr nz,.press_start_loop
 

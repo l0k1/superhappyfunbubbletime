@@ -144,9 +144,9 @@ Fade_Loop:
    pop HL                     ;our return address for later
 .out_loop
    xor A                      ;zero out timer 1
-   ld [TIMER1],A
+   ld [TIMERT],A
 .in_loop
-   ld A,[TIMER1]              ;wait 3 ticks, then load background data
+   ld A,[TIMERT]              ;wait 3 ticks, then load background data
    cp $03
    jr nz,.in_loop
    pop AF                     ;load our background data
