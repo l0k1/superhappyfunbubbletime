@@ -1,8 +1,7 @@
 ;* This file will contain all the tile data for fonts that will be used.
 ;* Font data will go in ROM bank 1 (for now).
 
-IF !DEF(FONTS_ASM)
-FONTS_ASM SET 1
+EXPORT   Font_Main
 
    SECTION "Fonts",ROMX,BANK[1]
    ;Font_Main is a full ASCII character set.
@@ -26,7 +25,7 @@ FONTS_ASM SET 1
 
 ;50 51 52 53 54 55 56 57 58 59 5A 5B 5C 5D 5E 5F
 ;p  q  r  s  t  u  v  w  x  y  z  {  |  }  ~  (solid block)
-Font_Main::
+Font_Main:
 ;00
 DB $00,$00,$00,$00,$00,$00,$00,$00
 DB $00,$00,$00,$00,$00,$00,$00,$00
@@ -410,5 +409,3 @@ DB $0C,$0C,$00,$00,$00,$00,$00,$00
 ;5F
 DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 DB $FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-
-ENDC

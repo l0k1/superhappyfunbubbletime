@@ -1,16 +1,8 @@
 ;* SUPER HAPPY FUN BUBBLE TIME
 ;*
 ;* Includes
-;graphics:
-INCLUDE  "fonts.asm"
-INCLUDE  "opening_maps.asm"
-INCLUDE  "pointer.asm"
 ;constants:
 INCLUDE  "globals.asm"
-;everything else:
-INCLUDE  "lcd_interface.asm"
-INCLUDE  "controller.asm"
-INCLUDE  "opening_screens.asm"
 
 ;* cartridge header
 
@@ -128,7 +120,7 @@ JOYPAD_VECT:
 ;* Program Start
 
    SECTION "Program Start",HOME[$0150]
-Main::
+Main:
 
    di
 
@@ -177,7 +169,7 @@ Main::
    SECTION "Timer Update",HOME
    ;keeping 4 timers running for usage.
    ;the numbers - seconds indicates how long 1 "tick" takes.
-Timer_Update::
+Timer_Update:
 
    push AF               ;push our registers
    push BC

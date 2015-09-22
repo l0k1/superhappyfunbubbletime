@@ -1,9 +1,15 @@
 ;LCD Interface and Graphics routines.
 
-IF !DEF(LCD_INTERFACE_ASM)
-LCD_INTERFACE_ASM SET 1
-
 INCLUDE "globals.asm"
+
+EXPORT   Wait_VBlank
+EXPORT   LCD_Off
+EXPORT   Load_Tiles_Into_VRAM
+EXPORT   Screen_Load_0_20x18
+EXPORT   Fade_In_Black
+EXPORT   Fade_In_White
+EXPORT   Fade_Out_Black
+EXPORT   Fade_Out_White
 
    SECTION "Wait VBlank",HOME
 Wait_VBlank:
@@ -37,7 +43,7 @@ LCD_Off:
    ;Used for loading a map into the BG map area at $9800 that is 20x18 tiles.
    ;HL must be at the start of the tile data.
    ;Assumes rSCX & rSCY are at 0,0.
-Screen_Load_0_20x18::
+Screen_Load_0_20x18:
    ld DE,18                   ;this many y-lines.
    ld BC,_SCRN0-(12)          ;background tile map 0. subtracting 12, as it'll be added in again soon.
 .y_line_loop
@@ -73,7 +79,7 @@ Screen_Load_0_20x18::
    ;Currently overwrites all of VRAM.
    ;HL must point to tile 0
    ;DE is how many bytes to load into VRAM (# of tiles * $10)
-Load_Tiles_Into_VRAM::
+Load_Tiles_Into_VRAM:
    ld BC,_VRAM
 .loop
    ld A,[HL+]
@@ -155,5 +161,3 @@ Fade_Loop:
    jp nz,.out_loop            ;if our count isn't zero, return
    push HL                    ;put the return address back on the stack
    ret
-
-ENDC

@@ -1,16 +1,16 @@
 ; Code for the opening screens.
 ; I'd eventually like to do a fade in/out with these.
-; Maybe have a "fade screen" function in main.asm I can call
 
 IF !DEF(OPENING_SCREENS_ASM)
 OPENING_SCREENS_ASM SET 1
 
 INCLUDE "globals.asm"
-INCLUDE "fonts.asm"
+EXPORT  Title_Screen
+EXPORT  Splash_Screen
 
 
    SECTION "Splash_Screen",ROMX,BANK[1]
-Splash_Screen::
+Splash_Screen:
    ;Not using a full-screen map for this.
    di
    call LCD_Off      ; We are writing to VRAM
@@ -45,14 +45,13 @@ Splash_Screen::
 
    ret
 
-End_Splash_Screen::
-
    SECTION "Title Screen",ROMX,BANK[1]
    ;As this is being called right after Splash_Screen, we can assume that...
    ;The screen is faded out, interrupts are enabled,
    ;rSCX and rSCY are both at 0,
    ;and that the font info is still loaded into VRAM.
-Title_Screen::
+   
+Title_Screen:
    di
    call LCD_Off
    
@@ -111,7 +110,5 @@ Title_Screen::
 .end
    call Fade_Out_Black
    ret
-
-End_Title_Screen::
 
 ENDC

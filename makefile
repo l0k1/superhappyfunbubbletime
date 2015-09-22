@@ -5,17 +5,24 @@ FIX = rgbfix
 FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
 
-remake: clean shfbt
+SOURCES=./src/controller.asm ./src/globals.asm ./src/lcd_interface.asm ./src/main.asm ./src/opening_screens.asm ./src/fonts/fonts.asm ./src/maps/opening_maps.asm
+OBJECTS=$(SOURCES:.asm=.o)
 
-shfbt:
-	@echo "Assembling..."
-	@$(CC) $(CFLAGS) -o ./src/main.o ./src/main.asm
+
+
+shfbt: $(OBJECTS)
+#	@echo "Assembling..."
+#	@$(CC) $(CFLAGS) -o ./src/main.o ./src/main.asm
 	@echo "Linking object files into image..."
-	@$(LINK) -m $(OUTPUT_NAME).map -n $(OUTPUT_NAME).sym -o $(OUTPUT_NAME).gb ./src/main.o
+	@$(LINK) -m $(OUTPUT_NAME).map -n $(OUTPUT_NAME).sym -o $(OUTPUT_NAME).gb $(OBJECTS)
 	@echo "Tidying up image..."
 	@$(FIX) $(FFLAGS) -v -p 0 shfbt.gb
 	@echo "ROM assembly complete."
 
+%.o:
+	@echo "Making " $(@)
+	@$(CC) $(CFLAGS) -o $(@) $(@:.o=.asm)
+
 clean:
-	-@rm ./src/main.o ./$(OUTPUT_NAME).* 2> /dev/null || true
+	-@rm $(OBJECTS) ./$(OUTPUT_NAME).* 2> /dev/null || true
 	@echo "Directory cleaned."

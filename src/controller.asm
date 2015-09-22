@@ -15,9 +15,10 @@
 CONTROLLER_ASM SET 1
 
 INCLUDE "globals.asm"
+EXPORT  Controller
 
    SECTION "Controller Status",HOME
-Controller::
+Controller:
    push AF           ;Push AF onto the stack to restore later.
    push BC           ;Push B onto the stack to restore later.
    ld A,%00100000    ;Load 0010 0000 into A.
@@ -45,7 +46,5 @@ Controller::
    pop BC            ;Restore B.
    pop AF            ;Restore AF.
    ret               ;Exit
-
-End_Controller::
 
 ENDC
