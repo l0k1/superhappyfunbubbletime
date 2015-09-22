@@ -138,7 +138,7 @@ Main:
    ld [rTAC],A
    ld [rIE],A        ;set the timer interrupt flag.
 
-   ld HL,$C000       ;init the ram from $C000 to $CFFF
+   ld HL,$C000       ;init the internal ram from $C000 to $CFFF
    ld DE,$1000
 .ram_init
    xor A
@@ -147,6 +147,11 @@ Main:
    ld A,E
    or D
    jp nz,.ram_init
+   
+   ld A,$01             ;make sure rom bank 1 is selected.
+   ld [rROM0],A
+   xor A
+   ld [rROM1],A
    
    ei
 
@@ -159,7 +164,9 @@ Main:
    ld A,%00010100       ;set the timer and joypad interrupts
    ld [rIE],A
 
-   call Title_Screen
+   call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
+   
+   call Main_Menu       ;fade in the main menu. only "start game" will function for now.
 
 .loop
    halt

@@ -2,8 +2,9 @@
 
 EXPORT  Splash_Screen_Map
 EXPORT  Title_Screen_Map
+EXPORT  Main_Menu_Map
 
-   SECTION "Splash_Screen_Map",ROMX,BANK[1]
+   SECTION "Opening Maps",ROMX,BANK[1]
 Splash_Screen_Map:
 
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
@@ -81,3 +82,5 @@ DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
 DB $5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F,$5F
+
+Main_Menu_Map:

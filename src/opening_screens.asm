@@ -4,6 +4,7 @@
 INCLUDE "globals.asm"
 EXPORT  Title_Screen
 EXPORT  Splash_Screen
+EXPORT  Main_Menu
 
 
    SECTION "Splash_Screen",ROMX,BANK[1]
@@ -108,3 +109,56 @@ Title_Screen:
    call Fade_Out_Black
    ret
 
+   SECTION "Main Menu",ROMX,BANK[1]
+Main_Menu:
+   di
+   call LCD_Off
+   
+   ld HL,Main_Menu_Map
+   call Screen_Load_0_20x18
+   
+   ld A,%10010001                ;turn the LCD back on
+   ld [rLCDC],A
+   
+                                 ;need to load a sprite here as a pointer. can't do that till the map is done.
+   
+   ei
+   call Fade_In_Black
+
+.input_loop
+   ld A,[JOYPAD]
+   
+   bit J_DOWN,A
+   jp nz,.down_pressed
+
+   bit J_UP,A
+   jp nz,.up_pressed
+   
+   bit J_A,A
+   jp nz,.menu_item_select
+   bit J_START,A
+   jp nz,.menu_item_select
+   bit J_SELECT,A
+   jp nz,.menu_item_select
+   
+   jr .input_wait_loop
+   
+.down_pressed
+   ;move the sprite
+   jp .delay
+.up_pressed
+   ;move the sprite
+   jp .delay
+
+.delay
+   xor A
+   ld [TIMERT],A
+.delay_loop
+   ld A,[TIMERT]
+   cp 2
+   jr nz,.delay_loop
+   jp .input_loop
+
+.menu_item_select
+   ;check which menu item.
+   
