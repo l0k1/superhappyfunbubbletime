@@ -22,6 +22,15 @@ OAMRAMPH EQU $C00B
 WRAMPL   EQU $C00C
 WRAMPH   EQU $C00D
 
+;OAM Mirror. Put sprite updates here.
+OAM_MIRROR EQU $CF00
+;same as OAM_MIRROR, but for use in the DMA routine.
+OAM_MIRROR_DMA EQU $CF
+;Spite Update 
+;if bit 0 = 1, perform DMA update.
+SPRITE_PROPS EQU $CF60
+
+
 ;* Hardware definitions
 ;Joypad stuff
 J_DOWN   EQU %10000000

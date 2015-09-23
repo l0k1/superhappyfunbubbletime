@@ -10,6 +10,33 @@ EXPORT   Fade_In_Black
 EXPORT   Fade_In_White
 EXPORT   Fade_Out_Black
 EXPORT   Fade_Out_White
+EXPORT   DMA
+
+   SECTION "DMA",HOME
+   ;DMA: copies a dma routine to HRAM [$FF80], and then calls that routine.
+   ;Interrupts are not enabled/disabled here.
+   ;This routine destroys all registers.
+   ;OAM_MIRROR_DMA is defined in globals.asm.
+DMA:
+   ld HL,_HRAM
+   ld BC,.dma_routine      ;we want the address that .dma_routine is at
+   ld D,$0A                ;number of bytes in the .dma_routine
+.load_dma_loop
+   ld A,[BC]               ;copy .dma_loop to HRAM
+   ld [HL],A
+   inc BC
+   dec D
+   jr nz,.load_dma_loop
+   call _HRAM              ;call the DMA routine.
+   ret
+   
+.dma_routine               ;this is the routine which will be copied to $FF80+
+   ld A,OAM_MIRROR_DMA     ;2 bytes - this routine shouldn't be called directly.
+   ldh [$46],A             ;2 bytes - need to be explicit with the "ldh". this is [rDMA]
+   ld A,$28                ;2 bytes - waiting loop, 160 *micro*seconds
+   dec A                   ;1 byte  -
+   jr nz,$FF               ;2 bytes - if not zero, go up 1 and dec A again.
+   ret                     ;1 byte
 
    SECTION "Wait VBlank",HOME
 Wait_VBlank:
