@@ -34,9 +34,8 @@ DMA:
    ld A,OAM_MIRROR_DMA     ;2 bytes - this routine shouldn't be called directly.
    ldh [$46],A             ;2 bytes - need to be explicit with the "ldh". this is [rDMA]
    ld A,$28                ;2 bytes - waiting loop, 160 *micro*seconds
-.loop
    dec A                   ;1 byte  -
-   jr nz,.loop             ;2 bytes - if not zero, go up 1 and dec A again.
+   DB $20,$FD              ;2 bytes - opcode for jr nz,(go back to dec A) 
    ret                     ;1 byte
 
    SECTION "Wait VBlank",HOME
