@@ -184,6 +184,8 @@ Fade_Loop:
    jr nz,.in_loop
    pop AF                     ;load our background data
    ld [rBGP],A
+   ld [rOBP0],A
+   ld [rOBP1],A
    dec D
    jp nz,.out_loop            ;if our count isn't zero, return
    push HL                    ;put the return address back on the stack
