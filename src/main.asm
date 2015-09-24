@@ -40,6 +40,7 @@ RST_38:
 
    SECTION  "V-Blank IRQ Vector",HOME[$40]
 VBL_VECT:
+   call V_Blank_Int
    reti
    
    SECTION  "LCD IRQ Vector",HOME[$48]
@@ -57,7 +58,7 @@ SERIAL_VECT:
 
    SECTION  "Joypad IRQ Vector",HOME[$60]
 JOYPAD_VECT:
-   call Controller
+   call Controller                        ;in seperate file named "controller.asm"
    reti
    
    SECTION  "Start",HOME[$100]
@@ -166,12 +167,35 @@ Main:
 
    call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
    
-   call Main_Menu       ;fade in the main menu. only "start game" will function for now.
+   call Main_Menu       ;fade in the main menu. only "start game" will function for now. fades out.
+   
+   call Main_Game_Loop  ;the main loop of the game.
+   
+   SECTION "Main Game Loop",HOME
+Main_Game_Loop:
 
-.loop
-   halt
    nop
-   jr .loop
+   
+   jp Main_Game_Loop
+   
+   
+   SECTOIN "V Blank Interrupt",HOME
+V_Blank_Int:
+   push AF
+   push BC
+   push DE
+   push HL
+   
+   ld A,[SPRITE_PROPS]
+   bit 0,A
+   call nz,DMA
+   
+   pop HL
+   pop DE
+   pop BC
+   pop AF
+   
+   ret
    
    SECTION "Timer Update",HOME
    ;keeping 4 timers running for usage.
