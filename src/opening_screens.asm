@@ -197,15 +197,15 @@ Main_Menu:
    ;check which menu item.
    ld HL,OAM_MIRROR
    ld A,[HL]
-   cp $20
+   cp $20                     ;using the sprites Y location to determine which menu item was pressed.
    jp z,.start_game
    cp $40
    jp z,.load_game
-.option
+.option                       ;option menu is not yet implemented.
    jp .input_wait_loop
-.load_game
+.load_game                    ;game saving/loading is not yet implemented.
    jp .input_wait_loop
-.start_game
+.start_game                   ;this'll get us in to the main game loop.
    call Fade_Out_Black
    ret
 
