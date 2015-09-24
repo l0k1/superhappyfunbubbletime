@@ -160,12 +160,54 @@ Main_Menu:
    
    jr .input_wait_loop
    
-.down_pressed
-   ;move the sprite
+      
+.down_pressed                 ;down on joypad is pressed
+   ld HL,OAM_MIRROR
+   ld A,[HL]
+   cp $40                     ;if we are at the bottom of the menu, we need to go back up to the top.
+   jp nz,.mv_down
+   ld A,$20                   ;else, go down to the next menu item.
+   ld [HL],A
+   call .update_sprite
    jp .delay
+.mv_down
+   sub $10
+   ld [HL],A
+   call .update_sprite
+   jp .delay
+
+
 .up_pressed
-   ;move the sprite
+   ld HL,OAM_MIRROR
+   ld A,[HL]
+   cp $20
+   jp nz,.mv_up
+   ld A,$40
+   ld [HL],A
+   call .update_sprite
    jp .delay
+.mv_up
+   add $10
+   ld [HL],A
+   call .update_sprite
+   jp .delay
+
+
+.menu_item_select
+   ;check which menu item.
+   ld HL,OAM_MIRROR
+   ld A,[HL]
+   cp $20
+   jp z,.start_game
+   cp $40
+   jp z,.load_game
+.option
+   jp .input_wait_loop
+.load_game
+   jp .input_wait_loop
+.start_game
+   call Fade_Out_Black
+   ret
 
 .delay
    xor A
@@ -175,11 +217,9 @@ Main_Menu:
    cp 2
    jr nz,.delay_loop
    jp .input_wait_loop
-
-.menu_item_select
-   ;check which menu item.
    
 .update_sprite                ;not doing a DMA, because it's only 1 sprite.
+   call Wait_VBlank           ;shouldn't have to turn LCD off, as the update is quick.
    ld HL,OAM_MIRROR
    ld BC,_OAMRAM
    ld d,4
