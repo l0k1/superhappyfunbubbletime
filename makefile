@@ -5,7 +5,14 @@ FIX = rgbfix
 FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
 
-SOURCES=./src/controller.asm ./src/globals.asm ./src/lcd_interface.asm ./src/main.asm ./src/opening_screens.asm ./src/fonts/fonts.asm ./src/maps/opening_maps.asm
+SOURCES=./src/controller.asm\
+		./src/globals.asm\
+		./src/lcd_interface.asm\
+		./src/main.asm\
+		./src/opening_screens.asm\
+		./src/fonts/fonts.asm\
+		./src/maps/opening_maps.asm\
+		./src/tiles/pointer.asm
 OBJECTS=$(SOURCES:.asm=.o)
 
 

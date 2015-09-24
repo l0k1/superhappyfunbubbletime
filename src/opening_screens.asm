@@ -114,13 +114,30 @@ Main_Menu:
    di
    call LCD_Off
    
-   ld HL,Main_Menu_Map
+   ld HL,Main_Menu_Map           ;load the main menu onto our screen.
    call Screen_Load_0_20x18
+   
+   ld HL,Menu_Pointer            ;load the menu pointer into vram.
+   ld D,16
+   ld BC,_VRAM+($60*$10)
+.load_pointer
+   ld A,[HL+]
+   ld [BC],A
+   inc BC
+   dec D
+   jp nz,.load_pointer
+   
+   ld HL,OAM_MIRROR
+   ld A,$20
+   ld [HL+],A                    ;Y Position
+   ld [HL+],A                    ;X Position
+   ld [HL],$60                   ;tile number
+   inc HL
+   ld [HL],%10000000             ;sprite properties
+   call .update_sprite           ;load up the sprite.
    
    ld A,%10010001                ;turn the LCD back on
    ld [rLCDC],A
-   
-                                 ;need to load a sprite here as a pointer. can't do that till the map is done.
    
    ei
    call Fade_In_Black
@@ -162,3 +179,14 @@ Main_Menu:
 .menu_item_select
    ;check which menu item.
    
+.update_sprite                ;not doing a DMA, because it's only 1 sprite.
+   ld HL,OAM_MIRROR
+   ld BC,_OAMRAM
+   ld d,4
+.update_loop
+   ld A,[HL+]
+   ld [BC],A
+   inc BC
+   dec d
+   jp nz,.update_loop
+   ret
