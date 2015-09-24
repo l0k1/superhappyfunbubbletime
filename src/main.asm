@@ -149,9 +149,9 @@ Main:
    jp nz,.ram_init
    
    ld A,$01             ;make sure rom bank 1 is selected.
-   ld [rROM0],A
+   ld [rROMB0],A
    xor A
-   ld [rROM1],A
+   ld [rROMB1],A
    
    ei
 

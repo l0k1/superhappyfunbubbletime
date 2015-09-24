@@ -33,14 +33,14 @@ SPRITE_PROPS EQU $CF60
 
 ;* Hardware definitions
 ;Joypad stuff
-J_DOWN   EQU %10000000
-J_UP     EQU %01000000
-J_LEFT   EQU %00100000
-J_RIGHT  EQU %00010000
-J_START  EQU %00001000
-J_SELECT EQU %00000100
-J_B      EQU %00000010
-J_A      EQU %00000001
+J_DOWN   EQU 7
+J_UP     EQU 6
+J_LEFT   EQU 5
+J_RIGHT  EQU 4
+J_START  EQU 3
+J_SELECT EQU 2
+J_B      EQU 1
+J_A      EQU 0
 
 ;* Slimmed down, from Jeff Frohwein's include files.
 ;Global constants

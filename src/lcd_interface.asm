@@ -35,7 +35,7 @@ DMA:
    ldh [$46],A             ;2 bytes - need to be explicit with the "ldh". this is [rDMA]
    ld A,$28                ;2 bytes - waiting loop, 160 *micro*seconds
    dec A                   ;1 byte  -
-   jr nz,$FF               ;2 bytes - if not zero, go up 1 and dec A again.
+   DB $20,$FD              ;2 bytes - opcode for jr nz,(go back to dec A) 
    ret                     ;1 byte
 
    SECTION "Wait VBlank",HOME

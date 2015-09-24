@@ -125,7 +125,7 @@ Main_Menu:
    ei
    call Fade_In_Black
 
-.input_loop
+.input_wait_loop
    ld A,[JOYPAD]
    
    bit J_DOWN,A
@@ -157,7 +157,7 @@ Main_Menu:
    ld A,[TIMERT]
    cp 2
    jr nz,.delay_loop
-   jp .input_loop
+   jp .input_wait_loop
 
 .menu_item_select
    ;check which menu item.
