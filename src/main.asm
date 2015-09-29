@@ -179,7 +179,7 @@ Main_Game_Loop:
    jp Main_Game_Loop
    
    
-   SECTOIN "V Blank Interrupt",HOME
+   SECTION "V Blank Interrupt",HOME
 V_Blank_Int:
    push AF
    push BC
