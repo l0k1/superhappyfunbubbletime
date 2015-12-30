@@ -63,14 +63,27 @@ Title_Screen:
 
    xor A
    ld [TIMERT],A
+
+   di                         ;we need to change interrupts
+   ld A,0
+   ld [rIF],A
+   ld A,%00010100             ;only care about joystick/timer for now
+   ld [rIE],A
+   ei
+   
 .press_start_loop
-   ld A,[JOYPAD]              ;first check if a not-directional button has been pressed.
-   and $0F                    ;only care about first 4 bits.
+   halt                       ;save cpu - first time using halt.
+   nop                        ;not checking flags for which interrupt used
+   
+   ld A,[JOYPAD]              ;cheaper to just do it this way
+   and $0F                    ;first check joypad.
    cp 0
    jp nz,.end
-   ld A,[TIMERT]
+   
+   ld A,[TIMERT]              ;then check timer.
    cp $10
    jr nz,.press_start_loop
+
 
    call LCD_Off               ;time to load the "press start" text
    ld HL,_SCRN0+(32*11)+4    ;this is where i want the lettering to start
@@ -101,8 +114,11 @@ Title_Screen:
 
 
 .wait
-   ld A,[JOYPAD]
-   and $0F
+   halt                       ;wait for an interrupt to occur
+   nop
+
+   ld A,[JOYPAD]              ;check if a,b,st,sl has been pressed
+   and $0F                    ;if so, move on.
    cp 0
    jr z,.wait
 .end
@@ -147,7 +163,7 @@ Main_Menu:
    
    bit J_DOWN,A
    jp nz,.down_pressed
-
+   
    bit J_UP,A
    jp nz,.up_pressed
    
