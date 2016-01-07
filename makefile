@@ -12,7 +12,8 @@ SOURCES=./src/controller.asm\
 		./src/opening_screens.asm\
 		./src/fonts/fonts.asm\
 		./src/maps/opening_maps.asm\
-		./src/tiles/pointer.asm
+		./src/tiles/pointer.asm\
+		./src/sprites/main_character.asm
 OBJECTS=$(SOURCES:.asm=.o)
 
 
