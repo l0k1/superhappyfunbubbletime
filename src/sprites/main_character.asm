@@ -5,6 +5,11 @@
 ;   The second to last byte is $24. Alternate this between $20 and $04.
 ;   Will be done dynamically at runtime.
 
+EXPORT Main_Char_Face_Down_Spr
+EXPORT Main_Char_Face_Left_Spr
+EXPORT Main_Char_Face_Right_Spr
+EXPORT Main_Char_Face_Up_Spr
+
  SECTION "Main Character Sprites", HOME
 
 Main_Char_Face_Down_Spr:
