@@ -1,7 +1,7 @@
 ;The perilous FIELD OF TESTING!
 ;32x32 area, currently no collision or anything. Just a tile map.
 
-export field_of_testing
+EXPORT field_of_testing
 
  SECTION "Field of Testing", HOME
 
