@@ -3,6 +3,25 @@
 ;these have been done at work with paint/excel. 
 ;i need to put these into .gbr format, and upload for later use.
 
+EXPORT grass1
+EXPORT grass2
+EXPORT flower1
+EXPORT flower2
+EXPORT boulder1
+EXPORT tree1_upperleft
+EXPORT tree1_lowerleft
+EXPORT tree1_upperright
+EXPORT tree1_upperleft
+EXPORT rockwall_left
+EXPORT rockwall_bottomleft
+EXPORT rockwall_bottom
+EXPORT rockwall_bottomright
+EXPORT rockwall_right
+EXPORT rockwall_topright
+EXPORT rockwall_top
+EXPORT rockwall_topleft
+
+
  SECTION "Normal Tileset - Grass Tiles", HOME
 
 ;grass1, standard grass tile
