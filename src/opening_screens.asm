@@ -67,7 +67,7 @@ Title_Screen:
    di                         ;we need to change interrupts
    ld A,0
    ld [rIF],A
-   ld A,%00010100             ;only care about joystick/timer for now
+   ld A,%00000100             ;only care about joystick/timer for now
    ld [rIE],A
    ei
    
@@ -75,6 +75,7 @@ Title_Screen:
    halt                       ;save cpu - first time using halt.
    nop                        ;not checking flags for which interrupt used
    
+   call Controller
    ld A,[JOYPAD]              ;cheaper to just do it this way
    and $0F                    ;first check joypad.
    cp 0
@@ -117,6 +118,7 @@ Title_Screen:
    halt                       ;wait for an interrupt to occur
    nop
 
+   call Controller
    ld A,[JOYPAD]              ;check if a,b,st,sl has been pressed
    and $0F                    ;if so, move on.
    cp 0
