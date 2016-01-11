@@ -152,12 +152,13 @@ Main_Menu:
    ld [HL],$60                   ;tile number
    inc HL
    ld [HL],%10000000             ;sprite properties
-   call .update_sprite           ;load up the sprite.
    
    ld A,%10010001                ;turn the LCD back on
    ld [rLCDC],A
    
    ei
+
+   call .update_sprite
    call Fade_In_Black
 
 .input_wait_loop
