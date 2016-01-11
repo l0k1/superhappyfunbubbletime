@@ -124,6 +124,8 @@ Title_Screen:
    cp 0
    jr z,.wait
 .end
+   xor A
+   ld [JOYPAD],A              ;reset the controller for the next screen.
    call Fade_Out_Black
    ret
 
