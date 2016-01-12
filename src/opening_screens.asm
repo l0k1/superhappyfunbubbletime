@@ -164,6 +164,11 @@ Main_Menu:
    call Fade_In_Black
 
 .input_wait_loop
+   halt
+   nop
+   
+   call Controller
+   
    ld A,[JOYPAD]
    
    bit J_DOWN,A
