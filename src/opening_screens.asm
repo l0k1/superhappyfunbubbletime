@@ -148,8 +148,9 @@ Main_Menu:
    jp nz,.load_pointer
    
    ld HL,OAM_MIRROR
-   ld A,$20
+   ld A,$30
    ld [HL+],A                    ;Y Position
+   ld A,$28
    ld [HL+],A                    ;X Position
    ld [HL],$60                   ;tile number
    inc HL
