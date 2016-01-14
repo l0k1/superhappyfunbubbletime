@@ -153,7 +153,7 @@ Main_Menu:
    ld [HL+],A                    ;X Position
    ld [HL],$60                   ;tile number
    inc HL
-   ld [HL],%10000000             ;sprite properties
+   ld [HL],%00000000             ;sprite properties
    
    ld A,%10010001                ;turn the LCD back on
    ld [rLCDC],A
