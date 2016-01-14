@@ -155,7 +155,7 @@ Main_Menu:
    inc HL
    ld [HL],%00000000             ;sprite properties
    
-   ld A,%10010001                ;turn the LCD back on
+   ld A,%10010011                ;turn the LCD back on
    ld [rLCDC],A
    
    ei
