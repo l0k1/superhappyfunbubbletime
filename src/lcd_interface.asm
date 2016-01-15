@@ -16,6 +16,7 @@ EXPORT   DMA
    ;DMA: copies a dma routine to HRAM [$FF80], and then calls that routine.
    ;Interrupts are not enabled/disabled here.
    ;This routine destroys all registers.
+   ;This routine overwrites $FF80 to $FF8A of HRAM.
    ;OAM_MIRROR_DMA is defined in globals.asm.
 DMA:
    ld HL,_HRAM
