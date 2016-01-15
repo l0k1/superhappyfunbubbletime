@@ -189,5 +189,11 @@ Fade_Loop:
    ld [rOBP1],A
    dec D
    jp nz,.out_loop            ;if our count isn't zero, return
+   xor A
+   ld [TIMERT],A
+.final_loop                   ;after the last pallete is set, we need to
+   ld A,[TIMERT]              ;stall a little bit so the screen turns
+   cp $03                     ;full on black-or-white.
+   jr nz,.final_loop
    push HL                    ;put the return address back on the stack
    ret
