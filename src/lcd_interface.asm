@@ -50,7 +50,7 @@ Wait_VBlank:
    ld A,[HL]
    cp $99            ;if LY is on it's last legs, we'll want to wait
                      ;until the next pass through, to prevent turning
-                     ;off the LCD during vblank.
+                     ;off the LCD during not-vblank.
    jr z,.loop
    ret               ;otherwise, we's good.
 
