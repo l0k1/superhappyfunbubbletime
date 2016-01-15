@@ -149,7 +149,9 @@ Main:
    or D
    jp nz,.ram_init
    
-   ld A,$01             ;make sure rom bank 1 is selected.
+   call DMA          ;clear out the OAM_RAM to all zeros.
+
+   ld A,$01          ;make sure rom bank 1 is selected.
    ld [rROMB0],A
    xor A
    ld [rROMB1],A
