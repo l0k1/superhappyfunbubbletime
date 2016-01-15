@@ -180,6 +180,8 @@ Fade_Loop:
    xor A                      ;zero out timer 1
    ld [TIMERT],A
 .in_loop
+   halt                       ;less cpu usage is a good thing.
+   nop
    ld A,[TIMERT]              ;wait 3 ticks, then load background data
    cp $03
    jr nz,.in_loop
@@ -189,11 +191,14 @@ Fade_Loop:
    ld [rOBP1],A
    dec D
    jp nz,.out_loop            ;if our count isn't zero, return
+   
    xor A
    ld [TIMERT],A
 .final_loop                   ;after the last pallete is set, we need to
-   ld A,[TIMERT]              ;stall a little bit so the screen turns
-   cp $03                     ;full on black-or-white.
+   halt                       ;stall a little bit so the screen turns
+   nop                        ;full on black-or-white.
+   ld A,[TIMERT]
+   cp $03                     ;wait 3 more ticks before returning
    jr nz,.final_loop
    push HL                    ;put the return address back on the stack
    ret
