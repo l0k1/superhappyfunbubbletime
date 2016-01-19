@@ -11,7 +11,7 @@ If there haven't been any updates in a month or two, it's because I've been busy
 ###Building
 I use RGBDS. I don't plan on porting it to WLA.
 
-Dependencies are RGBDS and make.
+Dependencies are [RGBDS](https://github.com/bentley/rgbds) and make.
 
 To make:
 
