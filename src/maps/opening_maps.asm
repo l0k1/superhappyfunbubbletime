@@ -1,4 +1,6 @@
 ; Maps for the opening screens
+; These are 20x18 maps, loaded via the function
+; Screen_Load_0_20x18, found in lcd_interface.asm
 
 EXPORT  Splash_Screen_Map
 EXPORT  Title_Screen_Map

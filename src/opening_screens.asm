@@ -150,7 +150,7 @@ Main_Menu:
    ld HL,OAM_MIRROR
    ld A,$38
    ld [HL+],A                    ;Y Position
-   ld A,$20
+   ld A,$28
    ld [HL+],A                    ;X Position
    ld [HL],$60                   ;tile number
    inc HL
@@ -164,13 +164,13 @@ Main_Menu:
    call .update_sprite
    call Fade_In_Black
 
-.input_wait_loop
+.input_wait_loop                 ;wait for input with a controller interrupt
    halt
    nop
    
-   call Controller
+   call Controller               ;get our button press details
    
-   ld A,[JOYPAD]
+   ld A,[JOYPAD]                 ;load joypad data into A, then begin jumping around
    
    bit J_DOWN,A
    jp nz,.down_pressed
@@ -189,11 +189,11 @@ Main_Menu:
    
       
 .down_pressed                 ;down on joypad is pressed
-   ld HL,OAM_MIRROR
-   ld A,[HL]
-   cp $38                     ;if we are at the bottom of the menu, we need to go back up to the top.
-   jp nz,.mv_down
-   ld A,$20                   ;else, go down to the next menu item.
+   ld HL,OAM_MIRROR           ;OAM_MIRROR is location in ram that we mirror to OAM 
+   ld A,[HL]                  ;since sprite is the only thing in OAM right now, we can just check the first byte for ypos.
+   cp $58                     ;if we are at the bottom of the menu, we need to go back up to the top.
+   jp nz,.mv_down             ;else, go down to the next menu item.
+   ld A,$38
    ld [HL],A
    call .update_sprite
    jp .delay
@@ -204,12 +204,12 @@ Main_Menu:
    jp .delay
 
 
-.up_pressed
+.up_pressed                   ;largely same as "down", except if at top jump to bottom
    ld HL,OAM_MIRROR
    ld A,[HL]
-   cp $20
+   cp $38
    jp nz,.mv_up
-   ld A,$40
+   ld A,$58
    ld [HL],A
    call .update_sprite
    jp .delay
@@ -224,17 +224,20 @@ Main_Menu:
    ;check which menu item.
    ld HL,OAM_MIRROR
    ld A,[HL]
-   cp $20                     ;using the sprites Y location to determine which menu item was pressed.
-   jp z,.start_game
-   cp $40
-   jp z,.load_game
+   cp $38                     ;using the sprites Y location to determine which menu item was pressed.
+   jr z,.start_game
+   cp $48
+   jr z,.load_game
+   cp $58
+   jr z,.option
 .option                       ;option menu is not yet implemented.
    jp .input_wait_loop
 .load_game                    ;game saving/loading is not yet implemented.
    jp .input_wait_loop
 .start_game                   ;this'll get us in to the main game loop.
    call Fade_Out_Black
-   ret
+   ret                        ;.menu_item_select was jumped to, not called,
+                              ;so doing a ret will put us back into the main loop in main.asm.
 
 .delay
    xor A
