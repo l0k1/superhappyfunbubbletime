@@ -148,9 +148,9 @@ Main_Menu:
    jp nz,.load_pointer
    
    ld HL,OAM_MIRROR
-   ld A,$30
+   ld A,$38
    ld [HL+],A                    ;Y Position
-   ld A,$28
+   ld A,$20
    ld [HL+],A                    ;X Position
    ld [HL],$60                   ;tile number
    inc HL
@@ -191,14 +191,14 @@ Main_Menu:
 .down_pressed                 ;down on joypad is pressed
    ld HL,OAM_MIRROR
    ld A,[HL]
-   cp $40                     ;if we are at the bottom of the menu, we need to go back up to the top.
+   cp $38                     ;if we are at the bottom of the menu, we need to go back up to the top.
    jp nz,.mv_down
    ld A,$20                   ;else, go down to the next menu item.
    ld [HL],A
    call .update_sprite
    jp .delay
 .mv_down
-   sub $10
+   add $10
    ld [HL],A
    call .update_sprite
    jp .delay
@@ -214,7 +214,7 @@ Main_Menu:
    call .update_sprite
    jp .delay
 .mv_up
-   add $10
+   sub $10
    ld [HL],A
    call .update_sprite
    jp .delay
