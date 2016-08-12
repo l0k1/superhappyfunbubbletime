@@ -1,10 +1,8 @@
-;* SUPER HAPPY FUN BUBBLE TIME
-;*
-;* Includes
-;constants:
+;***************************************** SUPER HAPPY FUN BUBBLE TIME
+
 INCLUDE  "globals.asm"
 
-;* cartridge header
+;***************************************** cartridge header
 
    SECTION  "Org $00",HOME[$00]
 RST_00:  
@@ -118,9 +116,9 @@ JOYPAD_VECT:
    DW $00
 
 
-;* Program Start
+;***************************************** INITIALIZATION
 
-   SECTION "Program Start",HOME[$0150]
+   SECTION "Initialization",HOME[$0150]
 Main:
 
    di
@@ -158,6 +156,8 @@ Main:
    
    ei
 
+;***************************************** OPENING SCREENS
+
    call Fade_Out_Black  ;fade out the nintendo logo
    
    call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
@@ -173,88 +173,13 @@ Main:
    
    call Main_Game_Loop  ;the main loop of the game.
    
+;***************************************** MAIN GAME LOOP
    SECTION "Main Game Loop",HOME
 Main_Game_Loop:
+
+.main_init              ;in the future, this'll be where the saves are loaded, etc.
+                        ;right now, we're just loading up the testing arena, getting everything set up, etc.
 
    nop
    
    jp Main_Game_Loop
-   
-   
-   SECTION "V Blank Interrupt",HOME
-V_Blank_Int:
-   push AF
-   push BC
-   push DE
-   push HL
-   
-   ld A,[SPRITE_PROPS]
-   bit 0,A
-   call nz,DMA
-   
-   pop HL
-   pop DE
-   pop BC
-   pop AF
-   
-   ret
-   
-   SECTION "Timer Update",HOME
-   ;keeping 4 timers running for usage.
-   ;the numbers - seconds indicates how long 1 "tick" takes.
-Timer_Update:
-
-   push AF               ;push our registers
-   push BC
-   push DE
-   push HL
-
-   ;TIMERT is a temp timer, that can be freely reset.
-   ;Same tick rate as TIMER1.
-   ld A,[TIMERT]
-   inc A
-   ld [TIMERT],A
-
-   ;00 - .0625 seconds
-   ;01 - .0009765625 seconds
-   ;10 - .00390625 seconds
-   ;11 - .015625 seconds
-   ld A,[TIMER1]
-   inc A
-   ld [TIMER1],A
-   jp nz,.end
-   
-   ;00 - 16 seconds
-   ;01 - .25 seconds
-   ;10 - 1 second
-   ;11 - 4 seconds
-   ld A,[TIMER2]
-   inc A
-   ld [TIMER2],A
-   jp nz,.end
-   
-   ;00 - 4096 seconds
-   ;01 - 64 seconds
-   ;10 - 256 seconds
-   ;11 - 1024 seconds
-   ld A,[TIMER3]
-   inc A
-   ld [TIMER3],A
-   jp nz,.end
-   
-   ;00 - 1048576 seconds
-   ;01 - 16384 seconds
-   ;10 - 65536 seconds
-   ;11 - 262144 seconds
-   ld A,[TIMER4]
-   inc A
-   ld [TIMER4],A
-   jp nz,.end
-   
-.end
-   pop HL              ;restore dem registers.
-   pop DE
-   pop BC
-   pop AF
-
-   ret

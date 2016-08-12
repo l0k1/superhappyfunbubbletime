@@ -9,7 +9,7 @@ FIX = rgbfix
 FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
 
-SOURCES=./src/controller.asm\
+SOURCES=./src/interrupts.asm\
 		./src/globals.asm\
 		./src/lcd_interface.asm\
 		./src/main.asm\
