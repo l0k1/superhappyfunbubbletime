@@ -13,6 +13,8 @@
 
 INCLUDE "globals.asm"
 EXPORT  Controller
+EXPORT V_Blank_Int
+EXPORT Timer_Update
 
    SECTION "Controller Status",HOME
 Controller:
