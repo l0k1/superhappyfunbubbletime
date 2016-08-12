@@ -12,7 +12,7 @@
 ;   Bit 0 - A-button
 
 INCLUDE "globals.asm"
-EXPORT  Controller
+EXPORT Controller
 EXPORT V_Blank_Int
 EXPORT Timer_Update
 
