@@ -3,6 +3,7 @@
 INCLUDE "globals.asm"
 
 EXPORT   Wait_VBlank
+EXPORT   Wait_VBlank_Beginning
 EXPORT   LCD_Off
 EXPORT   Load_Tiles_Into_VRAM
 EXPORT   Screen_Load_0_20x18
