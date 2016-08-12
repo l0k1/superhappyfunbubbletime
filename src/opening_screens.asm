@@ -11,7 +11,6 @@ EXPORT  Main_Menu
 Splash_Screen:
    ;Not using a full-screen map for this.
    di
-   call LCD_Off      ; We are writing to VRAM
    xor A             ; Set the bg screen coords to 0,0
    ld [rSCX],A
    ld [rSCY],A
@@ -22,10 +21,6 @@ Splash_Screen:
 ;load in our variables, and call the load background subroutine.
    ld HL,Splash_Screen_Map
    call Screen_Load_0_20x18
-
-;now we just need to turn the lcd back on again.
-   ld A,%10010001    ;LCDC settings
-   ld [rLCDC],A      ;load the settings.
 
 ;now exit the Splash_Screen function.
    ei
@@ -51,13 +46,10 @@ Splash_Screen:
    
 Title_Screen:
    di
-   call LCD_Off
    
    ld HL,Title_Screen_Map
    call Screen_Load_0_20x18   ;load up our map
-   
-   ld A,%10010001             ;turn the LCD back on
-   ld [rLCDC],A
+
    ei
    call Fade_In_Black         ;and now fade back in.
 
@@ -86,8 +78,8 @@ Title_Screen:
    jr nz,.press_start_loop
 
 
-   call LCD_Off               ;time to load the "press start" text
-   ld HL,_SCRN0+(32*11)+4    ;this is where i want the lettering to start
+   call Wait_VBlank_Beginning
+   ld HL,_SCRN0+(32*11)+4     ;this is where i want the lettering to start
    ld A,$50                   ;gonna unroll this one, $50 is "p"
    ld [HL+],A
    ld A,$52                   ;"r"
@@ -110,9 +102,6 @@ Title_Screen:
    ld A,$54
    ld [HL+],A
 
-   ld A,%10010001             ;time to turn the LCD back on
-   ld [rLCDC],A
-
 
 .wait
    halt                       ;wait for an interrupt to occur
@@ -132,14 +121,14 @@ Title_Screen:
    SECTION "Main Menu",ROMX,BANK[1]
 Main_Menu:
    di
-   call LCD_Off
    
    ld HL,Main_Menu_Map           ;load the main menu onto our screen.
    call Screen_Load_0_20x18
    
-   ld HL,Menu_Pointer            ;load the menu pointer into vram.
+   ld HL,Menu_Pointer            ;load the menu pointer sprite into vram.
    ld D,16
    ld BC,_VRAM+($60*$10)
+   call Wait_VBlank_Beginning
 .load_pointer
    ld A,[HL+]
    ld [BC],A
@@ -155,9 +144,6 @@ Main_Menu:
    ld [HL],$60                   ;tile number
    inc HL
    ld [HL],%00000000             ;sprite properties
-   
-   ld A,%10010011                ;turn the LCD back on
-   ld [rLCDC],A
    
    ei
 

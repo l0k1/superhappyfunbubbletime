@@ -40,7 +40,11 @@ DMA:
    ret                     ;1 byte
 
    SECTION "Wait VBlank",HOME
+   ;Wait for a VBlank. Exit if already in VBlank.
+   ;IMPORTANT: This doesn't wait for the beginning of a VBlank.
+   ;If waiting for the beginning is important, use the other wait function.
 Wait_VBlank:
+   push HL           ;we are using HL, so save the prior state
    ld HL,$FF41       ;load the address into HL
 .loop
    bit 0,[HL]        ;check bit 0 in the stat register
@@ -52,31 +56,51 @@ Wait_VBlank:
                      ;until the next pass through, to prevent turning
                      ;off the LCD during not-vblank.
    jr z,.loop
+   
+   pop HL            ;return HL back
    ret               ;otherwise, we's good.
+
+   SECTION "Wait VBlank Beginning",HOME
+   ;Wait for the beginning of a VBlank.
+Wait_VBlank_Beginning:
+   push HL           ;save HL's state
+   ld HL,rLY         ;load the LY register into HL for quicker accessing
+   
+.loop
+   ld A,[HL]         ;check if LY is == 90. if it is, return.
+   cp $90
+   jr nz,.loop
+   
+   pop HL
+   ret
+   
 
    SECTION "LCD Off",HOME  
 LCD_Off:
-   ld A,[$FF40]
+   ld A,[rLCDC]
    rlca
    ret nc            ;Screen already off, return.
 
    call Wait_VBlank  ;need to wait for vblank to turn off screen.
 
-   ld A,[$FF40]      ;load LCD controller data into A
+   ld A,[rLCDC]      ;load LCD controller data into A
    res 7,A           ;set bit 7 of A to 0 to stop LCD.
-   ld [$FF40],A      ;reload A back into LCD controller
+   ld [rLCDC],A      ;reload A back into LCD controller
    ret
 
    SECTION "20x18 Screen Load",HOME
    ;Used for loading a map into the BG map area at $9800 that is 20x18 tiles.
    ;HL must be at the start of the tile data.
    ;Assumes rSCX & rSCY are at 0,0.
+   ;LCD needs to remain on.
 Screen_Load_0_20x18:
    ld DE,18                   ;this many y-lines.
    ld BC,_SCRN0-(12)          ;background tile map 0. subtracting 12, as it'll be added in again soon.
+   call Wait_VBlank
 .y_line_loop
-   push DE           ;Storing the Y-Line coord for later.
-   ld DE,12          ;first, we need to increase _SCRN0 location by 12*16, and ignore all the tiles off screen
+   call Wait_VBlank           ;make sure we are still in vblank
+   push DE                    ;Storing the Y-Line coord for later.
+   ld DE,12                   ;first, we need to increase _SCRN0 location by 12*16, and ignore all the tiles off screen
 .inc_bgmap_location
    inc BC
    dec DE
@@ -84,9 +108,10 @@ Screen_Load_0_20x18:
    or D
    jp nz,.inc_bgmap_location
    
-   ld DE,20          ;x-length, 20 tiles at 16 bytes each
+   ld DE,20                   ;x-length, 20 tiles at 16 bytes each
 .x_line_loop
-   ld A,[HL+]        ;where the magic happens
+   call Wait_VBlank           ;make sure we are still in vblank
+   ld A,[HL+]                 ;where the magic happens
    ld [BC],A
    inc BC
    dec DE
@@ -94,7 +119,7 @@ Screen_Load_0_20x18:
    or D
    jp nz,.x_line_loop
 
-   pop DE            ;after we've got done loading an x-line, we need to check our y-line
+   pop DE                     ;after we've got done loading an x-line, we need to check our y-line
    dec DE
    ld A,E
    or D
@@ -107,9 +132,11 @@ Screen_Load_0_20x18:
    ;Currently overwrites all of VRAM.
    ;HL must point to tile 0
    ;DE is how many bytes to load into VRAM (# of tiles * $10)
+   ;LCD needs to remain on
 Load_Tiles_Into_VRAM:
    ld BC,_VRAM
 .loop
+   call Wait_VBlank
    ld A,[HL+]
    ld [BC],A
    inc BC
