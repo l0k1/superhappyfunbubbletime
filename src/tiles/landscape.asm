@@ -11,7 +11,7 @@ EXPORT boulder1
 EXPORT tree1_upperleft
 EXPORT tree1_lowerleft
 EXPORT tree1_upperright
-EXPORT tree1_upperleft
+EXPORT tree1_lowerright
 EXPORT rockwall_left
 EXPORT rockwall_bottomleft
 EXPORT rockwall_bottom
