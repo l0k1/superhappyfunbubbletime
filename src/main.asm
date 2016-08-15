@@ -158,18 +158,20 @@ Main:
 
 ;***************************************** OPENING SCREENS
 
+;***** disabling the opning screens for quicker testing
+
    call Fade_Out_Black  ;fade out the nintendo logo
    
-   call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
+   ;call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
 
-   xor A                ;set the IF register to 0
+   ;xor A                ;set the IF register to 0
    ld [rIF],A
    ld A,%00010100       ;set the timer and joypad interrupts
    ld [rIE],A
 
-   call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
+   ;call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
    
-   call Main_Menu       ;fade in the main menu. only "start game" will function for now. fades out.
+   ;call Main_Menu       ;fade in the main menu. only "start game" will function for now. fades out.
    
    call Main_Game_Loop  ;the main loop of the game.
    
