@@ -15,12 +15,11 @@ TIMER4   EQU $C005
 RANDOM1  EQU $C006
 RANDOM2  EQU $C007
 ;RAM pointers
-VRAMPL   EQU $C008
-VRAMPH   EQU $C009
-OAMRAMPL EQU $C00A
-OAMRAMPH EQU $C00B
-WRAMPL   EQU $C00C
-WRAMPH   EQU $C00D
+VRAMSP   EQU $C008      ;vram sprite pointer (tdt1)
+VRAMBP   EQU $C009      ;vram bg pointer     (tdt2)
+OAMRAMP  EQU $C00A      ;oam mirror ram pointer ($CF00)
+ERAMP    EQU $C00B      ;externak ram pointer
+IRAMP    EQU $C00C      ;internal ram pointer
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $CF00

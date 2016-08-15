@@ -153,6 +153,15 @@ Main:
    ld [rROMB0],A
    xor A
    ld [rROMB1],A
+
+   ld [VRAMSP],A     ;init ram pointers
+   ld [OAMRAMP],A    ;see globals.asm for specifics
+   ld [ERAMP],A
+   ld [IRAMP],A
+   
+   ld A,$FF
+   ld [VRAMPH],A
+   ld [OAMRAMPH],A
    
    ei
 
