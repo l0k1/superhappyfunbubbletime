@@ -102,6 +102,9 @@ Title_Screen:
    ld A,$54
    ld [HL+],A
 
+   ld A,[rLCDC]               ;turn on sprites for the pointer
+   set 1,A
+   ld [rLCDC],A
 
 .wait
    halt                       ;wait for an interrupt to occur
