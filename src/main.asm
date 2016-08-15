@@ -160,8 +160,7 @@ Main:
    ld [IRAMP],A
    
    ld A,$FF
-   ld [VRAMPH],A
-   ld [OAMRAMPH],A
+   ld [VRAMP],A
    
    ei
 
