@@ -146,20 +146,6 @@ Main:
    xor A
    ld [rROMB1],A
    
-   ld BC,$A000
-   ld HL,ERAMPH      ;put high byte into high pointer spot
-   ld D,$00          ;initalize the ERAM pointers
-.init_eram_pointer
-   ld A,D
-   ld [rRAMB],A      ;switch to the correct rom bank
-   ld [HL],B         ;put high byte into high pointer spot
-   inc HL
-   ld [HL],C         ;put low byte into low pointer spot
-   inc D
-   ld A,D
-   cp $10
-   jp nz,.init_eram_pointer
-   
    xor A
    ld [rRAMB],A      ;make sure ERAM bank 0 is selected.
    ld [VRAMSP],A     ;init ram pointers

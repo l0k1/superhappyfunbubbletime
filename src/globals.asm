@@ -65,6 +65,9 @@ rROMB0        EQU  $2000 ; $2000->$2fff
 rROMB1        EQU  $3000 ; $3000->$3fff
 rRAMB         EQU  $4000 ; $4000->$5fff
 
+SRAM_ENABLE   EQU  $A0
+SRAM_DISBALE  EQU  $00
+
 ;* Custom registers
 
 ; -- Register for reading joy pad info.    (R/W)
