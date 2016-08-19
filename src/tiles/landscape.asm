@@ -4,6 +4,7 @@
 ;i need to put these into .gbr format, and upload for later use.
 
 Export Normal_Landscape
+Export Normal_Landscape_Metadata
 
 
  SECTION "Normal Tileset - Grass Tiles", HOME
@@ -78,3 +79,59 @@ DB $00,$00,$26,$26,$D9,$D9,$00,$00
 ;rockwall_topleft
 DB $00,$00,$00,$00,$00,$00,$00,$00
 DB $00,$00,$00,$00,$03,$03,$02,$02
+
+;Normal Landscape Metadata/Collision Data
+
+Normal_Landscape_Metadata:
+;grass1, standard grass tile
+DB %00000000
+
+;grass2, same as grass1 but upside down
+DB %00000000
+
+;flower1, some subdued flowers
+DB %00000000
+
+;flower2, mirrored flower1
+DB %00000000
+
+;boulder1, just a big ol rock.
+DB %00000001
+
+;tree1, a smallish deciduous tree. prime example of programmer art.
+;upperleft
+DB %00000001
+
+;lowerleft
+DB %00000001
+
+;upperright
+DB %00000001
+
+;lowerright
+DB %00000001
+
+;rockwalls to do "mountains" or border areas
+;left
+DB %00000011
+
+;bottomleft
+DB %00000011
+
+;bottom
+DB %00000011
+
+;bottomright
+DB %00000011
+
+;right
+DB %00000011
+
+;topright
+DB %00000011
+
+;rockwall_top
+DB %00000011
+
+;rockwall_topleft
+DB %00000011
