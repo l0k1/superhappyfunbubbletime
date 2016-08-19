@@ -128,17 +128,9 @@ Main:
    ld [rBGP],A
    ld [rOBP0],A
    ld [rOBP1],A
-   
-   ;setup/start timers
-   xor A
-   ld [rIF],A        ;set all interrupt flags to 0.
-   ld [rTMA],A       ;set timer modulo to zero
-   ld A,%00000100    ;turn on timer, set it to 4.096 kHz
-   ld [rTAC],A
-   ld [rIE],A        ;set the timer interrupt flag.
 
-   ld HL,$C000       ;init the internal ram from $C000 to $CFFF
-   ld DE,$1000
+   ld HL,$C000       ;init the internal ram from $C000 to $DFFF
+   ld DE,$2000
 .ram_init
    xor A
    ld [HL+],A
@@ -149,18 +141,43 @@ Main:
    
    call DMA          ;clear out the OAM_RAM to all zeros.
 
-   ld A,$01          ;make sure rom bank 1 is selected.
+   ld A,$01          ;make sure rom bank 1 is selected in switchable ROM.
    ld [rROMB0],A
    xor A
    ld [rROMB1],A
-
+   
+   ld BC,$A000
+   ld HL,ERAMPH      ;put high byte into high pointer spot
+   ld D,$00          ;initalize the ERAM pointers
+.init_eram_pointer
+   ld A,D
+   ld [rRAMB],A      ;switch to the correct rom bank
+   ld [HL],B         ;put high byte into high pointer spot
+   inc HL
+   ld [HL],C         ;put low byte into low pointer spot
+   inc D
+   ld A,D
+   cp $10
+   jp nz,.init_eram_pointer
+   
+   xor A
+   ld [rRAMB],A      ;make sure ERAM bank 0 is selected.
    ld [VRAMSP],A     ;init ram pointers
    ld [OAMRAMP],A    ;see globals.asm for specifics
-   ld [ERAMP],A
-   ld [IRAMP],A
-   
+   ld A,$C0          ;initialize internal ram. this will need
+   ld [IRAMPH],A     ;to be updated as the globals.asm file grows
+   ld A,$0B
+   ld [IRAMPL],A
    ld A,$FF
-   ld [VRAMP],A
+   ld [VRAMBP],A
+   
+   ;setup/start timers
+   xor A
+   ld [rIF],A        ;set all interrupt flags to 0.
+   ld [rTMA],A       ;set timer modulo to zero
+   ld A,%00000100    ;turn on timer, set it to 4.096 kHz
+   ld [rTAC],A
+   ld [rIE],A        ;set the timer interrupt flag.
    
    ei
 

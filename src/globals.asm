@@ -18,16 +18,18 @@ RANDOM2  EQU $C007
 VRAMSP   EQU $C008      ;vram sprite pointer (tdt1)
 VRAMBP   EQU $C009      ;vram bg pointer     (tdt2)
 OAMRAMP  EQU $C00A      ;oam mirror ram pointer ($CF00)
-ERAMP    EQU $C00B      ;externak ram pointer
-IRAMP    EQU $C00C      ;internal ram pointer
+ERAMPH   EQU $BFFE      ;external ram pointer - high byte
+ERAMPL   EQU $BFFF      ;external ram pointer - low byte
+IRAMPH   EQU $DFFE      ;internal ram pointer - high byte
+IRAMPL   EQU $DFFF      ;internal ram pointer - low byte
 
 ;OAM Mirror. Put sprite updates here.
-OAM_MIRROR EQU $CF00
+OAM_MIRROR EQU $DF00
 ;same as OAM_MIRROR, but for use in the DMA routine.
-OAM_MIRROR_DMA EQU $CF
+OAM_MIRROR_DMA EQU $DF
 ;Spite Update 
 ;if bit 0 = 1, perform DMA update.
-SPRITE_PROPS EQU $CF60
+SPRITE_PROPS EQU $DF60
 
 
 ;* Hardware definitions
