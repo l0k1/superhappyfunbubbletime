@@ -1,0 +1,24 @@
+#+TODO: TODO PLANNING CODING DEBUGGING DONE
+
+The following is to be done (roughly) in order.
+
+* CODING Field of Testing
+** PLANNING Finalize map format
+** PLANNING Load map and player sprite
+** TODO Make FoT bigger (after camera control is implemented)q
+*** Include one of every tile type, including a warp to the House of Testing
+* TODO Basic Game Mechanics
+** TODO Player sprite movement
+** TODO Camera movement
+*** After this, make a bigger FoT (see under FoT)
+** TODO Collision
+** TODO Support all tile types
+*** Not necessarily in order, but...
+*** TODO Ground collision
+*** TODO Flying collision
+*** TODO Trap
+*** TODO Swimming/water
+*** TODO Warp
+*** TODO Climbable
+*** TODO Destructible
+*** TODO Interactable
