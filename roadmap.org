@@ -3,9 +3,18 @@
 The following is to be done (roughly) in order.
 
 * CODING Field of Testing
-** PLANNING Finalize map format
+** DONE Finalize map format
+*** Each tile has a 7 bits of metadata associated with it, as follows:
+**** Bit 0: Ground Collision
+**** Bit 1: Air Collision
+**** Bit 2: Climbable
+**** Bit 3: Swimable
+**** Bit 4: Interactable
+**** Bit 5: Warp (door, portal, etc.)
+**** Bit 6: Trap
+**** Bit 7: Destrictable
 ** PLANNING Load map and player sprite
-** TODO Make FoT bigger (after camera control is implemented)q
+** TODO Make FoT bigger (after camera control is implemented)
 *** Include one of every tile type, including a warp to the House of Testing
 * TODO Basic Game Mechanics
 ** TODO Player sprite movement
@@ -22,3 +31,6 @@ The following is to be done (roughly) in order.
 *** TODO Climbable
 *** TODO Destructible
 *** TODO Interactable
+* TODO Lore and Storyline
+* TODO Skills and Character Progression
+* TODO AI and Mobs
