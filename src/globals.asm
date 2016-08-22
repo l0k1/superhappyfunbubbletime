@@ -46,6 +46,10 @@ J_A      EQU 0
 ;* Slimmed down, from Jeff Frohwein's include files.
 ;Global constants
 
+TDT1          EQU $8000
+TDT2          EQU $8800
+TDT2_NO_OVER  EQU $9000
+
 _HW           EQU $FF00
 
 _VRAM         EQU  $8000 ; $8000->$A000
