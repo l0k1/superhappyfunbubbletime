@@ -96,7 +96,7 @@ rTMA EQU $FF06
 rTAC EQU $FF07
 
 ; -- Interrupt Flag (R/W)
-rIeF EQU $FF0F
+rIF EQU $FF0F
 
 ; -- LCD Control (R/W)
 rLCDC EQU $FF40
