@@ -229,7 +229,7 @@ Main_Game_Loop:
    call Fade_In_Black
 
 .main_loop                 ;the main game loop
-   call Main_Char_Update
+   call Joypad_Update
    call Camera_Update
 
    halt
@@ -237,12 +237,59 @@ Main_Game_Loop:
    
    jp .main_loop
 
-   SECTION "Main Character Movement",HOME
+   SECTION "Joypad Interfacing",HOME
 ;this handles all functions related to inputs from the Human
 ;this includes: moving the main sprite, shifting the bg map around,
 ;interacting with warps and other signs, etc.
-Main_Char_Update:
+Joypad_Update:
+   ld A,[JOYPAD]              ;get joypad data
+   bit J_A,A                  ;check each button, and process accordingly
+   call nz,.a_pressed
+   bit J_B,A
+   call nz,.b_pressed
+   bit J_DOWN,A
+   call nz,.down_pressed
+   bit J_LEFT,A
+   call nz,.left_pressed
+   bit J_UP,A
+   call nz,.up_pressed
+   bit J_RIGHT,A
+   call nz,.right_pressed
+   bit J_SELECT,A
+   call nz,.select_pressed
+   bit J_START,A
+   call nz,.start_pressed
+.end_joypad_update
+   ret                        ;after calls, this will be the end point
+   
+.a_pressed
    ret
+   
+.b_pressed
+   ret
+   
+.down_pressed
+   ret
+   
+.up_pressed
+   ret
+   
+.left_pressed
+   ret
+   
+.right_pressed
+   ret
+   
+.select_pressed
+   ret
+   
+.start_pressed
+   ret
+   
+.return_early                 ;if we need to return early after a button press,
+   inc SP                     ;and stop processing other buttons
+   inc SP                     ;manipulate the stack to get rid of the push
+   jp .end_joypad_update      ;that the original call did.
    
    SECTION "Camera Update",HOME
 Camera_Update:
