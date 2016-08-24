@@ -228,12 +228,26 @@ Main_Game_Loop:
    ld [rLCDC],A            ;get that screen reenabled.
    call Fade_In_Black
 
-.nop_loop
+.main_loop                 ;the main game loop
+   call Main_Char_Update
+   call Camera_Update
+
    halt
    nop
    
-   jr .nop_loop
+   jp .main_loop
 
+   SECTION "Main Character Movement",HOME
+;this handles all functions related to inputs from the Human
+;this includes: moving the main sprite, shifting the bg map around,
+;interacting with warps and other signs, etc.
+Main_Char_Update:
+   ret
+   
+   SECTION "Camera Update",HOME
+Camera_Update:
+   ret
+   
    SECTION "Data Copier",HOME
 ;To avoid having to repeat this function EVERYWHERE, here's a copier function.
 ;Data to be copied address in BC, destination in HL, how many bytes in DE.
