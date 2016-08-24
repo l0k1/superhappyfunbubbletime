@@ -244,9 +244,9 @@ Main_Game_Loop:
 Joypad_Update:
    ld A,[JOYPAD]              ;get joypad data
    bit J_A,A                  ;check each button, and process accordingly
-   call nz,.a_pressed
-   bit J_B,A
-   call nz,.b_pressed
+   call nz,.a_pressed         ;all these calls are ugly to me
+   bit J_B,A                  ;but its the best way to get the functionality
+   call nz,.b_pressed         ;that i want
    bit J_DOWN,A
    call nz,.down_pressed
    bit J_LEFT,A
