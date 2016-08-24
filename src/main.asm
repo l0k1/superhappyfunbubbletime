@@ -193,6 +193,58 @@ Main_Game_Loop:
 .main_init              ;in the future, this'll be where the saves are loaded, etc.
                         ;right now, we're just loading up the testing arena, getting everything set up, etc.
 
+   call LCD_Off         ;turn off the LCD
+
+   ld BC,Main_Char_Face_Down_Spr  ;Load in the main character sprite
+   ld HL,TDT1           ;tile data table 1
+   ld DE,$40            ;sprite for facing up, down, left and right
+   call Copy_Data
+
+   ld BC,Normal_Landscape  ;FoT tiles 
+   ld HL,TDT2_NO_OVER
+   ld DE,$110              ;17 tiles, 16 bytes per
+   call Copy_Data
+
+   ld BC,field_of_testing
+   ld HL,_SCRN0
+   ld DE,$400              ;32x32 map
+   call Copy_Data
+
+   ld HL,OAM_MIRROR        ;initial player sprite data
+   xor A
+   ld [HL+],A              ;y pos tbd
+   ld [HL+],A              ;x pos tbd
+   ld [HL+],A              ;tile number
+   ld [HL],A               ;flags
+   set 0,A                 ;Set the DMA update flag
+   ld [SPRITE_PROPS],A
+
+   xor A                   ;Set up our interrupts
+   ld [rIF],A
+   ld A,%00010111          ;all interrupts but serial port
+   ld [rIE],A
+
+   ld A,%10000011
+   ld [rLCDC],A            ;get that screen reenabled.
+   call Fade_In_Black
+
+.nop_loop
+   halt
    nop
    
-   jp Main_Game_Loop
+   jr .nop_loop
+
+   SECTION "Data Copier",HOME
+;To avoid having to repeat this function EVERYWHERE, here's a copier function.
+;Data to be copied address in BC, destination in HL, how many bytes in DE.
+;Obviously, this is destructive.
+Copy_Data:
+.loop
+   ld A,[BC]
+   ld [HL+],A
+   inc BC
+   dec DE
+   ld E,A
+   or D
+   jr nz,.loop
+   ret
