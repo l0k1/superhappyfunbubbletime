@@ -16,6 +16,7 @@ SOURCES=./src/interrupts.asm\
 		./src/opening_screens.asm\
 		./src/fonts/fonts.asm\
 		./src/maps/opening_maps.asm\
+		./src/maps/field_of_testing.asm\
 		./src/tiles/pointer.asm\
 		./src/tiles/landscape.asm\
 		./src/sprites/main_character.asm
