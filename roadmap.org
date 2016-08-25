@@ -12,12 +12,12 @@ The following is to be done (roughly) in order.
 **** Bit 4: Interactable
 **** Bit 5: Warp (door, portal, etc.)
 **** Bit 6: Trap
-**** Bit 7: Destrictable
-** PLANNING Load map and player sprite
+**** Bit 7: Destructable
+** DEBUGGING Load map and player sprite
 ** TODO Make FoT bigger (after camera control is implemented)
 *** Include one of every tile type, including a warp to the House of Testing
 * TODO Basic Game Mechanics
-** TODO Player sprite movement
+** CODING Player sprite movement
 ** TODO Camera movement
 *** After this, make a bigger FoT (see under FoT)
 ** TODO Collision
