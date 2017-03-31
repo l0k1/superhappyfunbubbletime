@@ -101,7 +101,7 @@ JOYPAD_VECT:
 
    ; $014A (Destination code)
    DB $01   ; $01 - All others
-         ; $00 - Japan
+         ; $00 - Japan 
 
    ; $014B (Licensee code - this _must_ be $33)
    DB $33   ; $33 - Check $0144/$0145 for Licensee code.
@@ -169,7 +169,7 @@ Main:
 
 ;***************************************** OPENING SCREENS
 
-;***** disabling the opning screens for quicker testing
+;***** disabling the opening screens for quicker testing
 
    call Fade_Out_Black  ;fade out the nintendo logo
    
