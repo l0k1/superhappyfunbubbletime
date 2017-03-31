@@ -179,6 +179,8 @@ Main:
    ld [rIF],A
    ld A,%00010100       ;set the timer and joypad interrupts
    ld [rIE],A
+   
+   ;commenting out Title_Screen and Main_Menu so we can jump straight to testing the main game loop
 
    ;call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
    
@@ -200,7 +202,7 @@ Main_Game_Loop:
    ld DE,$40            ;sprite for facing up, down, left and right
    call Copy_Data
 
-   ld BC,Normal_Landscape  ;FoT tiles 
+   ld BC,Normal_Landscape  ;Field of Testing tiles 
    ld HL,TDT2_NO_OVER
    ld DE,$110              ;17 tiles, 16 bytes per
    call Copy_Data
