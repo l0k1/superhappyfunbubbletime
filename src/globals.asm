@@ -43,14 +43,14 @@ J_SELECT EQU 2
 J_B      EQU 1
 J_A      EQU 0
 
-;* Slimmed down, from Jeff Frohwein's include files.
+;Slimmed down and modified from Jeff Frohwein's include files.
 ;Global constants
 
-TDT1          EQU $8000
-TDT2          EQU $8800
-TDT2_NO_OVER  EQU $9000
+TDT1          EQU  $8000
+TDT2          EQU  $8800
+TDT2_NO_OVER  EQU  $9000  ; tile data table 2, but with no overlap (all values are positive)
 
-_HW           EQU $FF00
+_HW           EQU  $FF00
 
 _VRAM         EQU  $8000 ; $8000->$A000
 _SCRN0        EQU  $9800 ; $9800->$9BFF
