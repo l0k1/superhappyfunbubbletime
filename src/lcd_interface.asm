@@ -25,7 +25,7 @@ DMA:
    ld D,$0A                ;number of bytes in the .dma_routine
 .load_dma_loop
    ld A,[BC]               ;copy .dma_loop to HRAM
-   ld [HL],A
+   ld [HL+],A
    inc BC
    dec D
    jr nz,.load_dma_loop
