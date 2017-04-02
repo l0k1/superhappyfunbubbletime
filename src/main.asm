@@ -307,7 +307,7 @@ Copy_Data:
    ld [HL+],A
    inc BC
    dec DE
-   ld E,A
+   ld A,E
    or D
    jr nz,.loop
    ret
