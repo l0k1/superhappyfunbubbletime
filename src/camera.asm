@@ -1,17 +1,55 @@
-;Camera controls for when the player is out walking around
+;Camera controls for when the player is out walking around.
+;Store map data.
 ;Also, screenfades and other camera fun stuff.
 
 INCLUDE "globals.asm"
 
-EXPORT   Fade_In_Black
-EXPORT   Fade_In_White
-EXPORT   Fade_Out_Black
-EXPORT   Fade_Out_White
-EXPORT   Camera_Update
+EXPORT  Fade_In_Black
+EXPORT  Fade_In_White
+EXPORT  Fade_Out_Black
+EXPORT  Fade_Out_White
+EXPORT  Camera_Update
+EXPORT  Load_Map_Data
 
    SECTION "Camera Update",HOME
 Camera_Update:
    ret
+   
+   SECTION "Load Map Data",HOME
+   ; Load the address of the map into BC, then call this function
+   ; Assumes map meta data is in the following format:
+   ; map x dimension most-significant byte, map x dimension least significant byte
+   ; map y dimension MSB, map y dimension LSB
+   ; map default tile
+   ; then actual map layout data
+   ; sets MAPUPPER and MAPLOWER to start of actual map data
+Load_Map_Data
+    push AF
+    push HL
+    
+    ld HL,MAPUPPER
+    ld A,B
+    ld [HL+],A      ; save map upper address
+    ld A,C
+    ld [HL+],A      ; save map lower address
+    ld A,[BC]
+    ld [HL+],A      ; map x msb dimension
+    inc BC
+    ld A,[BC]
+    ld [HL+],A      ; map x lsb dimension
+    inc BC
+    ld A,[BC]
+    ld [HL+],A      ; map y msb dimension
+    inc bc
+    ld A,[BC]
+    ld [HL+],A      ; map y lsb dimension
+    inc bc
+    ld A,[BC]
+    ld [HL+],A      ; map default tile
+    
+    pop HL
+    pop AF
+    ret
    
    
    SECTION "Screen Fades",HOME
