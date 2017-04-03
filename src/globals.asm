@@ -34,6 +34,11 @@ PPOSYUP     EQU $C00F   ; upper y coord
 PPOSYLO     EQU $C010   ; lower y coord
 PPOSBIT     EQU $C011   ; first four bits are which x pixel the player is at
                         ; second four bits are for the y pixel
+PDIR        EQU $C012   ; player direction - may include more data in this later
+                        ; $00 -> player facing down
+                        ; $01 -> player facing left
+                        ; $02 -> player facing up
+                        ; $03 -> player facing right
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00
