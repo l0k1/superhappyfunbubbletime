@@ -1,4 +1,4 @@
-#superhappyfunbubbletime
+# superhappyfunbubbletime
 
 ...definitely isn't going to be the name in the long run.
 A homebrew adventure game aimed at the old grey Gameboy.
@@ -10,7 +10,10 @@ As such, if you want the ROM you have to build it yourself for now.
 
 If there haven't been any updates in a month or two, it's because I've been busy. But SHFBT is always there, in my brain, telling me I have to come back and work on it.
 
-###Building
+### Building
+
+I try to make sure that building works and is error free before pushing to Github. This isn't always the case, however.
+
 I use RGBDS. I don't plan on porting it to WLA.
 
 Dependencies are [RGBDS](https://github.com/bentley/rgbds) and make.
@@ -20,7 +23,7 @@ To make:
     cd ./superhappyfunbubbletime/
     make
 
-###Contributing
+### Contributing
 I'm using soft-tabs, 3 spaces wide. Please use the same.
 
 Over-comment the code. A comment on every single line is okay.
@@ -39,7 +42,7 @@ To undo the make, do a
     
 Any makefile artists out there? A better makefile would be nice.
 
-###License
+### License
 I'm using GPL V2.
 
 Feel free to use whatever you need to from here.
