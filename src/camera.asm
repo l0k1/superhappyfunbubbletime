@@ -13,6 +13,48 @@ EXPORT  Load_Map_Data
 
    SECTION "Camera Update",HOME
 Camera_Update:
+   ;first find the upper left X position on the map
+   ld HL,PPOSX
+   ld A,[HL+]
+   sub $0F
+   ld B,A
+   ld A,[MAPXLOADED]
+   cp B
+   jp nz,.update_map
+   ld A,[HL+]
+   sub $0F
+   ld B,A
+   ld A,[MAPYLOADED]
+   cp B
+   jp nz,.update_map
+.positional_shift
+   ld A,[HL]
+   and $0F
+   ld B,A
+   ld A,[PPOSBIT]
+   ld C,A
+   and $0F
+   cp B
+   jp nz,camera_shift_x_bit
+.bit_shift_y
+   ld A,[HL+]
+   and $F0
+   ld B,A
+   ld A,C
+   and $F0
+   cp B
+   jp nz,.camera_shift_y_bit
+.directional_shift
+   ld A,[HL]
+   ld C,A
+   bit 0,C
+   jr nz,.c_down
+   bit 1,c
+   jr nz,.c_left
+   bit 2,c
+   jr nz,.c_up
+   bit 3,c
+   jr nz,.c_right
    ret
    
    SECTION "Load Map Data",HOME

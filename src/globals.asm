@@ -33,23 +33,30 @@ MAPX        EQU $C00D
 MAPY        EQU $C00E
 
 ; Map default tile
-MAPDEFAULTTILE  EQU $C00F
+MAPDEFAULTTILE  EQU $C011
 
 ; Map x/y position currently loaded
 ; x/y of upper left-most tile
-MAPXLOADED  EQU $C010
-MAPYLOADED  EQU $C011
+MAPXLOADED  EQU $C012
+MAPYLOADED  EQU $C013
+
+; Camera stuffs
+CPOSX       EQU
+CPOSY       EQU
+CPOSBIT     EQU
+CDIR        EQU
 
 ; Player position in the map
-PPOSX       EQU $C012   ; upper x coord of the tile the player is on
-PPOSY       EQU $C013   ; upper y coord
-PPOSBIT     EQU $C014   ; first four bits are which x pixel the player is at
+PPOSX       EQU $C014   ; upper x coord of the tile the player is on
+PPOSY       EQU $C015   ; upper y coord
+PPOSBIT     EQU $C016   ; first four bits are which x pixel the player is at
                         ; second four bits are for the y pixel
-PDIR        EQU $C015   ; player direction - may include more data in this later
-                        ; $00 -> player facing down
-                        ; $01 -> player facing left
-                        ; $02 -> player facing up
-                        ; $03 -> player facing right
+PDIR        EQU $C017   ; player direction - may include more data in this later
+                        ; LSB:
+                        ; b0001 -> player facing down
+                        ; b0010 -> player facing left
+                        ; b0100 -> player facing up
+                        ; b1000 -> player facing right
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00
