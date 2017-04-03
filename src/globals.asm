@@ -23,6 +23,18 @@ ERAMPL   EQU $BFFF      ;external ram pointer - low byte
 IRAMPH   EQU $DFFE      ;internal ram pointer - high byte
 IRAMPL   EQU $DFFF      ;internal ram pointer - low byte
 
+; Store the address of which map/area we currently have loaded
+MAPUPPER    EQU $C00B
+MAPLOWER    EQU $C00C
+
+; Player position in the map
+PPOSXUP     EQU $C00D   ; upper x coord of the tile the player is on
+PPOSXLO     EQU $C00E   ; lower x coord
+PPOSYUP     EQU $C00F   ; upper y coord
+PPOSYLO     EQU $C010   ; lower y coord
+PPOSBIT     EQU $C011   ; first four bits are which x pixel the player is at
+                        ; second four bits are for the y pixel
+
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00
 ;same as OAM_MIRROR, but for use in the DMA routine.

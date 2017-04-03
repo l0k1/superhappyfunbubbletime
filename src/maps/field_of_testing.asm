@@ -1,5 +1,5 @@
 ;The perilous FIELD OF TESTING!
-;32x32 area, currently no collision or anything. Just a tile map.
+;32x32 area
 
 EXPORT field_of_testing
 
@@ -109,5 +109,3 @@ DB $00,$0D,$0A,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B,$0B
 DB $0B,$0B,$0B,$0C
-
-
