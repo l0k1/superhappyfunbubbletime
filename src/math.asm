@@ -1,6 +1,11 @@
 ; Math functions
 
-   Section "Math",HOME
+EXPORT Mul8
+EXPORT Mul8b
+EXPORT Mul16
+EXPORT Div8
+
+   SECTION "Math",HOME
    ;Multiplies DE and A, stores result in HL.
    ;Destructive
    ;taken from http://sgate.emt.bme.hu/patai/publications/z80guide/part4.html
