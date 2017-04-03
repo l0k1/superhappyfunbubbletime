@@ -207,12 +207,14 @@ Main_Game_Loop:
    ld DE,$110              ;17 tiles, 16 bytes per
    call Copy_Data
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;this will need to be changed with the camera function is complete
+
    ld BC,field_of_testing  ;load the map into _SCRN0
-   ld HL,MAPUPPER          ;store the map address in RAM for the camera
-   ld A,B
-   ld [HL+],A
-   ld A,C
-   ld [HL],A
+   call Load_Map_Data      ;load map data
+   ld A,[MAPUPPER]
+   ld B,A
+   ld A,[MAPLOWER]
+   ld C,A
    ld HL,_SCRN0
    ld DE,$400              ;32x32 map
    call Copy_Data
