@@ -29,29 +29,23 @@ MAPLOWER    EQU $C00C
 
 ; Map XY info
 ; map dimensions
-MAPXUPPER   EQU $C00D
-MAPXLOWER   EQU $C00E
-MAPYUPPER   EQU $C00F
-MAPYLOWER   EQU $C010
+MAPX        EQU $C00D
+MAPY        EQU $C00E
 
 ; Map default tile
-MAPDEFAULTTILE  EQU $C011
+MAPDEFAULTTILE  EQU $C00F
 
 ; Map x/y position currently loaded
 ; x/y of upper left-most tile
-MAPXLOADEDUPPER EQU $C012
-MAPXLOADEDLOWER EQU $C013
-MAPYLOADEDUPPER EQU $C014
-MAPYLOADEDLOWER EQU $C015
+MAPXLOADED  EQU $C010
+MAPYLOADED  EQU $C011
 
 ; Player position in the map
-PPOSXUP     EQU $C016   ; upper x coord of the tile the player is on
-PPOSXLO     EQU $C017   ; lower x coord
-PPOSYUP     EQU $C018   ; upper y coord
-PPOSYLO     EQU $C019   ; lower y coord
-PPOSBIT     EQU $C01A   ; first four bits are which x pixel the player is at
+PPOSX       EQU $C012   ; upper x coord of the tile the player is on
+PPOSY       EQU $C013   ; upper y coord
+PPOSBIT     EQU $C014   ; first four bits are which x pixel the player is at
                         ; second four bits are for the y pixel
-PDIR        EQU $C01B   ; player direction - may include more data in this later
+PDIR        EQU $C015   ; player direction - may include more data in this later
                         ; $00 -> player facing down
                         ; $01 -> player facing left
                         ; $02 -> player facing up
