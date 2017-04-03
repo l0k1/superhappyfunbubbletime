@@ -207,7 +207,12 @@ Main_Game_Loop:
    ld DE,$110              ;17 tiles, 16 bytes per
    call Copy_Data
 
-   ld BC,field_of_testing
+   ld BC,field_of_testing  ;load the map into _SCRN0
+   ld HL,MAPUPPER          ;store the map address in RAM for the camera
+   ld A,B
+   ld [HL+],A
+   ld A,C
+   ld [HL],A
    ld HL,_SCRN0
    ld DE,$400              ;32x32 map
    call Copy_Data
@@ -231,7 +236,7 @@ Main_Game_Loop:
    call Fade_In_Black
 
 .main_loop                 ;the main game loop
-   call Joypad_Update
+   call World_Interface
    call Camera_Update
 
    halt
@@ -239,68 +244,11 @@ Main_Game_Loop:
    
    jp .main_loop
 
-   SECTION "Joypad Interfacing",HOME
-;this handles all functions related to inputs from the Human
-;this includes: moving the main sprite, shifting the bg map around,
-;interacting with warps and other signs, etc.
-Joypad_Update:
-   ld A,[JOYPAD]              ;get joypad data
-   bit J_A,A                  ;check each button, and process accordingly
-   call nz,.a_pressed         ;all these calls are ugly to me
-   bit J_B,A                  ;but its the best way to get the functionality
-   call nz,.b_pressed         ;that i want
-   bit J_DOWN,A
-   call nz,.down_pressed
-   bit J_LEFT,A
-   call nz,.left_pressed
-   bit J_UP,A
-   call nz,.up_pressed
-   bit J_RIGHT,A
-   call nz,.right_pressed
-   bit J_SELECT,A
-   call nz,.select_pressed
-   bit J_START,A
-   call nz,.start_pressed
-.end_joypad_update
-   ret                        ;after calls, this will be the end point
-   
-.a_pressed
-   ret
-   
-.b_pressed
-   ret
-   
-.down_pressed
-   ret
-   
-.up_pressed
-   ret
-   
-.left_pressed
-   ret
-   
-.right_pressed
-   ret
-   
-.select_pressed
-   ret
-   
-.start_pressed
-   ret
-   
-.return_early                 ;if we need to return early after a button press,
-   inc SP                     ;and stop processing other buttons
-   inc SP                     ;manipulate the stack to get rid of the push
-   jp .end_joypad_update      ;that the original call did.
-   
-   SECTION "Camera Update",HOME
-Camera_Update:
-   ret
    
    SECTION "Data Copier",HOME
 ;To avoid having to repeat this function EVERYWHERE, here's a copier function.
 ;Data to be copied address in BC, destination in HL, how many bytes in DE.
-;Obviously, this is destructive.
+;Obviously, this is destructive. Push/pop before calling if that's important.
 Copy_Data:
 .loop
    ld A,[BC]
