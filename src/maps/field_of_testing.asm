@@ -6,6 +6,13 @@ EXPORT field_of_testing
  SECTION "Field of Testing", HOME
 
 field_of_testing:
+; x dimension (32)
+DB $00,$20
+; y dimension (32)
+DB $00,$20
+; default tile
+DB $00
+;actual map
 DB $10,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F
 DB $0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F
 DB $0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F
