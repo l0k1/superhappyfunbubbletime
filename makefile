@@ -16,6 +16,7 @@ SOURCES=./src/interrupts.asm\
 		./src/opening_screens.asm\
 		./src/world_interface.asm\
 		./src/camera.asm\
+		./src/data_manipulation.asm\
 		./src/fonts/fonts.asm\
 		./src/maps/opening_maps.asm\
 		./src/maps/field_of_testing.asm\
