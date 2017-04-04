@@ -19,16 +19,16 @@ Camera_Update:
    sub $0F
    ld B,A
    ld A,[MAPXLOADED]
-   cp B
-   jp nz,.update_map
-   ld A,[HL+]
+   cp B                    ; if the X pos of the up-left tile doesn't match,
+   jp nz,.update_map       ; then we need to do a map update
+   ld A,[HL+]              ; HL should be pointed at PPOSY
    sub $0F
    ld B,A
    ld A,[MAPYLOADED]
    cp B
-   jp nz,.update_map
-.positional_shift
-   ld A,[HL]
+   jp nz,.update_map       ; same thing, but checking the Y pos
+.positional_shift_x        ; now make sure that the x/y pixel setting is where we want it
+   ld A,[HL]               ; HL should be pointed at PPOSBIT
    and $0F
    ld B,A
    ld A,[PPOSBIT]
@@ -36,25 +36,73 @@ Camera_Update:
    and $0F
    cp B
    jp nz,camera_shift_x_bit
-.bit_shift_y
-   ld A,[HL+]
+.positional_shift_y        ; check y pixel
+   ld A,[HL+]              ; HL still pointed at PPOSBIT
    and $F0
    ld B,A
    ld A,C
    and $F0
    cp B
    jp nz,.camera_shift_y_bit
-.directional_shift
-   ld A,[HL]
+.directional_shift         ; make sure the camera is pointed in the right direction
+   ld A,[rSCX]             ; store current screen X/Y values in B/C
+   ld B,A
+   ld A,[rSCY]
    ld C,A
-   bit 0,C
-   jr nz,.c_down
-   bit 1,c
-   jr nz,.c_left
-   bit 2,c
-   jr nz,.c_up
-   bit 3,c
-   jr nz,.c_right
+   ld A,[HL]               ; HL should be pointed at PDIR
+   bit 1,A                 ; only check bits for left/up/right,
+   jp nz,.c_left           ; camera down will be default if nothing else
+   bit 2,A
+   jp nz,.c_up
+   bit 3,A
+   jp nz,.c_right
+
+; move by length_to_destination / 2 every iteration
+; D = desired X, E = desired Y
+.c_down
+   ld D,$2C
+   ld E,$4C
+   jp .move_camera_pixels
+
+.c_left
+   ld D,$11
+   ld E,$34
+   jp .move_camera_pixels
+
+.c_right
+   ld D,$44
+   ld E,$34
+   jp .move_camera_pixels
+   
+.c_up
+   ld D,$44
+   ld E,$2E
+
+.move_camera_pixels
+   ld A,D
+   sub B
+   jr z,.y
+   jr nc,.x_cont
+   cpl
+   add A,$1
+.x_cont
+   rrca
+   add A,B
+   ld [rSCX],A
+.y
+   ld A,E
+   sub C
+   jp z,.exit
+   jr nc,.y_cont
+   cpl
+   add A,$1
+.y_cont
+   rrca
+   add A,C
+   ld [rSCY],A
+   jp .exit
+
+.exit
    ret
    
    SECTION "Load Map Data",HOME
