@@ -79,28 +79,18 @@ Camera_Update:
    ld E,$2E
 
 .move_camera_pixels
-   ld A,D
-   sub B
-   jr z,.y
-   jr nc,.x_cont
-   cpl
-   add A,$1
-.x_cont
-   rrca
-   add A,B
-   ld [rSCX],A
+   ld A,D            ; D is our destination
+   cp B              ; B is where we are now
+   jp z,.exit        ; Assuming if rSCX doesn't need updating, then same with rSCY
+   add B             ; Add location and destination
+   rrca              ; divide by two to get new location
+   ld [rSCX],A       ; the goal is a panning effect rather than snapping to new coords.
 .y
    ld A,E
-   sub C
-   jp z,.exit
-   jr nc,.y_cont
-   cpl
-   add A,$1
-.y_cont
+   add C
    rrca
-   add A,C
    ld [rSCY],A
-   jp .exit
+
 
 .exit
    ret
