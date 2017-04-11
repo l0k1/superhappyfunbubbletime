@@ -8,6 +8,7 @@ EXPORT   LCD_Off
 EXPORT   Load_Tiles_Into_VRAM
 EXPORT   Screen_Load_0_20x18
 EXPORT   DMA
+EXPORT   Background_Update
 
    SECTION "DMA",HOME
    ;DMA: copies a dma routine to HRAM [$FF80], and then calls that routine.
@@ -15,6 +16,7 @@ EXPORT   DMA
    ;This routine destroys all registers.
    ;This routine overwrites $FF80 to $FF8A of HRAM.
    ;OAM_MIRROR_DMA is defined in globals.asm.
+   ;556 cycles
 DMA:
    ld HL,_HRAM
    ld BC,.dma_routine      ;we want the address that .dma_routine is at
@@ -143,3 +145,304 @@ Load_Tiles_Into_VRAM:
    jr nz,.loop
    ret
    
+   SECTION "Update Background",HOME
+   ; Used to load up the background at runtime.
+   ; Put background updates at $DED6 (BG_UPDATE_ARRAY)
+   ; Data format for BG_UPDATE_ARRAY is 
+   ; (high byte of address in bg Map) (low byte of address) (tile) - 3 bytes
+   ; THIS CAN ONLY BE RAN IN VBLANK
+   ; 1668 cycles in total.
+Background_Update:
+   ld HL,BG_UPDATE_ARRAY
+   ; this repeats 41 times.
+   ; i'm not using compiler macros, because that's just how i roll.
+   ; don't whine about it to me, i will ignore you.
+   ; 1
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 2
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 3
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 4
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 5
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 6
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 7
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 8
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 9
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 10
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 11
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 12
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 13
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 14
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 15
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 16
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 17
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 18
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 19
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 20
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 21
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 22
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 23
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 24
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 25
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 26
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 27
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 28
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 29
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 30
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 31
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 32
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 33
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 34
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 35
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 36
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 37
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 38
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 39
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 40
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; 41
+   ld A,[HL+]
+   ld D,A
+   ld A,[HL+]
+   ld E,A
+   ld A,[HL+]
+   ld [DE],A
+   ; annnnnnnnnnnnnnnnnnd we're done.
+   ret

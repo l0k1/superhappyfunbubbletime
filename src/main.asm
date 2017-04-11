@@ -226,7 +226,7 @@ Main_Game_Loop:
    ld [HL+],A              ;tile number
    ld [HL],A               ;flags
    set 0,A                 ;Set the DMA update flag
-   ld [SPRITE_PROPS],A
+   ld [GFX_UPDATE_FLAGS],A
 
    xor A                   ;Set up our interrupts
    ld [rIF],A

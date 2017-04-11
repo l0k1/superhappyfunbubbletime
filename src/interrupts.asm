@@ -47,22 +47,33 @@ Controller:
    ret               ;Exit
 
    SECTION "V Blank Interrupt",HOME
+   ; DMA and Background_Update are both in lcd_interface.asm
+   ; VBlank lasts ~4530 cycles
+   ; All code in the interrupt must be less than 4530 cycles
+   ; If my counting is right, this is currently at a maximum
+   ; of 2492 cycles if all code is ran.
+   
+                                 ; initial call is 24 cycles
 V_Blank_Int:
-   push AF
+   push AF                       ; 64 cycles for pushing
    push BC
    push DE
    push HL
    
-   ld A,[SPRITE_PROPS]
-   bit 0,A
-   call nz,DMA
+   ld A,[GFX_UPDATE_FLAGS]       ; 16 cycles
+   bit 0,A                       ; 8 cycles
+   call nz,DMA                   ; 24 if condition - routine is 556 cycles
+   bit 1,A                       ; 8 cycles
+   call nz,Background_Update     ; 24 if condition - routine is 1668 cycles
+   xor A                         ; 4 cycles
+   ld [GFX_UPDATE_FLAGS],A       ; 16 cycles
    
-   pop HL
+   pop HL                        ; 48 cycles for popping
    pop DE
    pop BC
    pop AF
    
-   ret
+   ret                           ; 16 + 16 for reti in main.asm
    
    SECTION "Timer Update",HOME
    ;keeping 4 timers running for usage.

@@ -40,11 +40,6 @@ MAPDEFAULTTILE  EQU $C011
 MAPXLOADED  EQU $C012
 MAPYLOADED  EQU $C013
 
-; Camera stuffs
-CPOSX       EQU
-CPOSY       EQU
-CPOSBIT     EQU
-CDIR        EQU
 
 ; Player position in the map
 PPOSX       EQU $C014   ; upper x coord of the tile the player is on
@@ -53,18 +48,24 @@ PPOSBIT     EQU $C016   ; first four bits are which x pixel the player is at
                         ; second four bits are for the y pixel
 PDIR        EQU $C017   ; player direction - may include more data in this later
                         ; LSB:
-                        ; b0001 -> player facing down
-                        ; b0010 -> player facing left
-                        ; b0100 -> player facing up
-                        ; b1000 -> player facing right
+                        ; %0001 -> player facing down
+                        ; %0010 -> player facing left
+                        ; %0100 -> player facing up
+                        ; %1000 -> player facing right
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00
 ;same as OAM_MIRROR, but for use in the DMA routine.
 OAM_MIRROR_DMA EQU $DF
+;Used to update the background.
+;format is (high byte of address in bg Map) (low byte of address) (tile) - 3 bytes
+;there is exactly 41 ($29) bytes between here and $DF00, so just enough
+;room with no overlap.
+BG_UPDATE_ARRAY EQU $DED6
 ;Spite Update 
 ;if bit 0 = 1, perform DMA update.
-SPRITE_PROPS EQU $DF60
+;if bit 1 = 1, perform background update.
+GFX_UPDATE_FLAGS EQU $DF60
 
 
 ;* Hardware definitions
