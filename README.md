@@ -1,8 +1,10 @@
 # superhappyfunbubbletime
 
 ...definitely isn't going to be the name in the long run.
+
 A homebrew adventure game aimed at the old grey Gameboy.
-Check out the Wiki hosted here on Github for more info.
+
+Check out [the unofficial website](http://superhappyfunbubbletime.withdraft.com) for more info. It may be out of date.
 
 *SHFBT is currently not in a workable/playable condition. It is still pre-alpha.*
 
