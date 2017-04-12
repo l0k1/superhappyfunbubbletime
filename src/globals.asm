@@ -41,9 +41,9 @@ MAPXLOADED  EQU $C012
 MAPYLOADED  EQU $C013
 
 
-; Player position in the map
-PPOSX       EQU $C014   ; upper x coord of the tile the player is on
-PPOSY       EQU $C015   ; upper y coord
+; Player position stuff
+PPOSX_MAP   EQU $C014   ; x coord of the tile in map the player is on
+PPOSY_MAP   EQU $C015   ; y coord in map
 PPOSBIT     EQU $C016   ; first four bits are which x pixel the player is at
                         ; second four bits are for the y pixel
 PDIR        EQU $C017   ; player direction - may include more data in this later
@@ -52,6 +52,10 @@ PDIR        EQU $C017   ; player direction - may include more data in this later
                         ; %0010 -> player facing left
                         ; %0100 -> player facing up
                         ; %1000 -> player facing right
+PPOSX_SCR   EQU $C018   ; store player xy pos here for ease of reference
+PPOSY_SCR   EQU $C019
+PPOST_MAP_U EQU $C01A   ; upper bit of tile in map the player is currently over
+PPOST_MAP_L EQU $C01B   ; lower byte of tile in map the player is currently over
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00

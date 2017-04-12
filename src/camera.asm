@@ -14,7 +14,58 @@ EXPORT  Load_Map_Data
    SECTION "Camera Update",HOME
 Camera_Update:
    ; tl;dr - load up the bg array with bg updates if needed
+   ; assumes player can't be facing left/right at same time
+   ; assumes player can't be facing up/down at same time
+   ld A,[PPOSBIT]
+   bit 0,A
+   call move_y_down
+   bit 1,A
+   call move_x_left
+   bit 2,A
+   call move_y_up
+   bit 3,A
+   call move_x_right
+   
    ret
+   
+move_x_right:
+   ld A,[MAPY]             ; check if the tile to load is above/below map bounds
+   ld B,A
+   ld A,[PPOSY_MAP]
+   cp B                    ; check below player
+   jr nc,.check_x_bounds   ; if it is, check x bound
+   cp $A                   ; check above player
+   jr nc,.check_x_bounds
+   
+.check_x_bounds            ; only need to check to the right of player
+   ld A,[MAPX]
+   ld B,A
+   ld A,[PPOSX_MAP]
+   cp B
+   jr nc,.no_default
+   
+   ld A,[PPOSX_MAP]        ; load the default tile
+   ld A,[MAPDEFAULTTILE]
+   jr .tdt_pos
+.no_default
+   ld A,[MAPUPPER]
+   ld H,A
+   ld A,[MAPLOWER]
+   ld L,A
+   
+   ld A,[PPOST_MAP_U]      ; load players tile into DE
+   ld D,A
+   ld A,[PPOST_MAP_L]
+   add $B                  ; increase it by 11 to get to the right side of the screen
+   ld E,A
+   jr nc,.skip0            ; check if add(x) = 0 results in carry flag
+   inc D
+.skip0
+   
+   ;left off here. trying to think of better way to do default tile.
+   
+   
+.tdt_pos
    
    SECTION "Load Map Data",HOME
    ; Load the address of the map into BC, then call this function
