@@ -24,7 +24,7 @@ Camera_Update:
    ; map default tile
    ; then actual map layout data
    ; sets MAPUPPER and MAPLOWER to start of actual map data
-Load_Map_Data
+Load_Map_Data:
     push AF
     push HL
     
