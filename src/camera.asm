@@ -29,40 +29,37 @@ Camera_Update:
    ret
    
 move_x_right:
-   ld A,[MAPY]             ; check if the tile to load is above/below map bounds
-   ld B,A
-   ld A,[PPOSY_MAP]
-   cp B                    ; check below player
-   jr nc,.check_x_bounds   ; if it is, check x bound
-   cp $A                   ; check above player
-   jr nc,.check_x_bounds
-   
-.check_x_bounds            ; only need to check to the right of player
-   ld A,[MAPX]
+   ld A,[MAPX]             ; check x column
    ld B,A
    ld A,[PPOSX_MAP]
-   cp B
-   jr nc,.no_default
+   add $A
+   sub B
+   jr c,.use_default       ; if width > position + 10, update with default tile
+
+
+
    
-   ld A,[PPOSX_MAP]        ; load the default tile
-   ld A,[MAPDEFAULTTILE]
-   jr .tdt_pos
-.no_default
-   ld A,[MAPUPPER]
+   ld A,[PPOST_MAP_U]      ; load players tile into HL
    ld H,A
-   ld A,[MAPLOWER]
-   ld L,A
-   
-   ld A,[PPOST_MAP_U]      ; load players tile into DE
-   ld D,A
    ld A,[PPOST_MAP_L]
-   add $B                  ; increase it by 11 to get to the right side of the screen
-   ld E,A
-   jr nc,.skip0            ; check if add(x) = 0 results in carry flag
-   inc D
-.skip0
+   ld L,A
+   xor B
+   ld C,$0B
+   add HL,BC               ; increase it by 11 to get to the right side of the screen
+
+.start_pos
+   ld A,$9
+   ld B,A
+   ld A,E
+.start_pos_loop
+   sub $20
+   jr nc,.dont_dec
+   dec D
+.dont_dec
+   dec B
+   jr nz,.start_pos_loop
    
-   ;left off here. trying to think of better way to do default tile.
+   ; [de] should now point to the tile we need to load.
    
    
 .tdt_pos
