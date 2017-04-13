@@ -32,13 +32,30 @@ move_x_right:
    ld A,[MAPX]             ; check x column
    ld B,A
    ld A,[PPOSX_MAP]
-   add $A
+   add $B
    sub B
-   jr c,.use_default       ; if width > position + 10, update with default tile
+   jr nc,.check_y          ; if width > position + 10, update with default tile
+   ld D,$20                ; starting from top, add 32 default tiles
 
+.check_y
+   ld A,[PPOSY_MAP]
+   sub $9
+   jr nc,.check_y_bottom
+   cpl
+   ld D,A                  ; if playerpos - 9 < 0, then load in default tiles for those
+   jp .get_tile_pos
 
+.check_y_bottom
+   ld A,[PPOSY_MAP]
+   add $A
+   ld B,A
+   ld A,[MAPY]
+   sub B
+   jr nc,.get_tile_pos
+   ld E,A
 
-   
+.get_tile_pos
+
    ld A,[PPOST_MAP_U]      ; load players tile into HL
    ld H,A
    ld A,[PPOST_MAP_L]
@@ -46,20 +63,20 @@ move_x_right:
    xor B
    ld C,$0B
    add HL,BC               ; increase it by 11 to get to the right side of the screen
-
-.start_pos
    ld A,$9
    ld B,A
-   ld A,E
-.start_pos_loop
+.dec_loop                  ; need to decrement it now by 32 * 9 to get the first tile we need to load
+   ld A,L
    sub $20
-   jr nc,.dont_dec
-   dec D
-.dont_dec
+   jr nc,.skip_dec_h
+   dec H
+.skip_dec_h
    dec B
-   jr nz,.start_pos_loop
-   
-   ; [de] should now point to the tile we need to load.
+   jr nz,.dec_loop
+
+                           ; HL should now point to the first tile we need to load
+                           ; D should contain how many defaults we need from top to bottom
+                           ; E should contain how many defaults we need from bottom to top
    
    
 .tdt_pos
