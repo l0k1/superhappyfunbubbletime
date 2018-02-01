@@ -10,7 +10,7 @@ EXPORT   Screen_Load_0_20x18
 EXPORT   DMA
 EXPORT   Background_Update
 
-   SECTION "DMA",HOME
+   SECTION "DMA",ROM0
    ;DMA: copies a dma routine to HRAM [$FF80], and then calls that routine.
    ;Interrupts are not enabled/disabled here.
    ;This routine destroys all registers.
@@ -38,7 +38,7 @@ DMA:
    DB $20,$FD              ;2 bytes - opcode for jr nz,(go back to dec A) 
    ret                     ;1 byte
 
-   SECTION "Wait VBlank",HOME
+   SECTION "Wait VBlank",ROM0
    ;Wait for a VBlank. Exit if already in VBlank.
    ;IMPORTANT: This doesn't wait for the beginning of a VBlank.
    ;If waiting for the beginning is important, use the other wait function.
@@ -59,7 +59,7 @@ Wait_VBlank:
    pop HL            ;return HL back
    ret               ;otherwise, we's good.
 
-   SECTION "Wait VBlank Beginning",HOME
+   SECTION "Wait VBlank Beginning",ROM0
    ;Wait for the beginning of a VBlank.
 Wait_VBlank_Beginning:
    push HL           ;save HL's state
@@ -74,7 +74,7 @@ Wait_VBlank_Beginning:
    ret
    
 
-   SECTION "LCD Off",HOME  
+   SECTION "LCD Off",ROM0
 LCD_Off:
    ld A,[rLCDC]
    rlca
@@ -87,7 +87,7 @@ LCD_Off:
    ld [rLCDC],A      ;reload A back into LCD controller
    ret
 
-   SECTION "20x18 Screen Load",HOME
+   SECTION "20x18 Screen Load",ROM0
    ;Used for loading a map into the BG map area at $9800 that is 20x18 tiles.
    ;HL must be at the start of the tile data.
    ;Assumes rSCX & rSCY are at 0,0.
@@ -126,7 +126,7 @@ Screen_Load_0_20x18:
    ret
 
 
-   SECTION "Load Tiles Into VRAM",HOME
+   SECTION "Load Tiles Into VRAM",ROM0
    ;Loads up tiles into VRAM.
    ;Currently overwrites all of VRAM.
    ;HL must point to tile 0
@@ -145,7 +145,7 @@ Load_Tiles_Into_VRAM:
    jr nz,.loop
    ret
    
-   SECTION "Update Background",HOME
+   SECTION "Update Background",ROM0
    ; Used to load up the background at runtime.
    ; Put background updates at $DED6 (BG_UPDATE_ARRAY)
    ; Data format for BG_UPDATE_ARRAY is 

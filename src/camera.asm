@@ -11,12 +11,12 @@ EXPORT  Fade_Out_White
 EXPORT  Camera_Update
 EXPORT  Load_Map_Data
 
-   SECTION "Camera Update",HOME
+   SECTION "Camera Update",ROM0
 Camera_Update:
    ; tl;dr - load up the bg array with bg updates if needed
    ret
    
-   SECTION "Load Map Data",HOME
+   SECTION "Load Map Data",ROM0
    ; Load the address of the map into BC, then call this function
    ; Assumes map meta data is in the following format:
    ; map x dimension most-significant byte, map x dimension least significant byte
@@ -53,7 +53,7 @@ Load_Map_Data:
     ret
    
    
-   SECTION "Screen Fades",HOME
+   SECTION "Screen Fades",ROM0
    ;setting the shift to happen at ~180ms intervals for now.
    ;for all of these, the timer needs to be at 4.096kHz, and enabled.
 Fade_In_Black:

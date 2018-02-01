@@ -5,7 +5,7 @@ INCLUDE "globals.asm"
 
 Export World_Interface
    
-   SECTION "World Interfacing",HOME
+   SECTION "World Interfacing",ROM0
 World_Interface:
    ld A,[JOYPAD]              ;get joypad data
    bit J_A,A                  ;check each button, and process accordingly

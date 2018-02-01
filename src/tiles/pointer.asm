@@ -3,7 +3,7 @@
 
 EXPORT Menu_Pointer
 
- SECTION "Menu Pointer", HOME
+ SECTION "Menu Pointer",ROM0
 
 Menu_Pointer:
 DB $C0,$C0,$F0,$F0,$FC,$FC,$FE,$FE

@@ -7,7 +7,7 @@ Export Normal_Landscape
 Export Normal_Landscape_Metadata
 
 
- SECTION "Normal Tileset - Grass Tiles", HOME
+ SECTION "Normal Tileset - Grass Tiles",ROM0
 
 Normal_Landscape:
 ;grass1, standard grass tile

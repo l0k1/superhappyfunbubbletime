@@ -10,7 +10,7 @@ EXPORT Main_Char_Face_Left_Spr
 EXPORT Main_Char_Face_Right_Spr
 EXPORT Main_Char_Face_Up_Spr
 
- SECTION "Main Character Sprites", HOME
+ SECTION "Main Character Sprites", ROM0
 
 Main_Char_Face_Down_Spr:
 DB $00,$3C,$00,$3C,$3C,$24,$24,$18

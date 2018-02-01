@@ -16,7 +16,7 @@ EXPORT Controller
 EXPORT V_Blank_Int
 EXPORT Timer_Update
 
-   SECTION "Controller Status",HOME
+   SECTION "Controller Status",ROM0
 Controller:
    push AF           ;Push AF onto the stack to restore later.
    push BC           ;Push B onto the stack to restore later.
@@ -46,7 +46,7 @@ Controller:
    pop AF            ;Restore AF.
    ret               ;Exit
 
-   SECTION "V Blank Interrupt",HOME
+   SECTION "V Blank Interrupt",ROM0
    ; DMA and Background_Update are both in lcd_interface.asm
    ; VBlank lasts ~4530 cycles
    ; All code in the interrupt must be less than 4530 cycles
@@ -75,7 +75,7 @@ V_Blank_Int:
    
    ret                           ; 16 + 16 for reti in main.asm
    
-   SECTION "Timer Update",HOME
+   SECTION "Timer Update",ROM0
    ;keeping 4 timers running for usage.
    ;the numbers - seconds indicates how long 1 "tick" takes.
 Timer_Update:
