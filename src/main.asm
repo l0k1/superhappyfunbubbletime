@@ -139,6 +139,7 @@ Main:
    or D
    jp nz,.ram_init
    
+   call Wait_VBlank_Beginning
    call DMA          ;clear out the OAM_RAM to all zeros.
 
    ld A,$01          ;make sure rom bank 1 is selected in switchable ROM.
@@ -146,7 +147,7 @@ Main:
    xor A
    ld [rROMB1],A
    
-   xor A
+   ;xor A
    ld [rRAMB],A      ;make sure ERAM bank 0 is selected.
    ld [VRAMSP],A     ;init ram pointers
    ld [OAMRAMP],A    ;see globals.asm for specifics
@@ -164,7 +165,7 @@ Main:
    ld A,%00000100    ;turn on timer, set it to 4.096 kHz
    ld [rTAC],A
    ld [rIE],A        ;set the timer interrupt flag.
-   
+
    ei
 
 ;***************************************** OPENING SCREENS
@@ -173,18 +174,18 @@ Main:
 
    call Fade_Out_Black  ;fade out the nintendo logo
    
-   ;call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
+   call Splash_Screen   ;fade in a screen that says "klexos game studios presents", then fade it out.
 
-   ;xor A                ;set the IF register to 0
+   xor A                ;set the IF register to 0
    ld [rIF],A
    ld A,%00010100       ;set the timer and joypad interrupts
    ld [rIE],A
    
    ;commenting out Title_Screen and Main_Menu so we can jump straight to testing the main game loop
 
-   ;call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
+   call Title_Screen    ;fade in the title screen, wait for the player to press start, then fade it out.
    
-   ;call Main_Menu       ;fade in the main menu. only "start game" will function for now. fades out.
+   call Main_Menu       ;fade in the main menu. only "start game" will function for now. fades out.
    
    call Main_Game_Loop  ;the main loop of the game.
    
