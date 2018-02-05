@@ -1,9 +1,14 @@
-#+TODO: TODO PLANNING CODING DEBUGGING DONE
+#+TODO: TODO PLANNING CODING PAUSED DEBUGGING DONE
 
 The following is to be done (roughly) in order.
 
-* CODING Field of Testing
-** DONE Finalize map format
+* CODING Code Cleanup
+** TODO Map out program flow
+** TODO Remove unused and not useful functions
+** TODO Make more use of generic functions
+** TODO Rewrite bad code.
+* PAUSED Field of Testing
+** CODING Finalize map format
 *** Each tile has a 7 bits of metadata associated with it, as follows:
 **** Bit 0: Ground Collision
 **** Bit 1: Air Collision

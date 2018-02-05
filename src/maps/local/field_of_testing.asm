@@ -3,7 +3,7 @@
 
 EXPORT field_of_testing
 
- SECTION "Field of Testing",ROM0
+ SECTION "Field of Testing",ROMX,BANK[$102]
 
 field_of_testing:
 ; x dimension (32)
