@@ -33,7 +33,7 @@ shfbt: $(OBJECTS)
 	@echo "Linking object files into image..."
 	@$(LINK) $(LINKFLAGS) -o $(OUTPUT_NAME).gb $(OBJECTS)
 	@echo "Tidying up image..."
-	@$(FIX) $(FFLAGS) shfbt.gb
+	@$(FIX) $(FFLAGS) $(OUTPUT_NAME).gb
 	@echo "ROM assembly complete."
 
 debug:	$(OBJECTS)
@@ -41,7 +41,7 @@ debug:	$(OBJECTS)
 	@echo "Creating symbol and map files for debugging..."
 	@$(LINK) $(LINKFLAGS) -m $(OUTPUT_NAME).map -n $(OUTPUT_NAME).sym -o $(OUTPUT_NAME).gb $(OBJECTS)
 	@echo "Tidying up image..."
-	@$(FIX) $(FFLAGS) shfbt.gb
+	@$(FIX) $(FFLAGS) $(OUTPUT_NAME).gb
 	@echo "ROM assembly complete."
 
 
