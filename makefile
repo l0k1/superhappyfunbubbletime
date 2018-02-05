@@ -5,6 +5,7 @@
 CC = rgbasm
 CFLAGS = -i ./src/ -i ./src/fonts/ -i ./src/maps/ -i ./src/tiles/
 LINK = rgblink
+LINKFLAGS = -d
 FIX = rgbfix
 FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
@@ -30,17 +31,17 @@ OBJECTS=$(SOURCES:.asm=.o)
 
 shfbt: $(OBJECTS)
 	@echo "Linking object files into image..."
-	@$(LINK) -o $(OUTPUT_NAME).gb $(OBJECTS)
+	@$(LINK) $(LINKFLAGS) -o $(OUTPUT_NAME).gb $(OBJECTS)
 	@echo "Tidying up image..."
-	@$(FIX) $(FFLAGS) -v -p 0 shfbt.gb
+	@$(FIX) $(FFLAGS) shfbt.gb
 	@echo "ROM assembly complete."
 
 debug:	$(OBJECTS)
 	@echo "Linking object files into image..."
 	@echo "Creating symbol and map files for debugging..."
-	@$(LINK) -m $(OUTPUT_NAME).map -n $(OUTPUT_NAME).sym -o $(OUTPUT_NAME).gb $(OBJECTS)
+	@$(LINK) $(LINKFLAGS) -m $(OUTPUT_NAME).map -n $(OUTPUT_NAME).sym -o $(OUTPUT_NAME).gb $(OBJECTS)
 	@echo "Tidying up image..."
-	@$(FIX) $(FFLAGS) -v -p 0 shfbt.gb
+	@$(FIX) $(FFLAGS) shfbt.gb
 	@echo "ROM assembly complete."
 
 
