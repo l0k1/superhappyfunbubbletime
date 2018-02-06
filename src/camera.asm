@@ -17,6 +17,15 @@ Camera_Update:
    ret
    
    SECTION "Load Map Data",ROM0
+   ; Load in map data into known variables in the RAM
+   ; Map data should be pushed onto the stack like so:
+   ; push [x coord of player]
+   ; push [y coord of player]
+   ; push [local map bank]
+   ; push [regional map ID]
+
+
+   SECTION "Load Map Data",ROM0
    ; Load the address of the map into BC, then call this function
    ; Assumes map meta data is in the following format:
    ; map x dimension most-significant byte, map x dimension least significant byte
