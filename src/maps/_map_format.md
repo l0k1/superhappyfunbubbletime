@@ -8,16 +8,14 @@ There are two levels of maps, internally, *local* and *regional*.
 
 The purpose of this is to seamlessly display maps larger than 127x127 bytes (or a combination thereof).
 
-All local maps will be stored in a bank greater than $100 (decimal 256+).
+All local maps will be stored in a bank greater than $100 (decimal 256+). All local maps must be 127x127.
 
 Local map format:
 ```
-    $xx   - X Dimension (max 127)
-    $xx   - Y Dimension (max 127)
     $xx   - Out-of-Dimension Tile
     Up to 40 warp designators @ 6 bytes apiece(discussed below)
     Map Tile Data (127x127 tiles, or 16129 tiles)
-    11 unused bytes
+    13 unused bytes
 ```
 
 *Warp Designators* are to indicate where a warp (door, etc) will warp too. If no warp tile is wanted/needed, fill it with zeros.
