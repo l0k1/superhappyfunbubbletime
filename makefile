@@ -20,10 +20,8 @@ SOURCES=./src/interrupts.asm\
 		./src/data_manipulation.asm\
 		./src/math.asm\
 		./src/fonts/fonts.asm\
-		./src/maps/reg_directory.asm\
 		./src/maps/screens/opening_maps.asm\
-		./src/maps/local/field_of_testing.asm\
-		./src/maps/regional/fot_regional.asm\
+		./src/maps/field_of_testing.asm\
 		./src/tiles/pointer.asm\
 		./src/tiles/landscape.asm\
 		./src/sprites/main_character.asm

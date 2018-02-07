@@ -20,22 +20,10 @@ Camera_Update:
    ; Load in map data into known variables in the RAM
    ; Map data should be pushed onto the stack like so:
    ; push BC - B = [x coord of player], C = [y coord of player]
-   ; push BC - B = [local map bank], C = [regional map ID]
+   ; push BC - B = [local map bank]
+   ; push BC - BC = [local map address]
 Load_Map_Data:
 
-   ld BC,reg_map_directory    ;load up the directory spot in memory
-   
-   ld A,$01                   ;load up the bank containing the regional directory
-   ld [rROMB1],A              ;aka bank $100
-   xor A
-   ld [rROMB0],A
-
-   pop DE                     ;E contains regional ID, D contains bank
-   ld A,$04                   ;region map = id * 4 + $4000
-   call Mul8b                 ;multiply E * A
-   add HL,BC                  ;now at the proper location in HL
-
-   pop BC                     ;C contains the X coord, B contains the Y coord
 
 
 
