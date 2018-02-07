@@ -25,10 +25,13 @@ Mul8:
    ret
     
    ;Multiply H * E, stores result in HL
-   ;Destructive
+   ;Destructive of HL
    ;taken from http://sgate.emt.bme.hu/patai/publications/z80guide/part4.html
    ;with modifications specific to gbz80
 Mul8b:
+   push AF
+   push BC
+   push DE
    ld D,0
    ld L,D
    ld B,8
@@ -39,6 +42,9 @@ Mul8b:
 .mul8bskip
    dec B
    jr nz,.mul8bloop
+   pop DE
+   pop BC
+   pop AF
    ret
   
    ;Divide HL/D, store result in HL

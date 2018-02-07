@@ -19,49 +19,39 @@ Camera_Update:
    SECTION "Load Map Data",ROM0
    ; Load in map data into known variables in the RAM
    ; Map data should be pushed onto the stack like so:
-   ; push [x coord of player]
-   ; push [y coord of player]
-   ; push [local map bank]
-   ; push [regional map ID]
-
-
-   SECTION "Load Map Data",ROM0
-   ; Load the address of the map into BC, then call this function
-   ; Assumes map meta data is in the following format:
-   ; map x dimension most-significant byte, map x dimension least significant byte
-   ; map y dimension MSB, map y dimension LSB
-   ; map default tile
-   ; then actual map layout data
-   ; sets MAPUPPER and MAPLOWER to start of actual map data
+   ; push BC - B = [x coord of player], C = [y coord of player]
+   ; push BC - B = [local map bank], C = [regional map ID]
 Load_Map_Data:
-    push AF
-    push HL
-    
-    ld HL,MAPUPPER
-    ld A,B
-    ld [HL+],A      ; save map upper address
-    ld A,C
-    ld [HL+],A      ; save map lower address
-    ld A,[BC]
-    ld [HL+],A      ; map x msb dimension
-    inc BC
-    ld A,[BC]
-    ld [HL+],A      ; map x lsb dimension
-    inc BC
-    ld A,[BC]
-    ld [HL+],A      ; map y msb dimension
-    inc bc
-    ld A,[BC]
-    ld [HL+],A      ; map y lsb dimension
-    inc bc
-    ld A,[BC]
-    ld [HL+],A      ; map default tile
-    
-    pop HL
-    pop AF
-    ret
+
+   ld HL,reg_map_directory    ;load up the directory spot in memory
    
-   
+   ld A,$01                   ;load up the bank containing the regional directory
+   ld [rROMB1],A              ;aka bank $100
+   xor A
+   ld [rROMB0],A
+
+   ld DE,$6                   ;our increment amount
+   pop BC                     ;C contains regional ID, B contains bank
+.srch
+   ld A,[HL]
+   cp C
+   jr z,.srch_end
+   add HL,DE
+   ld H,A
+   cp $7F
+   jr nz,.srch
+   ld L,A
+   cp $FC
+   jp z,.ret
+.srch_end   
+
+   pop BC                     ;C contains the X coord, B contains the Y coord
+
+
+
+.ret
+   ret
+
    SECTION "Screen Fades",ROM0
    ;setting the shift to happen at ~180ms intervals for now.
    ;for all of these, the timer needs to be at 4.096kHz, and enabled.

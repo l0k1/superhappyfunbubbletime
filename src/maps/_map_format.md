@@ -35,7 +35,7 @@ Regional Maps show how local maps interact. Regional maps dictate the tileset. R
 
 Directory format:
 ```
-    $id bank adds <- Map ID, Bank #, Address location in bank
+    $bank adds <- Bank #, Address location in bank
 ```
 
 Regional map format:
