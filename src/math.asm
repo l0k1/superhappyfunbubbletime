@@ -11,8 +11,7 @@ EXPORT Div8
    ;taken from http://sgate.emt.bme.hu/patai/publications/z80guide/part4.html
    ;with modifications specific to gbz80
 Mul8:
-   xor H
-   xor L
+   ld HL,0
    ld B,8
 .mul8loop
    rrca
@@ -22,7 +21,7 @@ Mul8:
    sla E
    rl D
    dec B
-   jr nz,Mul8
+   jr nz,.mul8loop
    ret
     
    ;Multiply H * E, stores result in HL
@@ -30,8 +29,8 @@ Mul8:
    ;taken from http://sgate.emt.bme.hu/patai/publications/z80guide/part4.html
    ;with modifications specific to gbz80
 Mul8b:
-   xor D
-   xor L
+   ld D,0
+   ld L,D
    ld B,8
 .mul8bloop
    add hl,hl                      ; advancing a bit
@@ -66,8 +65,7 @@ Div8:
    ;taken from http://sgate.emt.bme.hu/patai/publications/z80guide/part4.html
    ;with modifications specific to gbz80
 Mul16:
-   xor H
-   xor L
+   ld HL,0
    ld a,16
 .mul16loop
    add hl,hl
