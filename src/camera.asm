@@ -23,27 +23,17 @@ Camera_Update:
    ; push BC - B = [local map bank], C = [regional map ID]
 Load_Map_Data:
 
-   ld HL,reg_map_directory    ;load up the directory spot in memory
+   ld BC,reg_map_directory    ;load up the directory spot in memory
    
    ld A,$01                   ;load up the bank containing the regional directory
    ld [rROMB1],A              ;aka bank $100
    xor A
    ld [rROMB0],A
 
-   ld DE,$6                   ;our increment amount
-   pop BC                     ;C contains regional ID, B contains bank
-.srch
-   ld A,[HL]
-   cp C
-   jr z,.srch_end
-   add HL,DE
-   ld H,A
-   cp $7F
-   jr nz,.srch
-   ld L,A
-   cp $FC
-   jp z,.ret
-.srch_end   
+   pop DE                     ;E contains regional ID, D contains bank
+   ld A,$04                   ;region map = id * 4 + $4000
+   call Mul8b                 ;multiply E * A
+   add HL,BC                  ;now at the proper location in HL
 
    pop BC                     ;C contains the X coord, B contains the Y coord
 

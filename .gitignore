@@ -3,6 +3,8 @@
 *.gif
 *.sav
 *.swp
+*.swn
+*.swo
 *~
 *.sym
 *.map
