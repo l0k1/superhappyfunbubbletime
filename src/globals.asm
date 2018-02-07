@@ -1,5 +1,7 @@
 ;* This file contains global constants.
 
+; THIS FILE DESPERATELY NEEDS CLEANING.
+
 ; Make sure all this data is only loaded once.
    IF !DEF(GLOBALS_ASM)
 GLOBALS_ASM SET 1
@@ -52,6 +54,11 @@ PDIR        EQU $C017   ; player direction - may include more data in this later
                         ; %0010 -> player facing left
                         ; %0100 -> player facing up
                         ; %1000 -> player facing right
+                        
+CBANKU      EQU $C018   ; current bank MSB
+CBANKL      EQU $C019   ; current bank LSB
+PBANKU      EQU $C01A   ; previous bank MSB
+PBANKL      EQU $C01B   ; previous bank LSB
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00
