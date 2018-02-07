@@ -18,16 +18,35 @@ Camera_Update:
    
    SECTION "Load Map Data",ROM0
    ; Load in map data into known variables in the RAM
+   ; Write a new BG map after warping.
    ; Map data should be pushed onto the stack like so:
    ; push BC - B = [x coord of player], C = [y coord of player]
-   ; push BC - B = [local map bank]
    ; push BC - BC = [local map address]
+   ; push BC - B = [local map bank]
 Load_Map_Data:
+   
+   ; first get the correct bank
+   pop AF
+   ld D,$01
+   ld E,A
+   call Switch_Bank
 
+   ; put the mem position into HL and extract data
+   pop HL
+   ld A,[HL+]
+   ld [MAPX],A
+   ld A,[HL+]
+   ld [MAPY],A
+   ld A,[HL+]
+   ld [MAP_TILESET],A
 
+   ; get the player x/y position
+   pop BC
+   ld A,B
+   ld [PPOSX],A
+   ld A,C
+   ld [PPOSY],A
 
-
-.ret
    ret
 
    SECTION "Screen Fades",ROM0
