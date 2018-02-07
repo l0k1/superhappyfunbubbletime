@@ -1,15 +1,12 @@
 ;The perilous FIELD OF TESTING!
-;32x32 area
+;32x32 area for now, until I become unlazy and 
+;make the full 127x127 map.
 
 EXPORT field_of_testing
 
  SECTION "Field of Testing",ROMX,BANK[$102]
 
 field_of_testing:
-; x dimension (32)
-DB $00,$20
-; y dimension (32)
-DB $00,$20
 ; default tile
 DB $00
 
