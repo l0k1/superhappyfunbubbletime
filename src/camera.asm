@@ -47,33 +47,81 @@ Load_Map_Data:
    ld A,C
    ld [PPOSY],A
 
-; load in the map in chunks ayy
-; pseudo-code
+   ; zero out E for data collection
+   xor A
+   ld E,A
+   
+   ; check the left side
+   
+   ld A,B                  ; B holds pposx still
+   sub $0A                 ; if x pos - half the screen < 0 then
+   jr nc,.left_else
+   set 6,E                 ; left map needs to be loaded
+   xor A
+.left_else
+   ld [MAPXLOADED],A
+   
+   ; check the up side
+   
+   ld A,C                  ; C should still hold pposy
+   sub $0A                 ; if y pos - half the screen < 0 then
+   jr nc,.up_else
+   set 0,E                 ; upper screen needs to be loaded
+   xor A
+.up_else
+   ld [MAPYLOADED],A
 
-; left_x = pposx - $0A
-; if carry flag then
-;     center_map_x = 0
-;     left_map_load = 1
-; else
-;     center_map_x = left_x
-;
-; up_y = pposy - $0A
-; if carry flag then
-;     center_map_y = 0
-;     up_map_load = 1
-; else
-;     center_map_y = up_y
-;
-; if not left_map_load then
-;     right_x = pposx + $0A
-;     if right_x > dim_x then
-;        right_map_load = 1
-;
-; if not up_map_load then
-;     down_y = pposy + $0A
-;     if down_y > dim_y then
-;        down_map_load = 1
-;
+   ; check the right side
+
+   bit 6,E                 ; if the left map hasn't been loaded,
+   jr nz,.skip_right_load  ; check right
+   ld A,B                  ; B still contains pposx
+   add $10                 ; if x pos + half screen > x dim then
+   ld HL,MAPX
+   cp [HL]
+   jr nc,.skip_right_load
+   set 2,E                 ; load the right screen
+.skip_right_load
+   
+   bit 0,E                 ; if the up map hasn't been loaded,
+   jr nz,.skip_down_load   ; check down
+   ld A,C                  ; C still contains pposy
+   add $10                 ; if y pos + half Screen > ydim
+   inc HL                  ; point HL at MAPY
+   cp [HL]
+   jr nc,.skip_down_load
+   set 4,E                 ; load the bottom screen
+.skip_down_load
+
+   ; do the corners
+   ; upper left and upper right require the top
+   bit 0,E                 ; check upper
+   jr z,.skip_up
+   bit 2,E                 ; check right
+   jr z,.skip_up_right
+   set 1,E                 ; set up right
+   jr .skip_up
+.skip_up_right
+   bit 6,E                 ; check left
+   jr z,.skip_up
+   set 7,E                 ; set up left
+.skip_up
+
+   bit 4,E                 ; check lower
+   jr z,.skip_down
+   bit 2,E                 ; check right
+   jr z,.skip_down_right
+   set 3,E                 ; set low right
+   jr .skip_down
+.skip_down_right
+   bit 6,E                 ; check left
+   jr z,.skip_down
+   set 5,E                 ; set low left
+.skip_down
+
+   ; E should now contain the info we need to load the maps,
+   ; where bit 0 = top, going clockwise to bit 7 = upper left
+
 ; upper_left load = 
 ;     ...load the upper_left map, starting with coords [left_x], [up_y], going to [dim_x] and [dim_y]
 ; left load = 

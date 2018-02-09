@@ -17,13 +17,13 @@ DB $00
 
 ; surrounding maps
 DB $00,$00,$00 ;top
-DB $00,$00,$00 ;top left
-DB $00,$00,$00 ;left
-DB $00,$00,$00 ;bottom left
-DB $00,$00,$00 ;bottom
-DB $00,$00,$00 ;bottom right
-DB $00,$00,$00 ;right
 DB $00,$00,$00 ;top right
+DB $00,$00,$00 ;right
+DB $00,$00,$00 ;bottom right
+DB $00,$00,$00 ;bottom
+DB $00,$00,$00 ;bottom left
+DB $00,$00,$00 ;left
+DB $00,$00,$00 ;top left
 
 ; warp data
 DB $00,$00,$00,$00,$00,$00,$00
