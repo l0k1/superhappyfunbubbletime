@@ -71,11 +71,11 @@ OAM_MIRROR_DMA EQU $DF
 ;there is exactly 41 ($29) bytes between here and $DF00, so just enough
 ;room with no overlap.
 BG_UPDATE_ARRAY EQU $DED6
-;Spite Update 
+;GFX update flags
 ;if bit 0 = 1, perform DMA update.
 ;if bit 1 = 1, perform background update.
+;if bit 2 = 1, disable LCD
 GFX_UPDATE_FLAGS EQU $DF60
-
 
 ;* Hardware definitions
 ;Joypad stuff

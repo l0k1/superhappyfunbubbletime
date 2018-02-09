@@ -93,34 +93,26 @@ Load_Map_Data:
    set 4,E                 ; load the bottom screen
 .skip_down_load
 
-   ; do the corners
-   ; upper left and upper right require the top
-   bit 0,E                 ; check upper
-   jr z,.skip_up
-   bit 2,E                 ; check right
-   jr z,.skip_up_right
-   set 1,E                 ; set up right
-   jr .skip_up
-.skip_up_right
-   bit 6,E                 ; check left
-   jr z,.skip_up
-   set 7,E                 ; set up left
-.skip_up
+   ; E should now contain the info we need to load the maps, where:
+   ; bit 0 = top
+   ; bit 2 = right
+   ; bit 4 = bottom
+   ; bit 6 = left
 
-   bit 4,E                 ; check lower
-   jr z,.skip_down
-   bit 2,E                 ; check right
-   jr z,.skip_down_right
-   set 3,E                 ; set low right
-   jr .skip_down
-.skip_down_right
-   bit 6,E                 ; check left
-   jr z,.skip_down
-   set 5,E                 ; set low left
-.skip_down
+   ; disable the LCD so we can write lots to the background
+   ld HL,GFX_UPDATE_FLAGS
+   set 2,[HL]
+   
+   halt
+   nop
 
-   ; E should now contain the info we need to load the maps,
-   ; where bit 0 = top, going clockwise to bit 7 = upper left
+   ; load top
+   
+   bit 0,E
+   jp z,.skip_top
+   
+
+.skip_top
 
 ; upper_left load = 
 ;     ...load the upper_left map, starting with coords [left_x], [up_y], going to [dim_x] and [dim_y]

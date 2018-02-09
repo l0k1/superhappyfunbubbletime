@@ -196,7 +196,7 @@ Main_Game_Loop:
 .main_init              ;in the future, this'll be where the saves are loaded, etc.
                         ;right now, we're just loading up the testing arena, getting everything set up, etc.
 
-   call LCD_Off         ;turn off the LCD
+   ; re-write me to use the gfx_update flagcall LCD_Off         ;turn off the LCD
 
    ld BC,Main_Char_Face_Down_Spr  ;Load in the main character sprite
    ld HL,TDT1           ;tile data table 1

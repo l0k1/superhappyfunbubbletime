@@ -4,11 +4,11 @@ INCLUDE "globals.asm"
 
 EXPORT   Wait_VBlank
 EXPORT   Wait_VBlank_Beginning
-EXPORT   LCD_Off
 EXPORT   Load_Tiles_Into_VRAM
 EXPORT   Screen_Load_0_20x18
 EXPORT   DMA
 EXPORT   Background_Update
+EXPORT   Disable_LCD
 
    SECTION "DMA",ROM0
    ;DMA: copies a dma routine to HRAM [$FF80], and then calls that routine.
@@ -61,6 +61,7 @@ Wait_VBlank:
 
    SECTION "Wait VBlank Beginning",ROM0
    ;Wait for the beginning of a VBlank.
+   ;This loop isn't good, use GFX_UPDATE flag instead.
 Wait_VBlank_Beginning:
    push HL           ;save HL's state
    ld HL,rLY         ;load the LY register into HL for quicker accessing
@@ -73,18 +74,11 @@ Wait_VBlank_Beginning:
    pop HL
    ret
    
-
-   SECTION "LCD Off",ROM0
-LCD_Off:
-   ld A,[rLCDC]
-   rlca
-   ret nc            ;Screen already off, return.
-
-   call Wait_VBlank  ;need to wait for vblank to turn off screen.
-
-   ld A,[rLCDC]      ;load LCD controller data into A
-   res 7,A           ;set bit 7 of A to 0 to stop LCD.
-   ld [rLCDC],A      ;reload A back into LCD controller
+   SECTION "Disable LCD",ROM0
+   ; call this by setting bit 2 of GFX_UPDATE_FLAGS
+Disable_LCD:
+   ld HL,rLCDC                ; 12 cycles
+   res 7,[HL]                 ; 16 cycles
    ret
 
    SECTION "20x18 Screen Load",ROM0

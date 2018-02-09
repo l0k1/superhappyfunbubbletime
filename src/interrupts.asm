@@ -51,7 +51,7 @@ Controller:
    ; VBlank lasts ~4530 cycles
    ; All code in the interrupt must be less than 4530 cycles
    ; If my counting is right, this is currently at a maximum
-   ; of 2492 cycles if all code is ran.
+   ; of 2552 cycles if all code is ran.
    
                                  ; initial call is 24 cycles
 V_Blank_Int:
@@ -65,6 +65,8 @@ V_Blank_Int:
    call nz,DMA                   ; 24 if condition - routine is 556 cycles
    bit 1,A                       ; 8 cycles
    call nz,Background_Update     ; 24 if condition - routine is 1668 cycles
+   bit 2,A                       ; 8 cycles
+   call nz,Disable_LCD           ; 24 if condition - routine is 28
    xor A                         ; 4 cycles
    ld [GFX_UPDATE_FLAGS],A       ; 16 cycles
    
