@@ -47,6 +47,45 @@ Load_Map_Data:
    ld A,C
    ld [PPOSY],A
 
+; load in the map in chunks ayy
+; pseudo-code
+
+; left_x = pposx - $0A
+; if carry flag then
+;     center_map_x = 0
+;     left_map_load = 1
+; else
+;     center_map_x = left_x
+;
+; up_y = pposy - $0A
+; if carry flag then
+;     center_map_y = 0
+;     up_map_load = 1
+; else
+;     center_map_y = up_y
+;
+; if not left_map_load then
+;     right_x = pposx + $0A
+;     if right_x > dim_x then
+;        right_map_load = 1
+;
+; if not up_map_load then
+;     down_y = pposy + $0A
+;     if down_y > dim_y then
+;        down_map_load = 1
+;
+; upper_left load = 
+;     ...load the upper_left map, starting with coords [left_x], [up_y], going to [dim_x] and [dim_y]
+; left load = 
+;     ...load the left map, starting with coords [left_x], [center_map_y], going to [dim_x] and [bottom of the screen or dim_y]
+; upper load = 
+;     ...load the upper map, starting with coords [center_map_x],[up_y], going to [right of the screen or dim_x],[dim_y]
+; upper right load =
+;     ... load the upper_right map, starting with coords [right_x], [up_y], going to [right of the screen],[dim_y]
+; etc etc
+
+
+
    ret
 
    SECTION "Screen Fades",ROM0
