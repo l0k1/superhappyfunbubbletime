@@ -110,7 +110,13 @@ Load_Map_Data:
    
    bit 0,E
    jp z,.skip_top
-   
+   ; for loading the top,
+   ; y in the map is y_dim - (halfscreen - pposy)
+   ; y in the bg array is 0
+   ; x in the map is the greater of player_x - screenwidth and 0
+   ; x in the bg array is the lesser of player_x - screenwidth and 0
+
+   ; one problem to be accounted for is if the map dimensions are small enough that loading the current map and the surrounding map(s) aren't enought to cover the whole screen. therefore, starting at y = 0, load default tile from 0 to halfscreen - (y_dim + pposy).   
 
 .skip_top
 
