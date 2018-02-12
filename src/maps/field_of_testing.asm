@@ -6,6 +6,7 @@ EXPORT field_of_testing
  SECTION "Field of Testing",ROMX,BANK[$102]
 
 field_of_testing:
+; 4 bytes
 ; x dimension
 DB $20
 ; y dimension
@@ -16,6 +17,7 @@ DB $00
 DB $00
 
 ; surrounding maps
+; 24 bytes
 DB $00,$00,$00 ;top
 DB $00,$00,$00 ;top right
 DB $00,$00,$00 ;right
@@ -26,6 +28,7 @@ DB $00,$00,$00 ;left
 DB $00,$00,$00 ;top left
 
 ; warp data
+; 224 bytes - 32 x 7
 DB $00,$00,$00,$00,$00,$00,$00
 DB $00,$00,$00,$00,$00,$00,$00
 DB $00,$00,$00,$00,$00,$00,$00
@@ -60,6 +63,7 @@ DB $00,$00,$00,$00,$00,$00,$00
 DB $00,$00,$00,$00,$00,$00,$00
 
 ;actual map
+; starts at 256 bytes
 DB $10,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F
 DB $0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F
 DB $0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F,$0F

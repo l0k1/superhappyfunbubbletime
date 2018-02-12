@@ -36,6 +36,11 @@ MAPY        EQU $C00E
 
 MAP_TILESET EQU $C00F
 
+; currently loaded map bank
+MAP_BANK    EQU $C01C
+MAP_ADDR_U  EQU $C01D
+MAP_ADDR_L  EQU $C01E
+
 ; Map default tile
 MAPDEFAULTTILE  EQU $C011
 
@@ -61,6 +66,8 @@ CBANKU      EQU $C018   ; current bank MSB
 CBANKL      EQU $C019   ; current bank LSB
 PBANKU      EQU $C01A   ; previous bank MSB
 PBANKL      EQU $C01B   ; previous bank LSB
+
+; latest address = $C01E
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00
