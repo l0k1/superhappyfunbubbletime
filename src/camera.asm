@@ -195,10 +195,35 @@ Load_Map_Data:
 .skupgtzt         ; another mnemonic, i think.
    ld E,A         ; E now holds the starting pos
    ld D,$98       ; there, DE points to the starting pos in the BG map
-   ld A,$16
-   sub E          ; $16 - startpoint = bytes to load
+   
+   ; how many tiles to load per pass is
+   ; loading_width_$16 - ( greater of 0 or half_screen_width_$0B - pposx ) - ( greater of 0 or half_screen_width_$0B - (MPX - PPOSX))
+
+   ld A,[PPOSX]
+   ld A,C
+   ld A,$0B
+   sub C
+   jr nc,.skip_1
+   xor A
+.skip_1
+   ld C,A         ; C now has greater of 0 or half_screen - pposx
+   ld A,[PPOSX]
+   ld B,A
+   ld A,[MAPX]
+   sub B          ; A now has MAPX - PPOSX
+   ld B,A
+   ld A,$0B
+   sub B
+   jr nc,.skip_2
+   xor A
+.skip_2
+   ld B,A         ; B now has greater of 0 or half_screen - (mapx - pposx)
+   ld A,$16       ; revising the formula above, $16 - C - B
+   sub C
+   sub B          ; A now has the number of bytes to load
+
    pop BC         ; B now holds the y coord (see the push above).
-   ld C,A         ; C = bytes to load
+   ld C,A         ; C now holds how many bytes to load
    ld A,[MAPY]    ; y_dim - y_coord(B) = y lines to load
    sub B
    ld B,A         ; load "C" amount of tiles, "B" times, from HL, to DE
