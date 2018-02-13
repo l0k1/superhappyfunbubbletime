@@ -67,6 +67,12 @@ CBANKL      EQU $C019   ; current bank LSB
 PBANKU      EQU $C01A   ; previous bank MSB
 PBANKL      EQU $C01B   ; previous bank LSB
 
+; "dynamic" memory allocations, available to be rewritten
+TEMP1       EQU $C01E
+TEMP2       EQU $C01F
+TEMP3       EQU $C020
+TEMP4       EQU $C021
+
 ; latest address = $C01E
 
 ;OAM Mirror. Put sprite updates here.
