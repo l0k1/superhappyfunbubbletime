@@ -292,7 +292,7 @@ Load_Map_Data:
    sub C
    jr nc,.skip_1
    xor A
-.skip_1
+.skip_1_def
    ld C,A         ; C now has greater of 0 or half_screen - pposx
    ld A,[PPOSX]
    ld B,A
@@ -303,7 +303,7 @@ Load_Map_Data:
    sub B
    jr nc,.skip_2
    xor A
-.skip_2
+.skip_2_def
    ld B,A         ; B now has greater of 0 or half_screen - (mapx - pposx)
    ld A,$16       ; revising the formula above, $16 - C - B
    sub C
