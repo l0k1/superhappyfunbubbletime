@@ -145,11 +145,11 @@ Load_Map_Data:
    pop HL
    push HL           ; save the map legend location right away
 
-   ld A,[HL+]
+   ld A,[HL+]        ; if the bank data for the top map is $00, load the default tile
    cp 0
    jp z,.load_default_tile_top
    ; we are loading in the top map
-   ; jump to that memory spot
+   ; get the bank of that map, and the memory location of it in that bank
    ld D,$01
    ld E,A
    ld A,[HL+]
@@ -159,11 +159,9 @@ Load_Map_Data:
    call Switch_Bank  
    ; DE contains bank, BC contains memory address
    
-   ; formula for tile addy is:
-   ; x = pposx - halfscreen, if carry then 0
-   ; tile = ((y_dim - pposy - halfscreeny) * y_dim) + x
-   ; tile = tile + 100 ( to account for metadata)
-   ; accumulate our sum into BC
+   ; formula for tile address to begin copying in the bank is
+   ; tile = ((y_dim - pposy - halfscreeny) * y_dim) + (greater of pposx - halfscreen or 0) + $100
+   ; accumulate the address into BC
 
    ld A,[PPOSY]
    ld E,A
@@ -172,10 +170,10 @@ Load_Map_Data:
    sub E
    sub $0A
    ld E,A
-   push AF        ; A holds the y coord
-   call Mul8b     ; H*E, stores in HL
+   push AF        ; A holds the y portion of the formula, used ~50 lines down
+   call Mul8b     ; H*E, stores in HL -- H is y_dim, E is y_dim - pposy - halfscreeny
    
-   ld A,[PPOSX]
+   ld A,[PPOSX]   ; calculate the x portion of the formula
    sub $0B
    jr nc,.skupgtz ; it's a mnemonic, i swear.
    xor A
@@ -183,13 +181,16 @@ Load_Map_Data:
    ld A,E
    ld D,$01       ; to account for metadata
    
-   ; now BC contains the map starting address, DE contains the "x" portion and metadata skipping amount, and HL contains the "y" portion
+   ; now BC contains the map starting address in the bank, DE contains the "x" portion of the formula and the metadata compensation amount, and HL contains the "y" portion
    
    add HL,BC
    add HL,DE
 
-   ; HL now contains our starting address 
-   ; start loading bgmap at halfscreen - pposx, if carry then 0
+   ; HL now contains our starting address in the bank
+
+   ; start loading bgmap at greater of halfscreenx - pposx, or 0
+   ; need to account for Y here, if the map dim's won't load all the way up
+   ; i believe this is greater of 0 and halfscreeny - y_dim - pposy
    ld A,[PPOSX]
    ld E,A
    ld A,$0B
@@ -206,7 +207,7 @@ Load_Map_Data:
    ld A,[PPOSX]
    ld A,C
    ld A,$0B
-   sub C
+   sub C          ; halfscreen - pposx
    jr nc,.skip_1
    xor A
 .skip_1
@@ -224,9 +225,9 @@ Load_Map_Data:
    ld B,A         ; B now has greater of 0 or half_screen - (mapx - pposx)
    ld A,$16       ; revising the formula above, $16 - C - B
    sub C
-   sub B          ; A now has the number of bytes to load
+   sub B          ; A now has the number of bytes to load per pass
 
-   pop BC         ; B now holds the y coord (see the push above).
+   pop BC         ; B now holds the y coord (see the AF push above, before the Mul8b).
    ld C,A         ; C now holds how many bytes to load
    ld A,[MAPY]    ; y_dim - y_coord(B) = y lines to load
    sub B
@@ -373,7 +374,6 @@ Load_Map_Data:
    call Switch_Bank  ; DE now contains bank, BC contains memory location
 
    ; to find the tile address is
-   ; ... to be figured out
    ; y = (y_dim - pposy - halfscreen) * y_dim
    ; x should always = 0? ergo y = tile to start with
 
@@ -394,7 +394,13 @@ Load_Map_Data:
 
    ; HL now contains the starting address in the map.
 
-.load_default_tile_top_rigth
+   ; find the starting tile in the BG map ($9800)
+   ; starting tile for the bgmap is y = 0,
+   ; x = halfscreen_x - greater of pposx-xdim
+
+
+
+.load_default_tile_top_right
 
 .skip_top_right
    ; HL should still be pointed to our map legend, and A contains the "what maps to load" data
