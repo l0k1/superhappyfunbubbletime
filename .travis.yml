@@ -22,4 +22,5 @@ before_install:
   - sudo make && sudo make install
   - cd ../
 
-install: make
+install: 
+  - make

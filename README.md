@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/l0k1/superhappyfunbubbletime.svg?branch=master)](https://travis-ci.org/l0k1/superhappyfunbubbletime)
+
 # superhappyfunbubbletime
 
 ...definitely isn't going to be the name in the long run.
