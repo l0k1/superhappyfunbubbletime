@@ -117,6 +117,10 @@ Load_Map_Data:
    ; bit 4 = bottom
    ; bit 6 = left
 
+   ; save E in TEMP1
+   ld A,E
+   ld [TEMP1],A
+
    ; disable the LCD so we can write lots to the background
    ld HL,GFX_UPDATE_FLAGS
    set 2,[HL]
@@ -148,11 +152,11 @@ Load_Map_Data:
    ; jump to that memory spot
    ld D,$01
    ld E,A
-   call Switch_Bank
    ld A,[HL+]
    ld B,A
    ld A,[HL]
    ld C,A
+   call Switch_Bank  
    ; DE contains bank, BC contains memory address
    
    ; formula for tile addy is:
@@ -162,9 +166,9 @@ Load_Map_Data:
    ; accumulate our sum into BC
 
    ld A,[PPOSY]
-   ld H,A         ;use this later in the multiplication
    ld E,A
    ld A,[MAPY]
+   ld H,A         ; save this for the multiplication
    sub E
    sub $0A
    ld E,A
@@ -277,9 +281,33 @@ Load_Map_Data:
 .skupdgtzt        ; another mnemonic, i think.
    ld E,A         ; E now holds the starting pos
    ld D,$98       ; there, DE points to the starting pos in the BG map
-   ld A,$16
-   sub E          ; $16 - startpoint = bytes to load
-   ld C,A         ; C = bytes to load
+
+   ; how many tiles to load per pass is
+   ; loading_width_$16 - ( greater of 0 or half_screen_width_$0B - pposx ) - ( greater of 0 or half_screen_width_$0B - (MPX - PPOSX))
+
+   ld A,[PPOSX]
+   ld A,C
+   ld A,$0B
+   sub C
+   jr nc,.skip_1
+   xor A
+.skip_1
+   ld C,A         ; C now has greater of 0 or half_screen - pposx
+   ld A,[PPOSX]
+   ld B,A
+   ld A,[MAPX]
+   sub B          ; A now has MAPX - PPOSX
+   ld B,A
+   ld A,$0B
+   sub B
+   jr nc,.skip_2
+   xor A
+.skip_2
+   ld B,A         ; B now has greater of 0 or half_screen - (mapx - pposx)
+   ld A,$16       ; revising the formula above, $16 - C - B
+   sub C
+   sub B          ; A now has the number of bytes to load
+
    ; start loading bgmap at y = 0
    ; load halfscreen - pposy
 
@@ -315,9 +343,64 @@ Load_Map_Data:
 
 .up_exit_final    ; fokkin' hallelujah
    
-   
- 
    ; one problem to be accounted for is if the map dimensions are small enough that loading the current map and the surrounding map(s) aren't enought to cover the whole screen. therefore, starting at y = 0, load default tile from 0 to halfscreen - (y_dim + pposy).   
+
+   ; upper left load
+
+   pop HL         ; HL should now point to the beginning of the directory.
+   push HL
+
+   ld A,[TEMP1]   ; temp 1 contains our "what maps to load" data
+   bit 2,A        ; bit 2 should check the right side. since we are still in the "top", this will be upper left
+   jp z,.skip_top_right
+
+   inc HL         ; point HL to the map directory for top right
+   inc HL
+   inc HL
+   ld A,[HL+]
+   cp 0
+   jp z,.load_default_tile_top_right
+   
+   ; we are not loading the default tiles
+   ; load in the map bank and address
+
+   ld D,$01
+   ld E,A
+   ld A,[HL+]
+   ld B,A
+   ld A,[HL]
+   ld C,A
+   call Switch_Bank  ; DE now contains bank, BC contains memory location
+
+   ; to find the tile address is
+   ; ... to be figured out
+   ; y = (y_dim - pposy - halfscreen) * y_dim
+   ; x should always = 0? ergo y = tile to start with
+
+   ld A,[PPOSY]
+   ld E,A
+   ld A,[MAPY]
+   ld H,A         ; save for the multiplication
+   sub E
+   sub $0A
+   ld E,A         ; E = (y_dim - pposy - halfscreen), H = MAPY
+   call Mul8b     ; H*E, stores in HL
+
+   ld E,$00       ; account for $100 bytes of metadata
+   ld D,$01
+
+   add HL,BC
+   add HL,DE
+
+   ; HL now contains the starting address in the map.
+
+.load_default_tile_top_rigth
+
+.skip_top_right
+   ; HL should still be pointed to our map legend, and A contains the "what maps to load" data
+   bit 6,A        ; bit 6 checks the left side
+   jp z,.skip_top
+
 
 .skip_top
 
