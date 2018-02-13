@@ -20,5 +20,6 @@ before_install:
   - git clone https://github.com/rednex/rgbds
   - cd ./rgbds
   - sudo make && sudo make install
+  - cd ../
 
-script: make
+install: make
