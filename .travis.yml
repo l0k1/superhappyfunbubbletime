@@ -1,0 +1,24 @@
+language: c
+
+os:
+  - linux
+
+sudo: required
+
+git:
+  depth: 2
+
+addons:
+  apt:
+    packages:
+      - byacc
+      - flex
+      - pkg-config
+      - libpng-dev
+
+before_install:
+  - git clone https://github.com/rednex/rgbds
+  - cd ./rgbds
+  - sudo make && sudo make install
+
+script: make
