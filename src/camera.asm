@@ -127,301 +127,184 @@ Load_Map_Data:
    
    halt
    nop
-
-   ; load top
    
+   ; we need to load from top to bottom, and from left to right
+
+   ; check top bit   
    bit 0,E
    jp z,.skip_top
-   ; for loading the top,
-   ; y in the map is y_dim - (halfscreen - pposy)
-   ; y in the bg array is 0
-   ; x in the map is the greater of player_x - screenwidth and 0
-   ; x in the bg array is the lesser of player_x - screenwidth and 0
-   
-   ; first step is to check if there is an upper map to load. otherwise we are using the default tile.
-   
-   ; the stack should still be pointed at the pos containing map data
-   
-   pop HL
-   push HL           ; save the map legend location right away
-
-   ld A,[HL+]        ; if the bank data for the top map is $00, load the default tile
-   cp 0
-   jp z,.load_default_tile_top
-   ; we are loading in the top map
-   ; get the bank of that map, and the memory location of it in that bank
-   ld D,$01
-   ld E,A
-   ld A,[HL+]
-   ld B,A
-   ld A,[HL]
-   ld C,A
-   call Switch_Bank  
-   ; DE contains bank, BC contains memory address
-   
-   ; formula for tile address to begin copying in the bank is
-   ; tile = ((y_dim - pposy - halfscreeny) * y_dim) + (greater of pposx - halfscreen or 0) + $100
-   ; accumulate the address into BC
-
-   ld A,[PPOSY]
-   ld E,A
-   ld A,[MAPY]
-   ld H,A         ; save this for the multiplication
-   sub E
-   sub $0A
-   ld E,A
-   push AF        ; A holds the y portion of the formula, used ~50 lines down
-   call Mul8b     ; H*E, stores in HL -- H is y_dim, E is y_dim - pposy - halfscreeny
-   
-   ld A,[PPOSX]   ; calculate the x portion of the formula
-   sub $0B
-   jr nc,.skupgtz ; it's a mnemonic, i swear.
-   xor A
-.skupgtz
-   ld A,E
-   ld D,$01       ; to account for metadata
-   
-   ; now BC contains the map starting address in the bank, DE contains the "x" portion of the formula and the metadata compensation amount, and HL contains the "y" portion
-   
-   add HL,BC
-   add HL,DE
-
-   ; HL now contains our starting address in the bank
-
-   ; start loading bgmap at greater of halfscreenx - pposx, or 0
-   ; need to account for Y here, if the map dim's won't load all the way up
-   ; i believe this is greater of 0 and halfscreeny - y_dim - pposy
-   ld A,[PPOSX]
-   ld E,A
-   ld A,$0B
-   sub E
-   jr nc,.skupgtzt
-   xor A
-.skupgtzt         ; another mnemonic, i think.
-   ld E,A         ; E now holds the starting pos
-   ld D,$98       ; there, DE points to the starting pos in the BG map
-   
-   ; how many tiles to load per pass is
-   ; loading_width_$16 - ( greater of 0 or half_screen_width_$0B - pposx ) - ( greater of 0 or half_screen_width_$0B - (MPX - PPOSX))
-
-   ld A,[PPOSX]
-   ld A,C
-   ld A,$0B
-   sub C          ; halfscreen - pposx
-   jr nc,.skip_1
-   xor A
-.skip_1
-   ld C,A         ; C now has greater of 0 or half_screen - pposx
-   ld A,[PPOSX]
-   ld B,A
-   ld A,[MAPX]
-   sub B          ; A now has MAPX - PPOSX
-   ld B,A
-   ld A,$0B
-   sub B
-   jr nc,.skip_2
-   xor A
-.skip_2
-   ld B,A         ; B now has greater of 0 or half_screen - (mapx - pposx)
-   ld A,$16       ; revising the formula above, $16 - C - B
-   sub C
-   sub B          ; A now has the number of bytes to load per pass
-
-   pop BC         ; B now holds the y coord (see the AF push above, before the Mul8b).
-   ld C,A         ; C now holds how many bytes to load
-   ld A,[MAPY]    ; y_dim - y_coord(B) = y lines to load
-   sub B
-   ld B,A         ; load "C" amount of tiles, "B" times, from HL, to DE
-
-   push BC        ; save it
-
-.up_loading_lollapalooza
-   ld A,[HL]
-   ld [DE],A
-   dec C
-   jr nz,.up_loading_lollapalooza
-   dec B
-   jp z,.up_exit
-   ld A,B         ; refresh the C register with
-   pop BC         ; the count of tiles we need to load
-   push BC
-   ld B,A         ; B needs to be saved tho
-   ld A,E         ; increment DE by $20
-   add $20
-   jr nc,.up_skip_inc_d
-   inc D
-.up_skip_inc_d
-   push DE        ; now we need to increment HL by MAPY
-   ld D,H
-   ld E,L
-   ld A,[MAPY]
-   add E
-   jr nc,.up_skip_inc_d_2
-   inc D
-.up_skip_inc_d_2
-   ld H,D
-   ld L,E
-   pop DE
-   jp .up_loading_lollapalooza 
-
-.up_exit          ; clean up.
-   pop BC         ; we don't need that on the stack no more. hallelujah.
-   call Return_Bank
-   jp .up_exit_final
-
-
-.load_default_tile_top  ; much like above, but we don't have to worry about internal maps.
-
-   ; start loading bgmap at halfscreen - pposx, if carry then 0
-   ld A,[PPOSX]
-   ld E,A
-   ld A,$0B
-   sub E
-   jr nc,.skupdgtzt
-   xor A
-.skupdgtzt        ; another mnemonic, i think.
-   ld E,A         ; E now holds the starting pos
-   ld D,$98       ; there, DE points to the starting pos in the BG map
-
-   ; how many tiles to load per pass is
-   ; loading_width_$16 - ( greater of 0 or half_screen_width_$0B - pposx ) - ( greater of 0 or half_screen_width_$0B - (MPX - PPOSX))
-
-   ld A,[PPOSX]
-   ld A,C
-   ld A,$0B
-   sub C
-   jr nc,.skip_1
-   xor A
-.skip_1_def
-   ld C,A         ; C now has greater of 0 or half_screen - pposx
-   ld A,[PPOSX]
-   ld B,A
-   ld A,[MAPX]
-   sub B          ; A now has MAPX - PPOSX
-   ld B,A
-   ld A,$0B
-   sub B
-   jr nc,.skip_2
-   xor A
-.skip_2_def
-   ld B,A         ; B now has greater of 0 or half_screen - (mapx - pposx)
-   ld A,$16       ; revising the formula above, $16 - C - B
-   sub C
-   sub B          ; A now has the number of bytes to load
-
-   ; start loading bgmap at y = 0
-   ; load halfscreen - pposy
-
-   ld A,[PPOSY]
-   ld B,A
-   ld A,$0A
-   sub B          ; in theory this'll never carry?
-   ld B,A         ; B = y lines to load
-                  ; load "C" default tiles, "B" times, to DE
-   push BC        ; save it
-
-   ld A,[MAPDEFAULTTILE]
-
-.up_loading_default_lollapalooza
-   ld [DE],A
-   dec C
-   jr nz,.up_loading_default_lollapalooza
-   dec B
-   jp z,.up_default_exit
-   ld A,B         ; refresh the C register with
-   pop BC         ; the count of tiles we need to load
-   push BC
-   ld B,A         ; B needs to be saved tho
-   ld A,E         ; increment DE by $20
-   add $20
-   jr nc,.up_default_skip_inc_d
-   inc D
-.up_default_skip_inc_d
-   jp .up_loading_lollapalooza 
-
-.up_default_exit
-   pop BC         ; get this off the stack
-
-.up_exit_final    ; fokkin' hallelujah
-   
-   ; one problem to be accounted for is if the map dimensions are small enough that loading the current map and the surrounding map(s) aren't enought to cover the whole screen. therefore, starting at y = 0, load default tile from 0 to halfscreen - (y_dim + pposy).   
-
-   ; upper left load
-
-   pop HL         ; HL should now point to the beginning of the directory.
-   push HL
-
-   ld A,[TEMP1]   ; temp 1 contains our "what maps to load" data
-   bit 2,A        ; bit 2 should check the right side. since we are still in the "top", this will be upper left
-   jp z,.skip_top_right
-
-   inc HL         ; point HL to the map directory for top right
-   inc HL
-   inc HL
-   ld A,[HL+]
-   cp 0
-   jp z,.load_default_tile_top_right
-   
-   ; we are not loading the default tiles
-   ; load in the map bank and address
-
-   ld D,$01
-   ld E,A
-   ld A,[HL+]
-   ld B,A
-   ld A,[HL]
-   ld C,A
-   call Switch_Bank  ; DE now contains bank, BC contains memory location
-
-   ; to find the tile address is
-   ; y = (y_dim - pposy - halfscreen) * y_dim
-   ; x should always = 0? ergo y = tile to start with
-
-   ld A,[PPOSY]
-   ld E,A
-   ld A,[MAPY]
-   ld H,A         ; save for the multiplication
-   sub E
-   sub $0A
-   ld E,A         ; E = (y_dim - pposy - halfscreen), H = MAPY
-   call Mul8b     ; H*E, stores in HL
-
-   ld E,$00       ; account for $100 bytes of metadata
-   ld D,$01
-
-   add HL,BC
-   add HL,DE
-
-   ; HL now contains the starting address in the map.
-
-   ; find the starting tile in the BG map ($9800)
-   ; starting tile for the bgmap is y = 0,
-   ; x = halfscreen_x - greater of pposx-xdim
-
-
-
-.load_default_tile_top_right
-
-.skip_top_right
-   ; HL should still be pointed to our map legend, and A contains the "what maps to load" data
-   bit 6,A        ; bit 6 checks the left side
-   jp z,.skip_top
-
+   ; 
 
 .skip_top
 
-; upper_left load = 
-;     ...load the upper_left map, starting with coords [left_x], [up_y], going to [dim_x] and [dim_y]
-; left load = 
-;     ...load the left map, starting with coords [left_x], [center_map_y], going to [dim_x] and [bottom of the screen or dim_y]
-; upper load = 
-;     ...load the upper map, starting with coords [center_map_x],[up_y], going to [right of the screen or dim_x],[dim_y]
-; upper right load =
-;     ... load the upper_right map, starting with coords [right_x], [up_y], going to [right of the screen],[dim_y]
-; etc etc
 
 
 
+   ret
+
+; formulas for the map loading
+; writes respective coordinate (x or y) to B
+; if X, writes tiles to load per pass to C
+; if Y, writes number of passes to C
+; should work if the X,Y of the player
+; on the screen is 10,9
+
+Top_Y:
+   ; y = MAPY - 9 + PPOSY
+   ld B,$09
+   ld A,[MAPY]
+   sub B
+   ld B,A
+   ld A,[PPOSY]
+   add B
+   ld B,A
+   
+   ; lines to load = 9 - pposy
+   ld A,[PPOSY]
+   ld C,$09
+   sub C
+   ld C,A
+   
+   ret
+   
+Center_Y:
+   push DE
+   ; y = greater of 0 and PPOSY - 9
+   ld B,$09
+   ld A,[PPOSY]
+   sub B
+   jr nc,.skip_0_load_n0
+   xor A
+.skip_0_load_n0
+   ld B,A
+   
+   ; lines to load is going to be done in 3 parts
+   
+   ; bottom side = greater of 0 or 11 - (MAPY - PPOSY)
+   ld A,[PPOSY]
+   ld C,A
+   ld A,[MAPY]
+   sub C
+   jr c,.zero_load
+   ld C,A
+   ld A,$0B
+   sub C
+   jr nc,.skip_0_load_n1
+.zero_load
+   xor A
+.skip_0_load_n1
+   ld C,A
+   
+   ; top side = greater of 0 or pposy - 9
+   ld D,$09
+   ld A,[PPOSY]
+   sub D
+   jr nc,.skip_0_load_n2
+   xor A
+.skip_0_load_n2
+   
+   ; lines to load = top side - bottom side
+   
+   sub C
+   ld C,A
+   
+   pop DE
+   ret
+   
+Bottom_Y:
+   ; y is 0
+   xor A
+   ld B,A
+   
+   ; lines to load is 11 - (MAPY - PPOSY)
+   ld A,[PPOSY]
+   ld C,A
+   ld A,[MAPY]
+   sub C
+   ld C,A
+   ld A,$0B
+   sub C
+   ld C,A
+   
+   ret
+   
+Left_X:
+   ; x = MAPX + (PPOSX - 10)
+   ld B,$0A
+   ld A,[PPOSX]
+   sub B
+   ld B,A
+   ld A,[MAPX]
+   add B
+   ld B,A
+   
+   ; tile count per pass = 10 - pposx
+   ld A,[PPOSX]
+   ld C,A
+   ld A,$0A
+   sub C
+   ld C,A
+   
+   ret
+   
+Center_X:
+   push DE
+   ; x = greater of 0 or pposx - 10
+   ld B,$0A
+   ld A,[PPOSX]
+   sub B
+   jr nc,.skip_zero
+   xor A
+.skip_zero
+   ld B,A
+   
+   ; tile_count is a two parter
+   
+   ; right side = greater of 0 or 12 - (MAPX - PPOSX)
+   ld A,[PPOSX]
+   ld D,A
+   ld A,[MAPX]
+   sub D
+   jr c,.load_zero
+   ld D,A
+   ld A,$0C
+   sub D
+   jr nc,.skip_zero_n1
+.load_zero
+   xor A
+.skip_zero_n1
+   ld D,A
+   
+   ; left side = greater of 0 or pposx - 10
+   ld C,$0A
+   ld A,[PPOSX]
+   sub C
+   jr nc,.skip_zero_n2
+   xor A
+.skip_zero_n2
+   
+   ; final is left side - right side
+   sub D
+   ld C,A
+   
+   pop DE
+   ret
+   
+Right_X:
+   ; x = 0
+   ld B,$00
+   
+   ; tile_count = pposx + 12 - MAPX
+   
+   ld A,[MAPX]
+   ld C,A
+   ld A,$0C
+   sub C
+   ld C,A
+   ld A,[PPOSX]
+   add C
+   ld C,A
+   
    ret
 
    SECTION "Screen Fades",ROM0
