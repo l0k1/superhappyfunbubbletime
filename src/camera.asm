@@ -129,11 +129,39 @@ Load_Map_Data:
    nop
    
    ; we need to load from top to bottom, and from left to right
+   ; for every iteration, we need the starting address in the map being loaded, the starting address of the background array, how many lines to count, and how many tiles per line.
+   ; for the map being loaded, use the formulas below to get mapx, mapy, number of tiles per line, and number of lines.
+   ; for the background array, due to setting SCX,SCY to 8,8, we know to start loading the bg array at $8000 [TDT1]
+
 
    ; check top bit   
    bit 0,E
    jp z,.skip_top
-   ; 
+   
+   ; we need to load the top. check the left bit first
+   bit 6,E
+   jp z,.top_center_load
+   ld DE,$8000          ; top left, bg array write should always begin at $8000
+
+.top_center_load
+   ; top center load
+   ld A,[PPOSX]
+   ld E,A
+   ld A,$0A
+   sub E
+   jr nc,.skip_top_load_zero
+   xor A
+.skip_top_load_zero
+   ld E,A
+   ld D,$80             ; DE should now contain $8000 + 10 - pposx (or 0) for the starting pos
+
+.top_left_load
+   ; top right load
+   bit 2,E
+   jp z,.skip_top
+
+   ; center_x value + tiles_to_load_per used in center_x
+
 
 .skip_top
 
@@ -149,7 +177,7 @@ Load_Map_Data:
 ; should work if the X,Y of the player
 ; on the screen is 10,9
 
-Top_Y:
+Top_Y_Map:
    ; y = MAPY - 9 + PPOSY
    ld B,$09
    ld A,[MAPY]
@@ -167,7 +195,7 @@ Top_Y:
    
    ret
    
-Center_Y:
+Center_Y_Map:
    push DE
    ; y = greater of 0 and PPOSY - 9
    ld B,$09
@@ -211,7 +239,7 @@ Center_Y:
    pop DE
    ret
    
-Bottom_Y:
+Bottom_Y_Map:
    ; y is 0
    xor A
    ld B,A
@@ -228,7 +256,7 @@ Bottom_Y:
    
    ret
    
-Left_X:
+Left_X_Map:
    ; x = MAPX + (PPOSX - 10)
    ld B,$0A
    ld A,[PPOSX]
@@ -247,7 +275,7 @@ Left_X:
    
    ret
    
-Center_X:
+Center_X_Map:
    push DE
    ; x = greater of 0 or pposx - 10
    ld B,$0A
@@ -290,7 +318,7 @@ Center_X:
    pop DE
    ret
    
-Right_X:
+Right_X_Map:
    ; x = 0
    ld B,$00
    
