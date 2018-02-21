@@ -121,10 +121,17 @@ Load_Map_Data:
    ld A,E
    ld [TEMP1],A
 
+   ; save the BG MAP load location to TEMP2 (MSB) and TEMP3 (LSB)
+
+   ld A,$80
+   ld [TEMP2],A
+   xor A
+   ld [TEMP3],A
+
    ; disable the LCD so we can write lots to the background
    ld HL,GFX_UPDATE_FLAGS
    set 2,[HL]
-   
+
    halt
    nop
    
@@ -133,15 +140,16 @@ Load_Map_Data:
    ; for the map being loaded, use the formulas below to get mapx, mapy, number of tiles per line, and number of lines.
    ; for the background array, due to setting SCX,SCY to 8,8, we know to start loading the bg array at $8000 [TDT1]
 
-
    ; check top bit   
    bit 0,E
    jp z,.skip_top
    
+.top_left_load
    ; we need to load the top. check the left bit first
    bit 6,E
    jp z,.top_center_load
-   ld DE,$8000          ; top left, bg array write should always begin at $8000
+   
+   ; check if we are loading the default tile, or from a bg map
 
 .top_center_load
    ; top center load
@@ -155,7 +163,7 @@ Load_Map_Data:
    ld E,A
    ld D,$80             ; DE should now contain $8000 + 10 - pposx (or 0) for the starting pos
 
-.top_left_load
+.top_right_load
    ; top right load
    bit 2,E
    jp z,.skip_top
