@@ -138,7 +138,7 @@ Load_Map_Data:
    ; we need to load from top to bottom, and from left to right
    ; for every iteration, we need the starting address in the map being loaded, the starting address of the background array, how many lines to count, and how many tiles per line.
    ; for the map being loaded, use the formulas below to get mapx, mapy, number of tiles per line, and number of lines.
-   ; for the background array, due to setting SCX,SCY to 8,8, we know to start loading the bg array at $8000 [TDT1]
+   ; for the background array, due to setting SCX,SCY to 8,8, we know to start loading the bg array at $8000 [BG Map 1]
 
    ; check top bit   
    bit 0,E
@@ -149,7 +149,26 @@ Load_Map_Data:
    bit 6,E
    jp z,.top_center_load
    
+   pop HL                        ; HL *should* contain the addy of the warp data
+   push HL
+   
+   ; top-left map will be the first entry in the surrounding map data
+   ld A,[HL+]
+   or 0                          ; if the map bank is 0, load the default tile
+   jr nz,.top_left_load_map
+   
+.top_left_load_default_tile
+; writes respective coordinate (x or y) to B
+; if X, writes tiles to load per pass to C
+; if Y, writes number of passes to C
+   call Top_Y_Map                ; number of passes to do
+   ld
+   
+   
+   
+   
    ; check if we are loading the default tile, or from a bg map
+   
 
 .top_center_load
    ; top center load
@@ -187,6 +206,8 @@ Load_Map_Data:
 
 Top_Y_Map:
    ; y = MAPY - 9 + PPOSY
+   push AF
+   
    ld B,$09
    ld A,[MAPY]
    sub B
@@ -201,9 +222,11 @@ Top_Y_Map:
    sub C
    ld C,A
    
+   pop AF
    ret
    
 Center_Y_Map:
+   push AF
    push DE
    ; y = greater of 0 and PPOSY - 9
    ld B,$09
@@ -245,10 +268,13 @@ Center_Y_Map:
    ld C,A
    
    pop DE
+   pop AF
    ret
    
 Bottom_Y_Map:
    ; y is 0
+   push AF
+   
    xor A
    ld B,A
    
@@ -262,10 +288,14 @@ Bottom_Y_Map:
    sub C
    ld C,A
    
+   pop AF
+   
    ret
    
 Left_X_Map:
    ; x = MAPX + (PPOSX - 10)
+   push AF
+   
    ld B,$0A
    ld A,[PPOSX]
    sub B
@@ -281,9 +311,12 @@ Left_X_Map:
    sub C
    ld C,A
    
+   pop AF
+   
    ret
    
 Center_X_Map:
+   push AF
    push DE
    ; x = greater of 0 or pposx - 10
    ld B,$0A
@@ -324,9 +357,11 @@ Center_X_Map:
    ld C,A
    
    pop DE
+   pop AF
    ret
    
 Right_X_Map:
+   push AF
    ; x = 0
    ld B,$00
    
@@ -341,6 +376,7 @@ Right_X_Map:
    add C
    ld C,A
    
+   pop AF
    ret
 
    SECTION "Screen Fades",ROM0
