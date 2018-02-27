@@ -161,10 +161,35 @@ Load_Map_Data:
 ; writes respective coordinate (x or y) to B
 ; if X, writes tiles to load per pass to C
 ; if Y, writes number of passes to C
-   call Top_Y_Map                ; number of passes to do
-   ld
+   call Top_Y_Map                ; number of passes to do into C
+   ld E,C
+   call Left_X_Map               ; number of tiles per pass into C
+   ld D,C
+   ld A,C
+   ld [TEMP4],A                  ; save number of tiles for our loop
+   ld A,$2F
+   sub C
+   ld C,A
+   ld B,0                        ; BC = screen width - tiles to load per pass
+   ld HL,$8000                   ; load the bg map location into HL
+   ld A,[MAPDEFAULTTILE]
    
+.top_left_load_default_tile_loop
+   ld [HL+],A
+   dec E
+   xor A
+   or E
+   jr nz,.top_left_load_default_tile_loop
+   add HL,BC                     ; increment HL by the screen width - tile count
+   ld A,[TEMP4]                  ; refresh #tiles
+   ld E,A
+   dec D
+   xor A
+   or D
+   jr nz,.top_left_load_default_tile_loop
+   jp .top_center_load
    
+.top_left_load_map
    
    
    ; check if we are loading the default tile, or from a bg map
