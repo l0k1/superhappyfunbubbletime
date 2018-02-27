@@ -61,6 +61,8 @@ PDIR        EQU $C017   ; player direction - may include more data in this later
                         ; %0010 -> player facing left
                         ; %0100 -> player facing up
                         ; %1000 -> player facing right
+PPOSX_SCREEN EQU $C022  ; X location of the player on the screen
+PPOSY_SCREEN EQU $C023  ; Y location of the player on the screen
                         
 CBANKU      EQU $C018   ; current bank MSB
 CBANKL      EQU $C019   ; current bank LSB
@@ -73,7 +75,7 @@ TEMP2       EQU $C01F
 TEMP3       EQU $C020
 TEMP4       EQU $C021
 
-; latest address = $C01E
+; latest address = $C023
 
 ;OAM Mirror. Put sprite updates here.
 OAM_MIRROR EQU $DF00

@@ -26,7 +26,7 @@ Local map format:
 
 *Out-of-Dimension Tile* is one byte, and indicates the tile the background should show if outside of XY and there's no adjacent map.
 
-*Surrounding maps* are what maps are around the current map. X/Y dimensions, tileset, and the out-of-dimension tile must match. The first entry will be the map to the top, and subsequent entries will go clockwise, for a total of 8 possible maps. If no map is found in a direction, then $00 $00 $00 should be the entry.
+*Surrounding maps* are what maps are around the current map. X/Y dimensions, tileset, and the out-of-dimension tile must match. The first entry will be the map to the top-left, and subsequent entries will go clockwise, for a total of 8 possible maps. If no map is found in a direction, then the destination map bank should be $00
 
 Surrounding map format:
 ```
