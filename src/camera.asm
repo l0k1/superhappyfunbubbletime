@@ -207,27 +207,7 @@ Load_Map_Data:
    jr nc,.skip_inc_b_top_left
    inc B
 .skip_inc_b_top_left
-   
-   
-; loop to load the default tile.
-; BC = screen width - tiles to load per pass
-; DE = [D: #tiles per pass | E: #passes]
-; HL = location in the BG map to load
-Default_Tile_Load_Loop:
-   ld A,[MAPDEFAULTTILE]
-   ld [HL+],A
-   dec E
-   xor A
-   or E
-   jr nz,Default_Tile_Load_Loop
-   add HL,BC                     ; increment HL by the screen width - tile count
-   ld A,[TEMP4]                  ; refresh #tiles
-   ld E,A
-   dec D
-   xor A
-   or D
-   jr nz,Default_Tile_Load_Loop
-   ret
+
    
 .top_center_load
    ; top center load
@@ -255,6 +235,27 @@ Default_Tile_Load_Loop:
 
 
    ret
+   
+; loop to load the default tile.
+; BC = screen width - tiles to load per pass
+; DE = [D: #tiles per pass | E: #passes]
+; HL = location in the BG map to load
+Default_Tile_Load_Loop:
+   ld A,[MAPDEFAULTTILE]
+   ld [HL+],A
+   dec E
+   xor A
+   or E
+   jr nz,Default_Tile_Load_Loop
+   add HL,BC                     ; increment HL by the screen width - tile count
+   ld A,[TEMP4]                  ; refresh #tiles
+   ld E,A
+   dec D
+   xor A
+   or D
+   jr nz,Default_Tile_Load_Loop
+   ret
+
 
 ; formulas for the map loading
 ; writes respective coordinate (x or y) to B
