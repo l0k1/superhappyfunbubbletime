@@ -10,22 +10,22 @@ FIX = rgbfix
 FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
 
-SOURCES=./src/interrupts.asm\
-		./src/defines.asm\
-		./src/globals.asm\
-		./src/lcd_interface.asm\
-		./src/main.asm\
-		./src/opening_screens.asm\
-		./src/world_interface.asm\
+SOURCES=./src/main.asm\
 		./src/camera.asm\
 		./src/data_manipulation.asm\
+		./src/defines.asm\
+		./src/globals.asm\
+		./src/interrupts.asm\
+		./src/lcd_interface.asm\
 		./src/math.asm\
+		./src/opening_screens.asm\
+		./src/world_interface.asm\
 		./src/fonts/fonts.asm\
-		./src/maps/screens/opening_maps.asm\
 		./src/maps/field_of_testing.asm\
+		./src/maps/screens/opening_maps.asm\
+		./src/sprites/main_character.asm\
 		./src/tiles/pointer.asm\
-		./src/tiles/landscape.asm\
-		./src/sprites/main_character.asm
+		./src/tiles/landscape.asm
 OBJECTS=$(SOURCES:.asm=.o)
 
 
