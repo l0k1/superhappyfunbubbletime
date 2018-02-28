@@ -121,13 +121,6 @@ Load_Map_Data:
    ld A,E
    ld [TEMP1],A
 
-   ; save the BG MAP load location to TEMP2 (MSB) and TEMP3 (LSB)
-
-   ld A,$80
-   ld [TEMP2],A
-   xor A
-   ld [TEMP3],A
-
    ; disable the LCD so we can write lots to the background
    ld HL,GFX_UPDATE_FLAGS
    set 2,[HL]
@@ -164,7 +157,7 @@ Load_Map_Data:
    call Top_Y_Map                ; number of passes to do into C
    ld E,C
    call Left_X_Map               ; number of tiles per pass into C
-   ld D,C
+   ld D,C                        ; DE = [D:#tiles per pass | E:#passes]
    ld A,C
    ld [TEMP4],A                  ; save number of tiles for our loop
    ld A,$2F
@@ -173,28 +166,69 @@ Load_Map_Data:
    ld B,0                        ; BC = screen width - tiles to load per pass
    ld HL,$8000                   ; load the bg map location into HL
    ld A,[MAPDEFAULTTILE]
+   call Default_Tile_Load_Loop
+   jp .top_center_load
+
+.top_left_load_map
+   ; A contains the bank we need to jump to
+   ld D,$01
+   ld E,A         ; DE = bank to go to
+   ld A,[HL+]
+   ld B,A
+   ld A,[HL+]
+   add $FC
+   jr nc,.skip_load_b_carry_top_left
+   inc B
+.skip_load_b_carry_top_left
+   ld C,A         ; BC = start of map data
    
-.top_left_load_default_tile_loop
+   push DE
+   push BC
+   
+   call Top_Y_Map                ; number of passes to do into C
+                                 ; map Y coord into B
+   ld A,C
+   ld [TEMP2],A                  ; save #passes into TEMP2
+   ld D,B
+
+   call Left_X_Map               ; number of tiles to load into C
+                                 ; map X coord int B
+   ld A,C
+   ld [TEMP3],A                  ; save #tiles into TEMP3
+   ld E,B                        ; DE has YX
+
+   ;need to increment BC by (y * map_x_dim + x)
+   ld A,[MAPX]
+   ld H,A
+   call Mul8b                    ; HL now has y * mapx
+   add HL,BC
+   ld A,E
+   add C
+   jr nc,.skip_inc_b_top_left
+   inc B
+.skip_inc_b_top_left
+   
+   
+; loop to load the default tile.
+; BC = screen width - tiles to load per pass
+; DE = [D: #tiles per pass | E: #passes]
+; HL = location in the BG map to load
+Default_Tile_Load_Loop:
+   ld A,[MAPDEFAULTTILE]
    ld [HL+],A
    dec E
    xor A
    or E
-   jr nz,.top_left_load_default_tile_loop
+   jr nz,Default_Tile_Load_Loop
    add HL,BC                     ; increment HL by the screen width - tile count
    ld A,[TEMP4]                  ; refresh #tiles
    ld E,A
    dec D
    xor A
    or D
-   jr nz,.top_left_load_default_tile_loop
-   jp .top_center_load
+   jr nz,Default_Tile_Load_Loop
+   ret
    
-.top_left_load_map
-   
-   
-   ; check if we are loading the default tile, or from a bg map
-   
-
 .top_center_load
    ; top center load
    ld A,[PPOSX]
