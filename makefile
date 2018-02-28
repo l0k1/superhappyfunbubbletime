@@ -11,6 +11,7 @@ FFLAGS = -v -p 0
 OUTPUT_NAME=shfbt
 
 SOURCES=./src/interrupts.asm\
+		./src/defines.asm\
 		./src/globals.asm\
 		./src/lcd_interface.asm\
 		./src/main.asm\

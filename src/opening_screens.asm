@@ -1,7 +1,7 @@
 ; Code for the opening screens.
 ; I'd eventually like to do a fade in/out with these.
 
-INCLUDE "globals.asm"
+INCLUDE "defines.asm"
 EXPORT  Title_Screen
 EXPORT  Splash_Screen
 EXPORT  Main_Menu

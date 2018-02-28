@@ -2,7 +2,7 @@
 ;Store map data.
 ;Also, screenfades and other camera fun stuff.
 
-INCLUDE "globals.asm"
+INCLUDE "defines.asm"
 
 EXPORT  Fade_In_Black
 EXPORT  Fade_In_White

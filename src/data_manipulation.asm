@@ -1,6 +1,6 @@
 ;manipulate that data, yo.
 
-Include "globals.asm"
+Include "defines.asm"
 
 Export Copy_Data
 Export Switch_Bank

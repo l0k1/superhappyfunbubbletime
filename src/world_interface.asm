@@ -1,7 +1,7 @@
 ;this handles all functions related to inputs from the Human
 ;as the player character is walking around the world
 
-INCLUDE "globals.asm"
+INCLUDE "defines.asm"
 
 Export World_Interface
    

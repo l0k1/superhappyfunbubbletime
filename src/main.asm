@@ -1,6 +1,6 @@
 ;***************************************** SUPER HAPPY FUN BUBBLE TIME
 
-INCLUDE  "globals.asm"
+INCLUDE  "defines.asm"
 
 ;***************************************** cartridge header
 
