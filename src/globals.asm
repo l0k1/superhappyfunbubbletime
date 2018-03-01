@@ -65,10 +65,21 @@ PBANKU::    DS 1        ; previous bank MSB
 PBANKL::    DS 1        ; previous bank LSB
 
 ; "dynamic" memory allocations, available to be rewritten
+UNION
+
 TEMP1::     DS 1
 TEMP2::     DS 1
 TEMP3::     DS 1
 TEMP4::     DS 1
+
+NEXTU
+
+MAPS_TO_LOAD_FLAGS:: DS 1
+NUM_LOOPS::          DS 1
+NUM_TILES_PER_LOOP:: DS 1
+BG_MAP_INC::         DS 1
+
+ENDU
 
    SECTION "OAM Mirror",WRAM0[$DF00]
 ;OAM Mirror. Put sprite updates here.
@@ -79,7 +90,7 @@ OAM_MIRROR:: DS $A0
 ;format is (high byte of address in bg Map) (low byte of address) (tile) - 3 bytes
 ;there is exactly 41 ($29) bytes between here and $DF00, so just enough
 ;room with no overlap.
-BG_UPDATE_ARRAY:: DS 1
+BG_UPDATE_ARRAY:: DS 41
 ;GFX update flags
 ;if bit 0 = 1, perform DMA update.
 ;if bit 1 = 1, perform background update.
