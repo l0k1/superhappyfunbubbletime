@@ -210,8 +210,11 @@ Main_Game_Loop:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;this will need to be changed with the camera function is complete
 
+   ld DE,BANK(field_of_testing)
+   call Switch_Bank
    ld BC,field_of_testing  ;load the map into _SCRN0
    call Load_Map_Data      ;load map data
+   call Return_Bank
    ld A,[MAPUPPER]
    ld B,A
    ld A,[MAPLOWER]

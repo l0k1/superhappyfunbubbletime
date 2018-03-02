@@ -3,7 +3,7 @@
 
 EXPORT field_of_testing
 
- SECTION "Field of Testing",ROMX,BANK[$102]
+ SECTION "Field of Testing",ROMX
 
 field_of_testing:
 ; 4 bytes
