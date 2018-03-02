@@ -119,7 +119,7 @@ Load_Map_Data:
 
    ; save E in TEMP1
    ld A,E
-   ld [TEMP1],A
+   ld [MAPS_TO_LOAD_FLAGS],A
 
    ; disable the LCD so we can write lots to the background
    ld HL,GFX_UPDATE_FLAGS
@@ -158,8 +158,6 @@ Load_Map_Data:
    ld E,C
    call Left_X_Map               ; number of tiles per pass into C
    ld D,C                        ; DE = [D:#tiles per pass | E:#passes]
-   ld A,C
-   ld [TEMP4],A                  ; save number of tiles for our loop
    ld A,$2F
    sub C
    ld C,A
@@ -188,67 +186,101 @@ Load_Map_Data:
    call Top_Y_Map                ; number of passes to do into C
                                  ; map Y coord into B
    ld A,C
-   ld [TEMP2],A                  ; save #passes into TEMP2
-   ld D,B
+   ld [NUM_LOOPS],A              ; save #passes into NUM_LOOPS
+   ld E,B
 
    call Left_X_Map               ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
-   ld [TEMP3],A                  ; save #tiles into TEMP3
-   ld E,B                        ; DE has YX
+   ld [NUM_TILES_PER_LOOP],A     ; save #tiles into NUM_TILES_PER_LOOP
+   ld D,B                        ; DE has XY
 
-   ;need to increment BC by (y * map_x_dim + x)
+   ;need to increment the address by (y * map_x_dim + x)
    ld A,[MAPX]
    ld H,A
-   call Mul8b                    ; HL now has y * mapx
+   call Mul8b                    ; H * E, HL now has y * mapx
+   pop BC                        ; put the starting map pos back into BC
    add HL,BC
-   ld A,E
-   add C
+   ld A,D                        ; add the X to HL
+   add L
    jr nc,.skip_inc_b_top_left
-   inc B
-.skip_inc_b_top_left
-
+   inc H
+.skip_inc_b_top_left             ; HL = address to load from
+   pop DE                        ; restore the map bank to DE
+   call Switch_Bank              ; switch the bank to the new map
+   
+   ld A,[NUM_LOOPS]
+   ld E,A
+   ld A,[NUM_TILES_PER_LOOP]
+   ld D,A
+   ld A,$2F
+   sub D
+   ld [BG_MAP_INC],A
+   ld BC,$8000
+   ; BC = BG map starting address
+   ; HL = map data starting address
+   ; DE = [D: #tiles per pass | E: #passes]
    
 .top_center_load
-   ; top center load
-   ld A,[PPOSX]
-   ld E,A
-   ld A,$0A
-   sub E
-   jr nc,.skip_top_load_zero
-   xor A
 .skip_top_load_zero
-   ld E,A
-   ld D,$80             ; DE should now contain $8000 + 10 - pposx (or 0) for the starting pos
-
 .top_right_load
-   ; top right load
-   bit 2,E
-   jp z,.skip_top
-
-   ; center_x value + tiles_to_load_per used in center_x
-
-
 .skip_top
 
 
 
 
    ret
+
+; loop to load from a map.
+; the bank should be switched correctly before calling
+; BC = BG map starting address
+; DE = [D: #tiles per pass | E: #passes]
+; HL = location in the BG map to load
+Map_Tile_Load_Loop:
+.main_loop
+   ld A,[BC]
+   ld [HL+],A
+   inc BC
+   dec D
+   xor A
+   cp D
+   jr nz,.main_loop
    
+   ld A,[NUM_TILES_PER_LOOP]
+   ld D,A
+   ;hl = hl + (screen width - #tiles)
+   
+   push BC
+   ld A,$2F
+   sub D
+   ld C,A
+   xor A
+   ld B,A
+   add HL,BC
+   pop BC
+
+   dec E
+   cp E
+   jr nz,.main_loop
+   
+
+
 ; loop to load the default tile.
 ; BC = screen width - tiles to load per pass
 ; DE = [D: #tiles per pass | E: #passes]
 ; HL = location in the BG map to load
 Default_Tile_Load_Loop:
+   ld A,D
+   ld [NUM_TILES_PER_LOOP],A
+.main_loop
    ld A,[MAPDEFAULTTILE]
    ld [HL+],A
    dec E
    xor A
    or E
-   jr nz,Default_Tile_Load_Loop
+   jr nz,.main_loop
    add HL,BC                     ; increment HL by the screen width - tile count
-   ld A,[TEMP4]                  ; refresh #tiles
+   ld A,[NUM_TILES_PER_LOOP]     ; refresh #tiles
    ld E,A
    dec D
    xor A
