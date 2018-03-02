@@ -81,18 +81,19 @@ BG_MAP_INC::         DS 1
 
 ENDU
 
-   SECTION "OAM Mirror",WRAM0[$DF00]
-;OAM Mirror. Put sprite updates here.
-OAM_MIRROR:: DS $A0
-;same as OAM_MIRROR, but for use in the DMA routine.
-;OAM_MIRROR_DMA EQU $DF
-;Used to update the background.
-;format is (high byte of address in bg Map) (low byte of address) (tile) - 3 bytes
-;there is exactly 41 ($29) bytes between here and $DF00, so just enough
-;room with no overlap.
+
 BG_UPDATE_ARRAY:: DS 41
 ;GFX update flags
 ;if bit 0 = 1, perform DMA update.
 ;if bit 1 = 1, perform background update.
 ;if bit 2 = 1, disable LCD
 GFX_UPDATE_FLAGS:: DS 1
+
+   SECTION "OAM Mirror",WRAM0,ALIGN[8]
+;OAM Mirror. Put sprite updates here.
+OAM_MIRROR:: DS $A0
+;same as OAM_MIRROR, but for use in the DMA routine.
+;Used to update the background.
+;format is (high byte of address in bg Map) (low byte of address) (tile) - 3 bytes
+;there is exactly 41 ($29) bytes between here and $DF00, so just enough
+;room with no overlap.
