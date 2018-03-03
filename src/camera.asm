@@ -158,7 +158,7 @@ Load_Map_Data:
    ld E,C
    call Left_X_Map               ; number of tiles per pass into C
    ld D,C                        ; DE = [D:#tiles per pass | E:#passes]
-   ld A,$2F
+   ld A,$20
    sub C
    ld C,A
    ld B,0                        ; BC = screen width - tiles to load per pass
@@ -233,35 +233,35 @@ Load_Map_Data:
 
 ; loop to load from a map.
 ; the bank should be switched correctly before calling
-; BC = BG map starting address
+; BC = map data starting address
 ; DE = [D: #tiles per pass | E: #passes]
 ; HL = location in the BG map to load
 Map_Tile_Load_Loop:
 .main_loop
-   ld A,[BC]
-   ld [HL+],A
+   ld A,[BC]               ; take the tile from the map data
+   ld [HL+],A              ; place it in the bg map
    inc BC
-   dec D
+   dec D                   ; check if we've loaded all the tiles for this pass
    xor A
    cp D
    jr nz,.main_loop
    
    ld A,[NUM_TILES_PER_LOOP]
-   ld D,A
-   ;hl = hl + (screen width - #tiles)
-   
-   push BC
-   ld A,$2F
+   ld D,A                  ; refresh D as we prep for a new pass
+   ld A,$2F                ; $20 - regD is how much to increment HL by
    sub D
-   ld C,A
-   xor A
-   ld B,A
-   add HL,BC
-   pop BC
-
-   dec E
-   cp E
+   
+   add A,L                 ; add A onto HL
+   ld L,A
+   adc A,H
+   sub A,L
+   ld H,A
+   
+   dec E                   ; decrement E
+   cp E                    ; if we haven't done all the passes, back to the top.
    jr nz,.main_loop
+   
+   ret
    
 
 
