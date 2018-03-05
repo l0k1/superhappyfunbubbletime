@@ -151,6 +151,12 @@ Load_Map_Data:
    jr nz,.top_left_load_map
    
 .top_left_load_default_tile
+
+; loop to load the default tile.
+; we need:
+; DE = [D: #tiles per pass | E: #passes]
+; HL = location in the BG map to load into
+
 ; writes respective coordinate (x or y) to B
 ; if X, writes tiles to load per pass to C
 ; if Y, writes number of passes to C
@@ -158,12 +164,7 @@ Load_Map_Data:
    ld E,C
    call Left_X_Map               ; number of tiles per pass into C
    ld D,C                        ; DE = [D:#tiles per pass | E:#passes]
-   ld A,$20
-   sub C
-   ld C,A
-   ld B,0                        ; BC = screen width - tiles to load per pass
    ld HL,$8000                   ; load the bg map location into HL
-   ld A,[MAPDEFAULTTILE]
    call Default_Tile_Load_Loop
    jp .top_center_load
 
@@ -266,10 +267,14 @@ Map_Tile_Load_Loop:
 
 
 ; loop to load the default tile.
-; BC = screen width - tiles to load per pass
 ; DE = [D: #tiles per pass | E: #passes]
 ; HL = location in the BG map to load
 Default_Tile_Load_Loop:
+   ld A,$20
+   sub E
+   ld C,A
+   ld B,0                        ; BC = screen width - tiles to load per pass
+
    ld A,D
    ld [NUM_TILES_PER_LOOP],A
 .main_loop
