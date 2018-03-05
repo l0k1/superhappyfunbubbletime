@@ -71,9 +71,11 @@ TEMP1::     DS 1
 TEMP2::     DS 1
 TEMP3::     DS 1
 TEMP4::     DS 1
+TEMP5::     DS 1
 
 NEXTU
 
+LD_MAP_BANK::           DS 1
 MAPS_TO_LOAD_FLAGS:: DS 1
 NUM_LOOPS::          DS 1
 NUM_TILES_PER_LOOP:: DS 1

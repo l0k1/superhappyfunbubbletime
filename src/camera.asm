@@ -169,26 +169,26 @@ Load_Map_Data:
    jp .top_center_load
 
 .top_left_load_map
-   ; A contains the bank we need to jump to
-   ld D,$01
-   ld E,A         ; DE = bank to go to
+   ; we need to switch to the correct bank
+   ld A,[HL+]
+   ld [LD_MAP_BANK],A
+   ; point BC to the start of the map data, bypassing the metadata
    ld A,[HL+]
    ld B,A
    ld A,[HL+]
+   ld C,A
    add $FC
-   jr nc,.skip_load_b_carry_top_left
+   jr nc,.sc1
    inc B
-.skip_load_b_carry_top_left
-   ld C,A         ; BC = start of map data
-   
-   push DE
+.sc1
+
    push BC
    
    call Top_Y_Map                ; number of passes to do into C
                                  ; map Y coord into B
    ld A,C
    ld [NUM_LOOPS],A              ; save #passes into NUM_LOOPS
-   ld E,B
+   ld E,B                        ; y coord into E
 
    call Left_X_Map               ; number of tiles to load into C
                                  ; map X coord int B
@@ -204,19 +204,10 @@ Load_Map_Data:
    add HL,BC
    ld A,D                        ; add the X to HL
    add L
-   jr nc,.skip_inc_b_top_left
+   jr nc,.sc2
    inc H
-.skip_inc_b_top_left             ; HL = address to load from
-   pop DE                        ; restore the map bank to DE
-   call Switch_Bank              ; switch the bank to the new map
-   
-   ld A,[NUM_LOOPS]
-   ld E,A
-   ld A,[NUM_TILES_PER_LOOP]
-   ld D,A
-   ld A,$2F
-   sub D
-   ld [BG_MAP_INC],A
+.sc2                             ; HL = address to load from
+
    ld BC,$8000
    ; BC = BG map starting address
    ; HL = map data starting address
@@ -226,18 +217,31 @@ Load_Map_Data:
 .skip_top_load_zero
 .top_right_load
 .skip_top
-
-
-
-
    ret
 
 ; loop to load from a map.
 ; the bank should be switched correctly before calling
 ; BC = map data starting address
-; DE = [D: #tiles per pass | E: #passes]
 ; HL = location in the BG map to load
+; [LD_MAP_BANK] = the bank to load map data from (the LSB, the HSB will always be $01)
+; [NUM_LOOPS] = the number of loops to load
+; [NUM_TILES_PER_LOOP] = number of tiles per loop
+; [BG_MAP_INC] = how much to increment HL after each pass
 Map_Tile_Load_Loop:
+   ld A,[LD_MAP_BANK]
+   ld E,A
+   ld D,$01
+   call Switch_Bank        ; switch the bank to the correct one
+   
+   ld A,[NUM_LOOPS]
+   ld E,A
+   ld A,[NUM_TILES_PER_LOOP]
+   ld D,A
+   
+   ld A,$20
+   sub D
+   ld [BG_MAP_INC],A
+   
 .main_loop
    ld A,[BC]               ; take the tile from the map data
    ld [HL+],A              ; place it in the bg map
@@ -249,19 +253,18 @@ Map_Tile_Load_Loop:
    
    ld A,[NUM_TILES_PER_LOOP]
    ld D,A                  ; refresh D as we prep for a new pass
-   ld A,$2F                ; $20 - regD is how much to increment HL by
-   sub D
-   
-   add A,L                 ; add A onto HL
+   ld A,[BG_MAP_INC]
+   add L                   ; add A onto HL
    ld L,A
-   adc A,H
-   sub A,L
-   ld H,A
+   jr nc,.sc1
+   inc H
+.sc1
    
    dec E                   ; decrement E
    cp E                    ; if we haven't done all the passes, back to the top.
    jr nz,.main_loop
    
+   call Return_Bank
    ret
    
 
