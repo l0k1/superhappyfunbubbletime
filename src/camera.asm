@@ -68,6 +68,9 @@ Load_Map_Data:
    ; zero out E for data collection
    xor A
    ld E,A
+   ; zero out BG map x/y
+   ld [BG_MAP_X_LOADED],A
+   ld [BG_MAP_Y_LOADED],A
    
    ; check the left side
    
@@ -179,8 +182,7 @@ Load_Map_Data:
 
 .top_left_load_map
 
-   ; we need to switch to the correct bank
-   ld A,[HL+]
+   ; we need to switch to the correct bank later
    ld [LD_MAP_BANK],A
    
    ; point BC to the start of the map data, bypassing the metadata
@@ -224,6 +226,17 @@ Load_Map_Data:
    ld HL,$8000
    
 .top_center_load
+   pop HL                        ; get back to our warp data
+   push HL
+
+   inc HL                        ; point HL to center map warp data
+   inc HL
+   inc HL
+   
+   ld A,[HL+]                    ; if 0, load default tile
+   or 0
+   jr nz,.top_center_load_map
+
 .skip_top_load_zero
 .top_right_load
 .skip_top
