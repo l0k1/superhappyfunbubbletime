@@ -152,11 +152,10 @@ Load_Map_Data:
    
 .top_left_load_default_tile
 
-; loop to load the default tile.
+; load the default tile.
 ; we need:
 ; DE = [D: #tiles per pass | E: #passes]
 ; HL = location in the BG map to load into
-
 ; writes respective coordinate (x or y) to B
 ; if X, writes tiles to load per pass to C
 ; if Y, writes number of passes to C
@@ -168,10 +167,22 @@ Load_Map_Data:
    call Default_Tile_Load_Loop
    jp .top_center_load
 
+
+; load the bg map with map data in the ROM
+; we need:
+; BC = map data starting address
+; HL = location in the BG map to load
+; [LD_MAP_BANK] = the bank to load map data from (the LSB, the HSB will always be $01)
+; [NUM_LOOPS] = the number of loops to load
+; [NUM_TILES_PER_LOOP] = number of tiles per loop
+; [BG_MAP_INC] = how much to increment HL after each pass
+
 .top_left_load_map
+
    ; we need to switch to the correct bank
    ld A,[HL+]
    ld [LD_MAP_BANK],A
+   
    ; point BC to the start of the map data, bypassing the metadata
    ld A,[HL+]
    ld B,A
@@ -207,11 +218,10 @@ Load_Map_Data:
    jr nc,.sc2
    inc H
 .sc2                             ; HL = address to load from
+   ld B,H                        ; swap HL to BC
+   ld C,L
 
-   ld BC,$8000
-   ; BC = BG map starting address
-   ; HL = map data starting address
-   ; DE = [D: #tiles per pass | E: #passes]
+   ld HL,$8000
    
 .top_center_load
 .skip_top_load_zero
@@ -220,7 +230,6 @@ Load_Map_Data:
    ret
 
 ; loop to load from a map.
-; the bank should be switched correctly before calling
 ; BC = map data starting address
 ; HL = location in the BG map to load
 ; [LD_MAP_BANK] = the bank to load map data from (the LSB, the HSB will always be $01)
