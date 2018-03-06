@@ -159,7 +159,6 @@ Load_Map_Data:
 .sc2
    ld A,$80
    add H
-   ld A,H                        ; copy HL into memor
    ld [BG_MAP_LOAD_MSB],A
    ld A,L
    ld [BG_MAP_LOAD_LSB],A
