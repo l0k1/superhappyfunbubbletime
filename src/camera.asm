@@ -162,7 +162,7 @@ Load_Map_Data:
    ld [NUM_TILES_PER_LOOP],A
    ld A,[BG_MAP_X_LOADED]        ; update BG map x loaded
    add C
-   ld A,[BG_MAP_X_LOADED]
+   ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
    
    pop HL                        ; HL *should* contain the addy of the warp data
@@ -221,13 +221,11 @@ Load_Map_Data:
    ld [NUM_TILES_PER_LOOP],A
    ld A,[BG_MAP_X_LOADED]        ; update BG map x loaded
    add C
-   ld A,[BG_MAP_X_LOADED]
+   ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
    
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
-   
-   
    inc HL                        ; point HL to top center map warp data
    inc HL
    inc HL
@@ -251,6 +249,7 @@ Load_Map_Data:
 
 
 .top_right_load
+   ld A,[MAPS_TO_LOAD_FLAGS]
 .skip_top
 
    pop HL         ; get HL off the stack.
