@@ -145,23 +145,8 @@ Load_Map_Data:
    bit 6,E
    jp z,.top_center_load
       
-   ; calculate the bg map location
-   ; $8000 + ($20 * [BG_MAP_Y_LOADED]) + BG_MAP_X_LOADED
-   
-   ld H,$20
-   ld A,[BG_MAP_Y_LOADED]
-   ld E,A
-   call Mul8b                    ; H * E, answer into HL
-   ld A,[BG_MAP_X_LOADED]
-   add L
-   jr nc,.sc2
-   inc H
-.sc2
-   ld A,$80
-   add H
-   ld [BG_MAP_LOAD_MSB],A
-   ld A,L
-   ld [BG_MAP_LOAD_LSB],A
+   ; calculate the bg memory location   
+   call Calc_BG_Mem_Loc
    
    ; get our loading variables
    call Top_Y_Map                ; number of passes to do into C
@@ -257,6 +242,26 @@ Load_Map_Data:
 .skip_top_load_zero
 .top_right_load
 .skip_top
+   ret
+   
+; calculate the bg memory location to load the bg map into
+; $8000 + ($20 * [BG_MAP_Y_LOADED]) + BG_MAP_X_LOADED
+Calc_BG_Mem_Loc:
+   ld H,$20
+   ld A,[BG_MAP_Y_LOADED]
+   ld E,A
+   call Mul8b                    ; H * E, answer into HL
+   ld A,[BG_MAP_X_LOADED]
+   add L
+   jr nc,.sc2
+   inc H
+.sc2
+   ld A,$80
+   add H
+   ld [BG_MAP_LOAD_MSB],A
+   ld A,L
+   ld [BG_MAP_LOAD_LSB],A
+   
    ret
 
 ; loop to load from a map.
