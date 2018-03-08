@@ -19,10 +19,12 @@ Camera_Update:
    SECTION "Load Map Data",ROM0
    ; Load in map data into known variables in the RAM
    ; Write a new BG map after warping.
-   ; Map data should be pushed onto the stack like so:
-   ; push BC - B = [x coord of player], C = [y coord of player]
-   ; push BC - BC = [local map address]
-   ; push BC - B = [local map bank]
+   ; These memory variables should be updated before calling:
+   ; PPOSX = x coord of player in map data
+   ; PPOSY = y coord of player in map data
+   ; MAP_BANK = LSB of bank to switch to (MSB will always be $01)
+   ; MAP_ADDR_U = MSB of address in bank of map
+   ; MAP_ADDR_L = LSB of address in bank of map
 Load_Map_Data:
    
    ; to simplify things, we are setting the bg window to 8,8
@@ -31,27 +33,23 @@ Load_Map_Data:
    ld [rSCY],A
 
    ; first get the correct bank
-   pop AF
-   ld [MAP_BANK],A
+   ld A,[MAP_BANK]
    ld D,$01
    ld E,A
    call Switch_Bank
 
-   ; put the mem position into HL
-   pop HL
-
    ; save players new X/Y
-   pop BC
-   ld A,B
-   ld [PPOSX],A
-   ld A,C
-   ld [PPOSY],A
+   ld A,[PPOSX]
+   ld B,A
+   ld A,[PPOSY]
+   ld C,A
 
    ; save the upper/lower addresses
-   ld A,H
-   ld [MAP_ADDR_U],A
-   ld A,L
-   ld [MAP_ADDR_L],A
+   ld A,[MAP_ADDR_U]
+   ld H,A
+   ld A,[MAP_ADDR_L]
+   ld L,A
+   
    ; save map x/y dimensions
    ld A,[HL+]
    ld [MAPX],A
@@ -145,7 +143,7 @@ Load_Map_Data:
    bit 6,E
    jp z,.top_center_load
       
-   ; calculate the bg memory location   
+   ; calculate the bg memory location
    call Calc_BG_Mem_Loc
    
    ; get our loading variables
@@ -312,9 +310,9 @@ Map_Tile_Load_Loop:
    ld A,[BG_MAP_INC]
    add L                   ; add A onto HL
    ld L,A
-   jr nc,.sc1
+   jr nc,.sc2
    inc H
-.sc1
+.sc2
    
    dec E                   ; decrement E
    cp E                    ; if we haven't done all the passes, back to the top.
