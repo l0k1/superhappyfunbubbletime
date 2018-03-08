@@ -138,6 +138,10 @@ Load_Map_Data:
    bit 0,E
    jp z,.skip_top
    
+;;;;;;;;;;;;;;;;;;;;;
+; top left load
+;;;;;;;;;;;;;;;;;;;;;
+
 .top_left_load
    ; we need to load the top. check the left bit first
    bit 6,E
@@ -199,7 +203,12 @@ Load_Map_Data:
    ld [LD_MAP_BANK],A
    call Map_Tile_Load_Loop
 
-   
+
+;;;;;;;;;;;;;;;;;;;;;
+; top center load
+;;;;;;;;;;;;;;;;;;;;;
+
+
 .top_center_load
    
    ; calculate the bg memory location
@@ -247,6 +256,9 @@ Load_Map_Data:
    ld [LD_MAP_BANK],A
    call Map_Tile_Load_Loop
 
+;;;;;;;;;;;;;;;;;;;;;
+; top right load
+;;;;;;;;;;;;;;;;;;;;;
 
 .top_right_load
    ld A,[MAPS_TO_LOAD_FLAGS]
@@ -305,6 +317,68 @@ Load_Map_Data:
    ; reset X in our bg memory tracker
    xor A
    ld [BG_MAP_X_LOADED],A
+
+;;;;;;;;;;;;;;;;;;;;;
+; center left load
+;;;;;;;;;;;;;;;;;;;;;
+   
+.center_left_load
+   ld A,[MAPS_TO_LOAD_FLAGS]
+   bit 6,A
+   jp z,.center_load
+   
+   ; calculate the bg memory location
+   call Calc_BG_Mem_Loc
+   
+   ; get our loading variables
+   call Center_Y_Map             ; number of passes to do into C
+                                 ; map Y coord into B
+   ld A,C
+   ld [NUM_LOOPS],A              ; save number of passes
+   ld A,[BG_MAP_Y_LOADED]        ; update BG map y loaded
+   add C
+   ld [BG_MAP_Y_LOADED],A
+   ld E,B                        ; save number of passes
+   
+   call Left_X_Map               ; number of tiles to load into C
+                                 ; map X coord int B
+   ld A,C
+   ld [NUM_TILES_PER_LOOP],A
+   ld A,[BG_MAP_X_LOADED]        ; update BG map x loaded
+   add C
+   ld [BG_MAP_X_LOADED],A
+   ld D,B                        ; DE now contains XY
+   
+   pop HL                        ; HL *should* contain the addy of the warp data
+   push HL
+   ld b,b                        ; check the add value below
+   ld A,$09                      ; point HL to top right map warp data
+   add L
+   ld L,A
+   jr nc,.sc4
+   inc H
+.sc4
+   
+   ld A,[HL+]
+   or 0                          ; if the map bank is 0, load the default tile
+   jr nz,.center_left_load_map
+   
+   
+.center_left_load_default_tile
+   ; check top left for notes.
+   call Default_Tile_Load_Loop
+   jp .top_center_load
+
+.center_left_load_map
+   ; check top left for notes.
+   ld [LD_MAP_BANK],A
+   call Map_Tile_Load_Loop
+
+;;;;;;;;;;;;;;;;;;;;;
+; top left load
+;;;;;;;;;;;;;;;;;;;;;
+
+.center_load
 
    pop HL         ; get HL off the stack.
 
