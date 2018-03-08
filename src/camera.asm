@@ -277,12 +277,12 @@ Load_Map_Data:
    
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
-   inc HL                        ; point HL to top right map warp data
-   inc HL
-   inc HL
-   inc HL
-   inc HL
-   inc HL
+   ld A,$06                      ; point HL to top right map warp data
+   add L
+   ld L,A
+   jr nc,.sc3
+   inc H
+.sc3
    
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
