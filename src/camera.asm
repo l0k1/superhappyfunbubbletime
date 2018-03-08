@@ -188,8 +188,10 @@ Load_Map_Data:
 .top_left_load_map
 ; load the bg map with map data in the ROM
 ; we need:
-; DE = map x/y
-; HL = location in the BG map to load
+; DE = map x coord and map y coord, respectively.
+; HL = pointing at data table memory location for the map (the $xxxx in memory, 1 after the bank)
+; [BG_MAP_LOAD_MSB] = msb of memory location in the bg map to load into
+; [BG_MAP_LOAD_LSB] = same as above but LSB
 ; [LD_MAP_BANK] = the bank to load map data from (the LSB, the HSB will always be $01)
 ; [NUM_LOOPS] = the number of loops to load
 ; [NUM_TILES_PER_LOOP] = number of tiles per loop
@@ -197,33 +199,6 @@ Load_Map_Data:
 
    ; we need to switch to the correct bank later
    ld [LD_MAP_BANK],A
-   
-   ; point BC to the start of the map data, bypassing the metadata
-   ld A,[HL+]
-   ld B,A
-   ld A,[HL+]
-   ld C,A
-   add $FC
-   jr nc,.sc1
-   inc B
-.sc1
-
-   push BC
-
-   ;need to increment the address by (y * map_x_dim + x)
-   ld A,[MAPX]
-   ld H,A
-   call Mul8b                    ; H * E, HL now has y * mapx
-   pop BC                        ; put the starting map pos back into BC
-   add HL,BC
-   ld A,D                        ; add the X to HL
-   add L
-   jr nc,.sc3
-   inc H
-.sc3                             ; HL = address to load from
-   ld B,H                        ; swap HL to BC
-   ld C,L
-   
    call Map_Tile_Load_Loop
 
    
@@ -265,13 +240,42 @@ Calc_BG_Mem_Loc:
    ret
 
 ; loop to load from a map.
-; BC = map data starting address
-; HL = location in the BG map to load
+; DE = map x coord and map y coord, respectively.
+; HL = pointing at data table memory location for the map (the $xxxx in memory, 1 after the bank)
+; [BG_MAP_LOAD_MSB] = msb of memory location in the bg map to load into
+; [BG_MAP_LOAD_LSB] = same as above but LSB
 ; [LD_MAP_BANK] = the bank to load map data from (the LSB, the HSB will always be $01)
 ; [NUM_LOOPS] = the number of loops to load
 ; [NUM_TILES_PER_LOOP] = number of tiles per loop
 ; [BG_MAP_INC] = how much to increment HL after each pass
 Map_Tile_Load_Loop:
+
+   ; point BC to the start of the map data, bypassing the metadata
+   ld A,[HL+]
+   ld B,A
+   ld A,[HL+]
+   ld C,A
+   add $FC
+   jr nc,.sc1
+   inc B
+.sc1
+
+   push BC
+
+   ;need to increment the address by (y * map_x_dim + x)
+   ld A,[MAPX]
+   ld H,A
+   call Mul8b                    ; H * E, HL now has y * mapx
+   pop BC                        ; put the starting map pos back into BC
+   add HL,BC
+   ld A,D                        ; add the X to HL
+   add L
+   jr nc,.sc3
+   inc H
+.sc3                             ; HL = address to load from
+   ld B,H                        ; swap HL to BC
+   ld C,L
+
    ld A,[LD_MAP_BANK]
    ld E,A
    ld D,$01
