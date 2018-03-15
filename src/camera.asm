@@ -15,7 +15,7 @@ EXPORT  Load_Map_Data
 Camera_Update:
    ; tl;dr - load up the bg array with bg updates if needed
    ret
-   
+
    SECTION "Load Map Data",ROM0
    ; Load in map data into known variables in the RAM
    ; Write a new BG map after warping.
@@ -26,7 +26,7 @@ Camera_Update:
    ; MAP_ADDR_U = MSB of address in bank of map
    ; MAP_ADDR_L = LSB of address in bank of map
 Load_Map_Data:
-   
+
    ; to simplify things, we are setting the bg window to 8,8
    ld A,$08
    ld [rSCX],A
@@ -49,7 +49,7 @@ Load_Map_Data:
    ld H,A
    ld A,[MAP_ADDR_L]
    ld L,A
-   
+
    ; save map x/y dimensions
    ld A,[HL+]
    ld [MAPX],A
@@ -69,9 +69,9 @@ Load_Map_Data:
    ; zero out BG map x/y
    ld [BG_MAP_X_LOADED],A
    ld [BG_MAP_Y_LOADED],A
-   
+
    ; check the left side
-   
+
    ld A,B                  ; B holds pposx still
    sub $0A                 ; if x pos - half the screen < 0 then
    jr nc,.left_else
@@ -79,9 +79,9 @@ Load_Map_Data:
    xor A
 .left_else
    ld [MAPXLOADED],A
-   
+
    ; check the up side
-   
+
    ld A,C                  ; C should still hold pposy
    sub $0A                 ; if y pos - half the screen < 0 then
    jr nc,.up_else
@@ -101,7 +101,7 @@ Load_Map_Data:
    jr nc,.skip_right_load
    set 2,E                 ; load the right screen
 .skip_right_load
-   
+
    bit 0,E                 ; if the up map hasn't been loaded,
    jr nz,.skip_down_load   ; check down
    ld A,C                  ; C still contains pposy
@@ -128,16 +128,16 @@ Load_Map_Data:
 
    halt
    nop
-   
+
    ; we need to load from top to bottom, and from left to right
    ; for every iteration, we need the starting address in the map being loaded, the starting address of the background array, how many lines to count, and how many tiles per line.
    ; for the map being loaded, use the formulas below to get mapx, mapy, number of tiles per line, and number of lines.
    ; for the background array, due to setting SCX,SCY to 8,8, we know to start loading the bg array at $8000 [BG Map 1]
 
-   ; check top bit   
+   ; check top bit
    bit 0,E
    jp z,.skip_top
-   
+
 ;;;;;;;;;;;;;;;;;;;;;
 ; top left load
 ;;;;;;;;;;;;;;;;;;;;;
@@ -146,10 +146,10 @@ Load_Map_Data:
    ; we need to load the top. check the left bit first
    bit 6,E
    jp z,.top_center_load
-      
+
    ; calculate the bg memory location
    call Calc_BG_Mem_Loc
-   
+
    ; get our loading variables
    call Top_Y_Map                ; number of passes to do into C
                                  ; map Y coord into B
@@ -159,7 +159,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_Y_LOADED],A
    ld E,B                        ; save number of passes
-   
+
    call Left_X_Map               ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
@@ -168,15 +168,15 @@ Load_Map_Data:
    add C
    ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
-   
+
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
-   
+
    ; top-left map will be the first entry in the surrounding map data
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
    jr nz,.top_left_load_map
-   
+
 .top_left_load_default_tile
 ; load the default tile.
 ; we need:
@@ -210,10 +210,10 @@ Load_Map_Data:
 
 
 .top_center_load
-   
+
    ; calculate the bg memory location
    call Calc_BG_Mem_Loc
-   
+
    ; get our loading variables
    call Top_Y_Map                ; number of passes to do into C
                                  ; map Y coord into B
@@ -223,7 +223,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_Y_LOADED],A
    ld E,B                        ; save number of passes
-   
+
    call Center_X_Map             ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
@@ -232,19 +232,19 @@ Load_Map_Data:
    add C
    ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
-   
+
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
    inc HL                        ; point HL to top center map warp data
    inc HL
    inc HL
-   
+
    ; top-left map will be the first entry in the surrounding map data
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
    jr nz,.top_center_load_map
-   
-   
+
+
 .top_center_load_default_tile
    ; check top left for notes.
    call Default_Tile_Load_Loop
@@ -264,10 +264,10 @@ Load_Map_Data:
    ld A,[MAPS_TO_LOAD_FLAGS]
    bit 2,A
    jp z,.skip_top
-   
+
    ; calculate the bg memory location
    call Calc_BG_Mem_Loc
-   
+
    ; get our loading variables
    call Top_Y_Map                ; number of passes to do into C
                                  ; map Y coord into B
@@ -277,7 +277,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_Y_LOADED],A
    ld E,B                        ; save number of passes
-   
+
    call Right_X_Map              ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
@@ -286,7 +286,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
-   
+
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
    ld A,$06                      ; point HL to top right map warp data
@@ -295,12 +295,12 @@ Load_Map_Data:
    jr nc,.sc3
    inc H
 .sc3
-   
+
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
    jr nz,.top_right_load_map
-   
-   
+
+
 .top_right_load_default_tile
    ; check top left for notes.
    call Default_Tile_Load_Loop
@@ -311,8 +311,8 @@ Load_Map_Data:
    ; check top left for notes.
    ld [LD_MAP_BANK],A
    call Map_Tile_Load_Loop
-   
-   
+
+
 .skip_top
    ; reset X in our bg memory tracker
    xor A
@@ -321,15 +321,15 @@ Load_Map_Data:
 ;;;;;;;;;;;;;;;;;;;;;
 ; center left load
 ;;;;;;;;;;;;;;;;;;;;;
-   
+
 .center_left_load
    ld A,[MAPS_TO_LOAD_FLAGS]
    bit 6,A
    jp z,.center_load
-   
+
    ; calculate the bg memory location
    call Calc_BG_Mem_Loc
-   
+
    ; get our loading variables
    call Center_Y_Map             ; number of passes to do into C
                                  ; map Y coord into B
@@ -339,7 +339,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_Y_LOADED],A
    ld E,B                        ; save number of passes
-   
+
    call Left_X_Map               ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
@@ -348,7 +348,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
-   
+
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
    ld b,b                        ; check the add value below
@@ -358,12 +358,12 @@ Load_Map_Data:
    jr nc,.sc4
    inc H
 .sc4
-   
+
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
    jr nz,.center_left_load_map
-   
-   
+
+
 .center_left_load_default_tile
    ; check top left for notes.
    call Default_Tile_Load_Loop
@@ -378,10 +378,10 @@ Load_Map_Data:
 ; center load
 ;;;;;;;;;;;;;;;;;;;;;
 
-.center_load   
+.center_load
    ; calculate the bg memory location
    call Calc_BG_Mem_Loc
-   
+
    ; get our loading variables
    call Center_Y_Map             ; number of passes to do into C
                                  ; map Y coord into B
@@ -391,7 +391,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_Y_LOADED],A
    ld E,B                        ; save number of passes
-   
+
    call Center_X_Map               ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
@@ -400,7 +400,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
-   
+
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
    ld b,b                        ; check the add value below
@@ -410,12 +410,12 @@ Load_Map_Data:
    jr nc,.sc5
    inc H
 .sc5
-   
+
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
    jr nz,.center_load_map
-   
-   
+
+
 .center_load_default_tile
    ; check top left for notes.
    call Default_Tile_Load_Loop
@@ -425,19 +425,19 @@ Load_Map_Data:
    ; check top left for notes.
    ld [LD_MAP_BANK],A
    call Map_Tile_Load_Loop
-   
+
 ;;;;;;;;;;;;;;;;;;;;;
 ; center right load
 ;;;;;;;;;;;;;;;;;;;;;
-   
+
 .center_right_load
    ld A,[MAPS_TO_LOAD_FLAGS]
    bit 2,A
    jp z,.check_bottom
-   
+
    ; calculate the bg memory location
    call Calc_BG_Mem_Loc
-   
+
    ; get our loading variables
    call Center_Y_Map             ; number of passes to do into C
                                  ; map Y coord into B
@@ -447,7 +447,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_Y_LOADED],A
    ld E,B                        ; save number of passes
-   
+
    call Right_X_Map               ; number of tiles to load into C
                                  ; map X coord int B
    ld A,C
@@ -456,7 +456,7 @@ Load_Map_Data:
    add C
    ld [BG_MAP_X_LOADED],A
    ld D,B                        ; DE now contains XY
-   
+
    pop HL                        ; HL *should* contain the addy of the warp data
    push HL
    ld b,b                        ; check the add value below
@@ -466,12 +466,12 @@ Load_Map_Data:
    jr nc,.sc6
    inc H
 .sc6
-   
+
    ld A,[HL+]
    or 0                          ; if the map bank is 0, load the default tile
    jr nz,.center_right_load_map
-   
-   
+
+
 .center_right_load_default_tile
    ; check top left for notes.
    call Default_Tile_Load_Loop
@@ -482,12 +482,76 @@ Load_Map_Data:
    ld [LD_MAP_BANK],A
    call Map_Tile_Load_Loop
 
+   ;;;;;;;;;;;;;;;;;;;;;
+   ; check bottom
+   ;;;;;;;;;;;;;;;;;;;;;
 
 .check_bottom
-   pop HL         ; get HL off the stack.
+   ld A,[MAPS_TO_LOAD_FLAGS]
+   bit 4,A
+   jp z,.done_loading
 
+   ;;;;;;;;;;;;;;;;;;;;;
+   ; bottom left load
+   ;;;;;;;;;;;;;;;;;;;;;
+
+.bottom_left_load
+   ld A,[MAPS_TO_LOAD_FLAGS]
+   bit 6,A
+   jp z,.bottom_center_load
+
+   ; calculate the bg memory location
+   call Calc_BG_Mem_Loc
+
+   ; get our loading variables
+   call Bottom_Y_Map             ; number of passes to do into C
+                                 ; map Y coord into B
+   ld A,C
+   ld [NUM_LOOPS],A              ; save number of passes
+   ld A,[BG_MAP_Y_LOADED]        ; update BG map y loaded
+   add C
+   ld [BG_MAP_Y_LOADED],A
+   ld E,B                        ; save number of passes
+
+   call Left_X_Map               ; number of tiles to load into C
+                                 ; map X coord int B
+   ld A,C
+   ld [NUM_TILES_PER_LOOP],A
+   ld A,[BG_MAP_X_LOADED]        ; update BG map x loaded
+   add C
+   ld [BG_MAP_X_LOADED],A
+   ld D,B                        ; DE now contains XY
+
+   pop HL                        ; HL *should* contain the addy of the warp data
+   push HL
+   ld b,b                        ; check the add value below
+   ld A,$0F                      ; point HL to top right map warp data
+   add L
+   ld L,A
+   jr nc,.sc7
+   inc H
+.sc7
+
+   ld A,[HL+]
+   or 0                          ; if the map bank is 0, load the default tile
+   jr nz,.bottom_left_load_map
+
+
+.bottom_left_load_default_tile
+   ; check top left for notes.
+   call Default_Tile_Load_Loop
+   jp .top_center_load
+
+.bottom_left_load_map
+   ; check top left for notes.
+   ld [LD_MAP_BANK],A
+   call Map_Tile_Load_Loop
+
+.bottom_center_load
+.done_loading
+   pop HL         ; get HL off the stack.
    ret
-   
+
 ; calculate the bg memory location to load the bg map into
 ; $8000 + ($20 * [BG_MAP_Y_LOADED]) + BG_MAP_X_LOADED
 Calc_BG_Mem_Loc:
@@ -505,7 +569,7 @@ Calc_BG_Mem_Loc:
    ld [BG_MAP_LOAD_MSB],A
    ld A,L
    ld [BG_MAP_LOAD_LSB],A
-   
+
    ret
 
 ; loop to load from a map.
@@ -549,24 +613,24 @@ Map_Tile_Load_Loop:
    ld E,A
    ld D,$01
    call Switch_Bank        ; switch the bank to the correct one
-   
+
    ; put #loops into E and #tiles per loop into D
    ld A,[NUM_LOOPS]
    ld E,A
    ld A,[NUM_TILES_PER_LOOP]
    ld D,A
-   
+
    ; put bg map memory location into HL
    ld A,[BG_MAP_LOAD_MSB]
    ld H,A
    ld A,[BG_MAP_LOAD_LSB]
    ld L,A
-   
+
    ; calculate bg_map_inc
    ld A,$20
    sub D
    ld [BG_MAP_INC],A
-   
+
 .main_loop
    ld A,[BC]               ; take the tile from the map data
    ld [HL+],A              ; place it in the bg map
@@ -575,7 +639,7 @@ Map_Tile_Load_Loop:
    xor A
    cp D
    jr nz,.main_loop
-   
+
    ld A,[NUM_TILES_PER_LOOP]
    ld D,A                  ; refresh D as we prep for a new pass
    ld A,[BG_MAP_INC]
@@ -584,14 +648,14 @@ Map_Tile_Load_Loop:
    jr nc,.sc2
    inc H
 .sc2
-   
+
    dec E                   ; decrement E
    cp E                    ; if we haven't done all the passes, back to the top.
    jr nz,.main_loop
-   
+
    call Return_Bank
    ret
-   
+
 
 
 ; loop to load the default tile.
@@ -602,13 +666,13 @@ Default_Tile_Load_Loop:
    ld D,A
    ld A,[NUM_LOOPS]
    ld E,A
-   
+
    ; put bg map memory location into HL
    ld A,[BG_MAP_LOAD_MSB]
    ld H,A
    ld A,[BG_MAP_LOAD_LSB]
    ld L,A
-   
+
    ld A,$20
    sub D
    ld C,A
@@ -641,7 +705,7 @@ Default_Tile_Load_Loop:
 Top_Y_Map:
    ; y = MAPY - 9 + PPOSY
    push AF
-   
+
    ld B,$09
    ld A,[MAPY]
    sub B
@@ -649,16 +713,16 @@ Top_Y_Map:
    ld A,[PPOSY]
    add B
    ld B,A
-   
+
    ; lines to load = 9 - pposy
    ld A,[PPOSY]
    ld C,$09
    sub C
    ld C,A
-   
+
    pop AF
    ret
-   
+
 Center_Y_Map:
    push AF
    push DE
@@ -670,9 +734,9 @@ Center_Y_Map:
    xor A
 .skip_0_load_n0
    ld B,A
-   
+
    ; lines to load is going to be done in 3 parts
-   
+
    ; bottom side = greater of 0 or 11 - (MAPY - PPOSY)
    ld A,[PPOSY]
    ld C,A
@@ -687,7 +751,7 @@ Center_Y_Map:
    xor A
 .skip_0_load_n1
    ld C,A
-   
+
    ; top side = greater of 0 or pposy - 9
    ld D,$09
    ld A,[PPOSY]
@@ -695,23 +759,23 @@ Center_Y_Map:
    jr nc,.skip_0_load_n2
    xor A
 .skip_0_load_n2
-   
+
    ; lines to load = top side - bottom side
-   
+
    sub C
    ld C,A
-   
+
    pop DE
    pop AF
    ret
-   
+
 Bottom_Y_Map:
    ; y is 0
    push AF
-   
+
    xor A
    ld B,A
-   
+
    ; lines to load is 11 - (MAPY - PPOSY)
    ld A,[PPOSY]
    ld C,A
@@ -721,15 +785,15 @@ Bottom_Y_Map:
    ld A,$0B
    sub C
    ld C,A
-   
+
    pop AF
-   
+
    ret
-   
+
 Left_X_Map:
    ; x = MAPX + (PPOSX - 10)
    push AF
-   
+
    ld B,$0A
    ld A,[PPOSX]
    sub B
@@ -737,18 +801,18 @@ Left_X_Map:
    ld A,[MAPX]
    add B
    ld B,A
-   
+
    ; tile count per pass = 10 - pposx
    ld A,[PPOSX]
    ld C,A
    ld A,$0A
    sub C
    ld C,A
-   
+
    pop AF
-   
+
    ret
-   
+
 Center_X_Map:
    push AF
    push DE
@@ -760,9 +824,9 @@ Center_X_Map:
    xor A
 .skip_zero
    ld B,A
-   
+
    ; tile_count is a two parter
-   
+
    ; right side = greater of 0 or 12 - (MAPX - PPOSX)
    ld A,[PPOSX]
    ld D,A
@@ -777,7 +841,7 @@ Center_X_Map:
    xor A
 .skip_zero_n1
    ld D,A
-   
+
    ; left side = greater of 0 or pposx - 10
    ld C,$0A
    ld A,[PPOSX]
@@ -785,22 +849,22 @@ Center_X_Map:
    jr nc,.skip_zero_n2
    xor A
 .skip_zero_n2
-   
+
    ; final is left side - right side
    sub D
    ld C,A
-   
+
    pop DE
    pop AF
    ret
-   
+
 Right_X_Map:
    push AF
    ; x = 0
    ld B,$00
-   
+
    ; tile_count = pposx + 12 - MAPX
-   
+
    ld A,[MAPX]
    ld C,A
    ld A,$0C
@@ -809,7 +873,7 @@ Right_X_Map:
    ld A,[PPOSX]
    add C
    ld C,A
-   
+
    pop AF
    ret
 
@@ -885,7 +949,7 @@ Fade_Loop:
    ld [rOBP1],A
    dec D
    jp nz,.out_loop            ;if our count isn't zero, return
-   
+
    xor A
    ld [TIMERT],A
 .final_loop                   ;after the last pallete is set, we need to
