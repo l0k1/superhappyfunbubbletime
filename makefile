@@ -46,7 +46,7 @@ debug:	$(OBJECTS)
 	@echo "ROM assembly complete."
 
 
-%.o:
+%.o: %.asm
 	@echo "Making " $(@)
 	@$(CC) $(CFLAGS) -o $(@) $(@:.o=.asm)
 
