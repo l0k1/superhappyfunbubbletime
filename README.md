@@ -2,7 +2,7 @@
 
 # superhappyfunbubbletime
 
-...definitely isn't going to be the name in the long run.
+*...definitely isn't going to be the name in the long run.*
 
 A homebrew adventure game aimed at the old grey Gameboy.
 
