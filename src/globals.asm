@@ -86,14 +86,18 @@ BG_MAP_LOAD_MSB::    DS 1
 BG_MAP_LOAD_LSB::    DS 1
 
 ENDU
-
-
-BG_UPDATE_ARRAY:: DS 41
+STACK_SAVE:: DS 2
 ;GFX update flags
 ;if bit 0 = 1, perform DMA update.
 ;if bit 1 = 1, perform background update.
 ;if bit 2 = 1, disable LCD
 GFX_UPDATE_FLAGS:: DS 1
+
+   SECTION "BG UPDATE ARRAY",WRAM0
+; Array format is 
+; (low byte of address in bg Map) (high byte of address) (tile) (nop)
+BG_UPDATE_ARRAY:: DS 164
+BG_UPDATE_ARRAY_END:: DS 1
 
    SECTION "OAM Mirror",WRAM0,ALIGN[8]
 ;OAM Mirror. Put sprite updates here.
